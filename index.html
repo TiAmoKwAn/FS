@@ -2,197 +2,285 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 工廠模擬器 - v12.0.8 響應式優化版</title>
-    
+    <title>AI 工廠模擬器 - v12.0.7 稱號極致加成版</title>
     <style>
+        /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
         
-        body { 
-            background: #0d1117; 
-            color: #c9d1d9;      
-            font-family: 'Noto Sans TC', sans-serif; 
-            user-select: none;   
-            margin: 0;           
-            padding: 10px;       
-        }
+        /* 基礎全域設定：背景深色、禁止文字選取、基礎間距 */
+        body { background: #0d1117; color: #c9d1d9; font-family: 'Noto Sans TC', sans-serif; user-select: none; margin: 0; padding: 20px; }
         
-        /* 儀表板：允許換行 */
-        .dashboard { 
-            display: flex;             
-            flex-wrap: wrap;
-            justify-content: center; 
-            max-width: 1100px;         
-            position: sticky;          
-            top: 0;                    
-            margin: 0 auto 10px auto;  
-            background: #21262d;       
-            padding: 10px;             
-            border-radius: 12px;       
-            border: 1px solid #30363d; 
-            z-index: 1000;             
-            align-items: center;
-            gap: 10px;
+        /* 頂部儀表板：固定在頂部，用於顯示金錢、資源等核心數據 */
+        .dashboard { display: flex; justify-content: space-around; max-width: 1040px; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
+        .stat-value { font-family: 'Share Tech Mono'; font-size: 20px; color: #58a6ff; } /* 數值文字樣式 */
+        .stat-label { font-size: 11px; color: #8b949e; } /* 標籤文字樣式 */
+
+        /* 🏆 稱號顯示容器：顯示玩家當前稱號等級與加成資訊 */
+        .prestige-container { 
+            display: flex; flex-direction: column; 
+            background: linear-gradient(145deg, #161b22, #0d1117); 
+            padding: 8px 15px; border-radius: 10px; border: 1px solid #484f58; 
+            cursor: pointer; transition: 0.3s; min-width: 240px; 
         }
+        .prestige-container:hover { border-color: #58a6ff; box-shadow: 0 0 15px rgba(88, 166, 255, 0.2); } /* 滑鼠懸停效果 */
+        .prestige-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .prestige-badge { font-weight: 800; font-size: 14px; letter-spacing: 0.5px; padding: 2px 10px; border-radius: 4px; }
+        
+        /* 10級稱號顏色與特效：定義從普通到傳說級別的視覺差異 */
+        .rank-1 { color: #8b949e; border: 1px solid #484f58; } /* 初學者 */
+        .rank-2 { color: #3fb950; border: 1px solid #238636; text-shadow: 0 0 5px #238636; } 
+        .rank-3 { color: #58a6ff; border: 1px solid #1f6feb; text-shadow: 0 0 5px #1f6feb; } 
+        .rank-4 { color: #bc8cff; border: 1px solid #8957e5; text-shadow: 0 0 5px #8957e5; } 
+        .rank-5 { color: #f2cc60; border: 1px solid #d29922; text-shadow: 0 0 8px #d29922; box-shadow: inset 0 0 5px #d29922; } 
+        .rank-6 { color: #ff7b72; border: 1px solid #da3633; text-shadow: 0 0 10px #da3633; } 
+        .rank-7 { color: #79c0ff; border: 1px solid #58a6ff; animation: glow-blue 2s infinite; } /* 藍光呼吸燈 */
+        .rank-8 { color: #ffa657; border: 1px solid #f0883e; box-shadow: 0 0 15px rgba(240,136,62,0.4); text-shadow: 0 0 10px #f0883e; } 
+        .rank-9 { color: #ff79c6; border: 1px solid #ff79c6; box-shadow: 0 0 20px rgba(255,121,198,0.4); text-shadow: 0 0 12px #ff79c6; } 
+        /* 最高等級稱號：動態虹彩漸變特效 */
+        .rank-10 { background: linear-gradient(45deg, #ffd700, #ff00ff); border: none; color: #fff; box-shadow: 0 0 25px #fff; text-shadow: 1px 1px 2px #000; animation: rainbow 3s infinite; } 
 
-        .stat-box { min-width: 80px; text-align: center; }
-        .stat-value { font-family: 'Share Tech Mono'; font-size: 18px; color: #58a6ff; }
-        .stat-label { font-size: 11px; color: #8b949e; }
+        /* 定義動畫：藍色發光與虹彩變換 */
+        @keyframes glow-blue { 0%, 100% { box-shadow: 0 0 5px #58a6ff; } 50% { box-shadow: 0 0 20px #58a6ff; } }
+        @keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
 
-		.prestige-container { 
-			display: flex; flex-direction: column; 
-			background: linear-gradient(145deg, #161b22, #0d1117); 
-			padding: 8px 15px; border-radius: 10px; border: 1px solid #484f58; 
-			cursor: pointer; transition: 0.3s; flex: 1 1 200px;
-		}
-		.prestige-container:hover { border-color: #58a6ff; }
-		.prestige-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-		.prestige-badge { font-weight: 800; font-size: 13px; padding: 2px 8px; border-radius: 4px; }
+        /* 彈窗 UI：用於顯示所有稱號列表與升級需求 */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: #161b22; width: 550px; padding: 25px; border-radius: 16px; border: 1px solid #30363d; max-height: 90vh; overflow-y: auto; }
+        .prestige-list { margin-top: 15px; border: 1px solid #30363d; border-radius: 8px; }
+        /* 列表項：使用 Grid 佈局顯示名稱、加成、費用等 */
+        .prestige-item { display: grid; grid-template-columns: 1.2fr 0.8fr 0.6fr 0.6fr 0.6fr; padding: 10px; border-bottom: 1px solid #21262d; font-size: 11px; align-items: center; text-align: center; }
+        .prestige-item.current-rank { background: rgba(88, 166, 255, 0.15) !important; border: 1px solid #58a6ff !important; box-shadow: inset 0 0 10px rgba(88, 166, 255, 0.3); }
 
-		/* 稱號顏色保持不變 */
-		.rank-1 { color: #8b949e; border: 1px solid #484f58; }
-		.rank-2 { color: #3fb950; border: 1px solid #238636; }
-		.rank-10 { background: linear-gradient(45deg, #ffd700, #ff00ff); color: #fff; animation: rainbow 3s infinite; } 
-		@keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+        /* 工廠區域：遊戲核心操作畫面 */
+        .factory-floor { position: relative; max-width: 1040px; height: 1050px; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
+        .line-group { position: relative; height: 210px; border-bottom: 1px solid #21262d; } /* 單條生產線容器 */
+        .line-label { position: absolute; left: 12px; top: 12px; font-size: 11px; color: #8b949e; font-weight: bold; opacity: 0.6; }
+        /* 鎖定遮罩：未開啟產線時的顯示狀態 */
+        .locked-line { position: absolute; inset: 0; background: rgba(13, 23, 13, 0.98); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        
+        /* 工作站單元：包含訂單列表、操作按鈕與進度條 */
+        .station { position: absolute; top: 40px; height: 158px; background: rgba(48, 54, 61, 0.2); border: 1px solid #30363d; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; box-sizing: border-box; }
+        .order-container { width: 100%; flex-grow: 1; display: flex; flex-direction: column; gap: 3px; overflow: hidden; margin-bottom: 4px; }
+        .order-card { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; transition: 0.2s; }
+        .order-card:hover { border-color: #58a6ff; }
+        .order-card.selected { border-color: #3fb950; background: #132316; } /* 被選中的訂單樣式 */
+        
+        /* 操作按鈕：具有 3D 壓下效果的按鈕 */
+        .action-btn { width: 100%; padding: 6px 0; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; color: white; display: block; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 3px 0 rgba(0,0,0,0.2); flex-shrink: 0; transition: 0.1s; }
+        .action-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+        .action-btn:disabled { filter: grayscale(1); opacity: 0.3; cursor: not-allowed; }
+        
+        /* 按鈕顏色分類：綠色生產、藍色升級、紅色維修 */
+        .btn-green { background: #238636; border-bottom: 2px solid #1a6328; }
+        .btn-blue { background: #1f6feb; border-bottom: 2px solid #1858ba; }
+        .btn-red { background: #da3633; border-bottom: 2px solid #a42825; }
+        
+        .price-tag { color: #f2cc60; font-size: 11px; } /* 顯示價格的金色文字 */
+        .durability-box { width: 100%; height: 5px; background: #0d1117; border-radius: 3px; margin-bottom: 4px; overflow: hidden; } /* 耐久度外殼 */
+        .dur-fill { height: 100%; background: #3fb950; transition: 0.3s; } /* 耐久度進度條顏色 */
+        
+        .progress-container { width: 100%; height: 6px; background: #0d1117; border-radius: 3px; overflow: hidden; visibility: hidden; border: 1px solid #30363d; margin-bottom: 4px; }
+        .progress-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #bc8cff, #8957e5); } /* 生產進度條顏色 */
+        
+        /* 零件物體：在產線上移動的小方塊視覺效果 */
+        .part { position: absolute; width: 32px; height: 32px; border-radius: 8px; z-index: 50; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); }
+        .part-wood { background: #8b5a2b; } /* 木材零件顏色 */
+        .part-stone { background: #7d7d7d; } /* 石材零件顏色 */
+        .part-iron { background: #4a90e2; } /* 鐵材零件顏色 */
+        .part-core { background: #f2cc60; color: #000; box-shadow: 0 0 15px rgba(242,204,96,0.5); } /* 核心零件顏色 */
 
-		/* 彈窗 */
-		.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-		.modal-content { background: #161b22; width: 90%; max-width: 550px; padding: 20px; border-radius: 16px; border: 1px solid #30363d; max-height: 90vh; overflow-y: auto; }
-		.prestige-item { display: grid; grid-template-columns: 1.2fr 0.8fr 0.6fr 0.6fr 0.6fr; padding: 10px; font-size: 10px; align-items: center; text-align: center; border-bottom: 1px solid #21262d; }
-
-		/* 工廠區：改為自適應寬度 */
-		.factory-floor { 
-            max-width: 1100px; 
-            margin: 10px auto; 
-            background: #161b22; 
-            border: 2px solid #30363d; 
-            border-radius: 16px; 
-            padding: 10px;
-        }
-
-		.line-group { 
-            position: relative; 
-            display: flex;
-            flex-wrap: wrap; /* 關鍵：螢幕小時自動換行 */
-            gap: 15px;
-            padding: 40px 10px 20px 10px;
-            border-bottom: 2px solid #21262d; 
-            justify-content: center;
-        }
-
-		.line-label { position: absolute; left: 12px; top: 12px; font-size: 11px; color: #8b949e; font-weight: bold; }
-		
-        .station { 
-            position: relative; /* 移除絕對定位 */
-            width: 100%;
-            max-width: 250px; /* 限制寬度 */
-            min-height: 160px;
-            background: rgba(48, 54, 61, 0.2); 
-            border: 1px solid #30363d; 
-            border-radius: 8px; 
-            padding: 10px; 
-            display: flex; 
-            flex-direction: column; 
-            box-sizing: border-box; 
-            flex: 1 1 220px; /* 讓它在空間足夠時並排，不足時撐滿 */
-        }
-
-		/* 零件動畫：改為根據父級容器定位 */
-		.part { 
-            position: absolute; 
-            width: 30px; height: 30px; 
-            border-radius: 8px; 
-            z-index: 100; 
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 11px; font-weight: bold; color: #fff; 
-            pointer-events: none; /* 防止遮擋點擊 */
-        }
-
-		/* 底部 UI */
-		.bottom-ui { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 15px; 
-            max-width: 1100px; 
-            margin: 20px auto; 
-        }
-		.panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
-		.log-container { background: #0d1117; height: 120px; overflow-y: auto; border: 1px solid #30363d; padding: 10px; font-family: 'Share Tech Mono'; font-size: 11px; color: #3fb950; border-radius: 8px; }
-
-        /* 其他通用組件保持不變 */
-        .order-container { flex-grow: 1; display: flex; flex-direction: column; gap: 3px; overflow: hidden; margin-bottom: 5px; }
-        .order-card { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer; }
-        .order-card.selected { border-color: #3fb950; background: #132316; }
-		.action-btn { width: 100%; padding: 8px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; transition: 0.1s; font-size: 12px; }
-		.btn-green { background: #238636; }
-		.btn-blue { background: #1f6feb; }
-        .durability-box { width: 100%; height: 6px; background: #0d1117; border-radius: 3px; margin: 5px 0; overflow: hidden; }
-        .dur-fill { height: 100%; background: #3fb950; transition: 0.3s; }
-        .progress-container { width: 100%; height: 6px; background: #0d1117; visibility: hidden; border-radius: 3px; margin: 5px 0; }
-        .progress-bar { width: 100%; height: 100%; background: #8957e5; }
-        .locked-line { position: absolute; inset: 0; background: rgba(13, 23, 13, 0.95); z-index: 200; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); border-radius: 16px; }
-        .admin-input { width: 50px; background: #0d1117; border: 1px solid #30363d; color: #58a6ff; text-align: center; }
+        /* 底部 UI 佈局：分成日誌欄、升級欄、控制欄 */
+        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 1040px; margin: 20px auto; }
+        .panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
+        
+        /* 遊戲日誌：顯示系統訊息的終端機樣式 */
+        .log-container { background: #0d1117; height: 130px; overflow-y: auto; border: 1px solid #30363d; padding: 10px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #3fb950; border-radius: 8px; line-height: 1.5; }
+        
+        /* 管理員控制項樣式 */
+        .admin-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #21262d; padding: 8px; border-radius: 6px; }
+        .admin-input { width: 60px; background: #0d1117; border: 1px solid #30363d; color: #58a6ff; padding: 4px; text-align: center; border-radius: 4px; font-size: 11px; }
     </style>
 </head>
 <body>
 
+<!-- 🏆 聲望系統彈窗：當點擊背景遮罩時觸發關閉函數 -->
 <div id="prestige-modal" class="modal-overlay" onclick="if(event.target==this) togglePrestigeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 style="color:#58a6ff; text-align:center; margin-top:0;">🏆 產業聲望階級</h2>
+        <h2 style="color:#58a6ff; text-align:center; margin-top:0;">🏆 產業聲望階級表</h2>
+        
+        <!-- 晉升進度顯示區：包含文字說明與視覺進度條 -->
+        <div style="background:#0d1117; padding:15px; border-radius:10px; border:1px solid #30363d; margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                <span>晉升進度</span>
+                <span id="next-rank-info" style="color:#f2cc60">還需 $0</span>
+            </div>
+            <div style="height:8px; background:#21262d; border-radius:4px; overflow:hidden;">
+                <!-- 根據資金達成率動態調整寬度的填充條 -->
+                <div id="prestige-progress-fill" style="height:100%; background:#58a6ff; width:0%; transition:0.5s;"></div>
+            </div>
+        </div>
+
+        <!-- 稱號列表標題：定義各列數據的含義 -->
+        <div class="prestige-item" style="background:#21262d; font-weight:bold; color:#8b949e; border-radius:8px 8px 0 0;">
+            <span>階級</span><span>解鎖資金</span><span>利潤</span><span>速度</span><span>檢測</span>
+        </div>
+        <!-- 稱號內容容器：由 JavaScript 動態生成的等級清單會放在這裡 -->
         <div id="prestige-list-container" class="prestige-list"></div>
-        <button class="action-btn btn-blue" style="margin-top:20px" onclick="togglePrestigeModal()">返回工廠</button>
+        <button class="action-btn btn-blue" style="margin-top:20px; height:40px;" onclick="togglePrestigeModal()">返回工廠</button>
     </div>
 </div>
 
+<!-- ⚙️ 系統管理面板：供開發測試使用的後台介面 -->
 <div id="admin-panel" class="modal-overlay">
-    <div class="modal-content" style="border-color:#58a6ff">
-        <h3 style="color:#58a6ff; text-align:center;">⚙️ 系統管理</h3>        
+    <div class="admin-content" style="background: #161b22; width: 500px; padding: 25px; border-radius: 16px; border: 1px solid #58a6ff; max-height: 85vh; overflow-y: auto;">
+        <h3 style="color:#58a6ff; text-align:center; margin-top:0;">⚙️ 系統管理面板</h3>        
+        
+        <!-- 稱號數值調整區：可手動修改各級稱號的百分比加成 -->
+        <div style="color:#bc8cff; font-weight:bold; margin-bottom:10px;">💎 稱號加成參數 (修改後自動保存)</div>
+        <div class="admin-row" style="background:none; border-bottom:1px solid #30363d; font-size:10px; color:#8b949e;">
+            <span>稱號名稱</span><span>利潤%</span><span>速度%</span><span>QA%</span>
+        </div>
         <div id="admin-prestige-settings"></div>
+
+        <hr style="border:0; border-top:1px solid #30363d; margin:20px 0;">
+        
+        <!-- 資源價格與數量注入區：包含所有原材料的控制項 -->
+        <div style="color:#f2cc60; font-weight:bold; margin-bottom:10px;">📦 資源基礎價格</div>
+
+        <!-- 🪵 木材控制項：修改買入/賣出價及注入 100 單位資源 -->
+        <div class="admin-row">
+            <span>🪵 木材</span>
+            <div>
+                <input type="number" id="edit-buy-wood" class="admin-input" onchange="updatePrice('wood')"> 
+                <input type="number" id="edit-sell-wood" class="admin-input" onchange="updatePrice('wood')">
+            </div>
+            <button class="action-btn btn-blue" style="width: 50px;" onclick="inject('wood', 100)">+100</button>
+        </div>
+
+        <!-- 🪨 石頭控制項：修改買入/賣出價及注入 100 單位資源 -->
+        <div class="admin-row">
+            <span>🪨 石頭</span>
+            <div>
+                <input type="number" id="edit-buy-stone" class="admin-input" onchange="updatePrice('stone')"> 
+                <input type="number" id="edit-sell-stone" class="admin-input" onchange="updatePrice('stone')">
+            </div>
+            <button class="action-btn btn-blue" style="width: 50px;" onclick="inject('stone', 100)">+100</button>
+        </div>
+
+        <!-- ⛓️ 鋼鐵控制項：修改買入/賣出價及注入 100 單位資源 -->
+        <div class="admin-row">
+            <span>⛓️ 鋼鐵</span>
+            <div>
+                <input type="number" id="edit-buy-iron" class="admin-input" onchange="updatePrice('iron')"> 
+                <input type="number" id="edit-sell-iron" class="admin-input" onchange="updatePrice('iron')">
+            </div>
+            <button class="action-btn btn-blue" style="width: 50px;" onclick="inject('iron', 100)">+100</button>
+        </div>
+
+        <!-- 🔋 核心控制項：修改買入/賣出價及注入 100 單位資源 -->
+        <div class="admin-row">
+            <span>🔋 核心</span>
+            <div>
+                <input type="number" id="edit-buy-core" class="admin-input" onchange="updatePrice('core')"> 
+                <input type="number" id="edit-sell-core" class="admin-input" onchange="updatePrice('core')">
+            </div>
+            <button class="action-btn btn-blue" style="width: 50px;" onclick="inject('core', 100)">+100</button>
+        </div>
+
+        <!-- 系統綜合功能按鈕：資金注入、存檔、重置及關閉面板 -->
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
             <button class="action-btn btn-blue" onclick="inject('money', 10000)">💰 資金 +1萬</button>
+            <button class="action-btn btn-green" onclick="saveGame()">手動存檔</button>
             <button class="action-btn btn-red" onclick="resetGame()">⚠️ 重置數據</button>
-            <button class="action-btn btn-blue" style="background:#30363d" onclick="toggleAdmin()">返回</button>
+            <button class="action-btn btn-blue" style="background:#30363d" onclick="toggleAdmin()">返回工廠</button>
         </div>
     </div>
 </div>
 
+<!-- 頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 -->
 <div class="dashboard">
+    <!-- 🏆 稱號顯示區：點擊後會觸發 secretTrigger() 函數（可能是開啟詳細面板或特殊觸發） -->
     <div class="prestige-container" onclick="secretTrigger()">
         <div class="prestige-header">
+            <!-- 當前等級稱號標籤：動態顯示「載入中」或等級（如：初學者、工業巨頭） -->
             <span id="prestige-badge" class="prestige-badge rank-1">載入中</span>
-            <span id="prestige-bonus-summary" style="font-family:'Share Tech Mono'; color:#3fb950; font-size:10px;">Bonus...</span>
+            <!-- 加成總結：顯示利潤、速度等加成百分比數值 -->
+            <span id="prestige-bonus-summary" style="font-family:'Share Tech Mono'; color:#3fb950; font-size:10px;">Bonus Loading...</span>
         </div>
-        <div style="height:4px; background:#30363d; border-radius:2px; overflow:hidden;">
-            <div id="dashboard-prestige-bar" style="height:100%; background:#58a6ff; width:0%;"></div>
+        <!-- 稱號晉升進度小條：視覺化顯示距離下一級的進度 -->
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="flex-grow:1; height:4px; background:#30363d; border-radius:2px; overflow:hidden;">
+                <!-- 實際進度填充條：由 JavaScript 動態控制其 width 百分比 -->
+                <div id="dashboard-prestige-bar" style="height:100%; background:#58a6ff; width:0%;"></div>
+            </div>
+            <span style="font-size:10px; color:#8b949e; white-space:nowrap;">詳情</span>
         </div>
     </div>
-    <div class="stat-box"><div class="stat-label">💰 資金</div><div id="money-val" class="stat-value">$0</div></div>
-    <div class="stat-box"><div class="stat-label">🪵 木材</div><div id="wood-val" class="stat-value">0</div></div>
-    <div class="stat-box"><div class="stat-label">🪨 石頭</div><div id="stone-val" class="stat-value">0</div></div>
-    <div class="stat-box"><div class="stat-label">⛓️ 鋼鐵</div><div id="iron-val" class="stat-value">0</div></div>
-    <div class="stat-box"><div class="stat-label">🔋 核心</div><div id="core-val" class="stat-value">0</div></div>
-    <button class="action-btn btn-green" style="width:80px" onclick="toggleAdmin()">⚙️ 設定</button>
+
+    <!-- 💰 資金顯示方塊：展示玩家目前擁有的總現金額 -->
+    <div class="stat-box">
+        <div class="stat-label">💰 當前資金</div>
+        <div id="money-val" class="stat-value">$0</div>
+    </div>
+
+    <!-- 🪵 木材顯示方塊：當前倉庫木材庫存 -->
+    <div class="stat-box">
+        <div class="stat-label">🪵 木材</div>
+        <div id="wood-val" class="stat-value">0</div>
+    </div>
+
+    <!-- 🪨 石頭顯示方塊：當前倉庫石頭庫存 -->
+    <div class="stat-box">
+        <div class="stat-label">🪨 石頭</div>
+        <div id="stone-val" class="stat-value">0</div>
+    </div>
+
+    <!-- ⛓️ 鋼鐵顯示方塊：當前倉庫鋼鐵庫存 -->
+    <div class="stat-box">
+        <div class="stat-label">⛓️ 鋼鐵</div>
+        <div id="iron-val" class="stat-value">0</div>
+    </div>
+
+    <!-- 🔋 核心顯示方塊：當前倉庫最高級資源「核心」的庫存 -->
+    <div class="stat-box">
+        <div class="stat-label">🔋 核心</div>
+        <div id="core-val" class="stat-value">0</div>
+    </div>
+
+    <!-- ⚙️ 全局設定按鈕：點擊後觸發 toggleAdmin() 開啟管理員後台面板 -->
+    <button class="action-btn btn-green" style="width:100px; height:42px;" onclick="toggleAdmin()">⚙️ 全局設定</button>
 </div>
 
+<!-- 🏭 工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
 <div class="factory-floor" id="floor">
     <div id="lines-container"></div>
 </div>
 
+<!-- 📱 底部 UI 面板：採用三欄式佈局，包含採購、自動化與日誌 -->
 <div class="bottom-ui">
+    
+    <!-- 🛒 物資採購面板：提供玩家手動購買原材料的按鈕 -->
     <div class="panel-box">
         <b style="color:#58a6ff;">🛒 物資採購</b>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;">
-            <button class="action-btn btn-blue" onclick="buy('wood')">木材 $<span id="btn-p-wood">5</span></button>
-            <button class="action-btn btn-blue" onclick="buy('stone')">石頭 $<span id="btn-p-stone">10</span></button>
-            <button class="action-btn btn-blue" onclick="buy('iron')">鋼鐵 $<span id="btn-p-iron">15</span></button>
-            <button class="action-btn btn-blue" onclick="buy('core')">核心 $<span id="btn-p-core">50</span></button>
+            <!-- 購買木材按鈕，價格會根據 btn-p-wood 動態顯示 -->
+            <button class="action-btn btn-blue" onclick="buy('wood')">木材 ( $<span id="btn-p-wood">5</span> )</button>
+            <!-- 購買石頭按鈕 -->
+            <button class="action-btn btn-blue" onclick="buy('stone')">石頭 ( $<span id="btn-p-stone">10</span> )</button>
+            <!-- 購買鋼鐵按鈕 -->
+            <button class="action-btn btn-blue" onclick="buy('iron')">鋼鐵 ( $<span id="btn-p-iron">15</span> )</button>
+            <!-- 購買核心按鈕（最高級物資） -->
+            <button class="action-btn btn-blue" onclick="buy('core')">核心 ( $<span id="btn-p-core">50</span> )</button>
         </div>
     </div>
+
+    <!-- 🤖 自動化部署面板：由 JavaScript 根據遊戲進度動態生成自動化控制按鈕 -->
     <div class="panel-box">
         <b style="color:#bc8cff;">🤖 自動化部署</b>
         <div id="auto-controls" style="display:grid; grid-template-columns: 1fr; gap:5px; margin-top:5px;"></div>
     </div>
+
+    <!-- 📝 系統日誌面板：顯示遊戲當前的運作訊息、收支情況與錯誤提示 -->
     <div class="panel-box">
         <b style="color:#3fb950;">📝 系統日誌</b>
         <div id="log" class="log-container"></div>
@@ -200,200 +288,379 @@
 </div>
 
 <script>
-    // 遊戲配置與原代碼邏輯相同，僅修改 UI 互動部分
+    // 🏆 稱號與多重加成定義：控制遊戲不同階段的利潤、速度及檢測加成
     let PRESTIGE_LEVELS = [
-        { lv: 1,  name: "🌱 初出茅廬", min: 0,          bonus: 0,    speed: 0,    qa: 0,    class: "rank-1" },
-        { lv: 2,  name: "⚒️ 潛力新人", min: 5000,       bonus: 0.05, speed: 0.05, qa: 0.02, class: "rank-2" },
-        { lv: 3,  name: "🔧 熟練工匠", min: 20000,      bonus: 0.10, speed: 0.10, qa: 0.04, class: "rank-3" },
-        { lv: 4,  name: "🚛 地區供應", min: 100000,     bonus: 0.15, speed: 0.15, qa: 0.06, class: "rank-4" },
-        { lv: 5,  name: "🏭 產業支柱", min: 500000,     bonus: 0.25, speed: 0.20, qa: 0.08, class: "rank-5" },
-        { lv: 6,  name: "💰 貿易大亨", min: 2000000,    bonus: 0.40, speed: 0.25, qa: 0.10, class: "rank-6" },
-        { lv: 10, name: "🌌 星際造物", min: 1000000000, bonus: 2.00, speed: 0.60, qa: 0.25, class: "rank-10" }
+        { lv: 1,  name: "🌱 初出茅廬", min: 0,        bonus: 0,    speed: 0,    qa: 0,    class: "rank-1" },
+        { lv: 2,  name: "⚒️ 潛力新人", min: 5000,     bonus: 0.05, speed: 0.05, qa: 0.02, class: "rank-2" },
+        { lv: 3,  name: "🔧 熟練工匠", min: 20000,    bonus: 0.10, speed: 0.10, qa: 0.04, class: "rank-3" },
+        { lv: 4,  name: "🚛 地區供應", min: 100000,   bonus: 0.15, speed: 0.15, qa: 0.06, class: "rank-4" },
+        { lv: 5,  name: "🏭 產業支柱", min: 500000,   bonus: 0.25, speed: 0.20, qa: 0.08, class: "rank-5" },
+        { lv: 6,  name: "💰 貿易大亨", min: 2000000,  bonus: 0.40, speed: 0.25, qa: 0.10, class: "rank-6" },
+        { lv: 7,  name: "🌐 跨國集團", min: 10000000, bonus: 0.60, speed: 0.30, qa: 0.12, class: "rank-7" },
+        { lv: 8,  name: "👑 全球霸主", min: 50000000, bonus: 0.85, speed: 0.35, qa: 0.15, class: "rank-8" },
+        { lv: 9,  name: "🚀 科技先驅", min: 200000000,bonus: 1.20, speed: 0.45, qa: 0.18, class: "rank-9" },
+        { lv: 10, name: "🌌 星際造物", min: 1000000000,bonus: 2.00, speed: 0.60, qa: 0.25, class: "rank-10" }
     ];
 
+    // 🏗️ 產線配置：u 為解鎖成本，m 為產線效率倍率，n 為顯示編號
     const LINE_CONFIGS = { 1:{u:0, m:1.0, n:"01"}, 2:{u:500, m:1.2, n:"02"}, 3:{u:10000, m:1.5, n:"03"}, 4:{u:50000, m:2.0, n:"04"}, 5:{u:100000, m:3.0, n:"05"} };
-    let cfg = { wood: { n: '木材', c: 'part-wood', r: 15, buy: 5 }, stone: { n: '石頭', c: 'part-stone', r: 30, buy: 10 }, iron: { n: '鋼鐵', c: 'part-iron', r: 55, buy: 15 }, core: { n: '核心', c: 'part-core', r: 150, buy: 50 } };
 
-    let game = { money: 100, inv: { wood: 0, stone: 0, iron: 0, core: 0 }, unlocked: { 1: true, 2: false, 3: false, 4: false, 5: false }, lines: {}, adminClicks: 0 };
+    // 📦 資源屬性：n 為名稱，c 為 CSS 類，r 為基礎售價，buy 為買入價格
+    let cfg = { 
+        wood: { n: '木材', c: 'part-wood', r: 15, buy: 5 }, 
+        stone: { n: '石頭', c: 'part-stone', r: 30, buy: 10 }, 
+        iron: { n: '鋼鐵', c: 'part-iron', r: 55, buy: 15 },
+        core: { n: '核心', c: 'part-core', r: 150, buy: 50 } 
+    };
+
+    // 💾 遊戲主狀態對象
+    let game = {
+        money: 100,
+        inv: { wood: 0, stone: 0, iron: 0, core: 0 },
+        unlocked: { 1: true, 2: false, 3: false, 4: false, 5: false },
+        lines: {},
+        prices: null,
+        customPrestige: null,
+        adminClicks: 0 
+    };
+
     let currentPrestige = PRESTIGE_LEVELS[0];
 
+    // 初始化 5 條產線數據
     for(let i=1; i<=5; i++) { game.lines[i] = { lv: 0, dur: 100, isAuto: false, hasAuto: false, proc: false, selIdx: -1, orders: [] }; }
 
+    // 📜 系統日誌功能
     function addLog(m, c='#3fb950') { 
         const log = document.getElementById('log'); if(!log) return;
-        const d = document.createElement('div'); d.style.color = c; d.innerHTML = `[${new Date().toLocaleTimeString()}] > ${m}`;
-        log.prepend(d); if(log.childNodes.length > 30) log.lastChild.remove();
+        const d = document.createElement('div'); d.style.color = c; d.innerHTML = `[${new Date().toLocaleTimeString()}] > ${m}`; 
+        log.prepend(d); if(log.childNodes.length > 50) log.lastChild.remove();
     }
 
+    // 📈 稱號晉升邏輯
     function updatePrestige() {
         let matched = PRESTIGE_LEVELS[0];
-        for (let i = PRESTIGE_LEVELS.length - 1; i >= 0; i--) { if (game.money >= PRESTIGE_LEVELS[i].min) { matched = PRESTIGE_LEVELS[i]; break; } }
-        if (currentPrestige.lv !== matched.lv) { addLog(`🏆 晉升！【${matched.name}】`, "#f2cc60"); currentPrestige = matched; }
+        let nextRank = PRESTIGE_LEVELS[1];
+        for (let i = PRESTIGE_LEVELS.length - 1; i >= 0; i--) {
+            if (game.money >= PRESTIGE_LEVELS[i].min) {
+                matched = PRESTIGE_LEVELS[i];
+                nextRank = PRESTIGE_LEVELS[i+1] || null;
+                break;
+            }
+        }
+        if (currentPrestige.lv !== matched.lv) {
+            addLog(`🏆 晉升！【${matched.name}】啟用全方位加成`, "#f2cc60");
+            currentPrestige = matched;
+        }
         document.getElementById('prestige-badge').innerText = matched.name;
         document.getElementById('prestige-badge').className = `prestige-badge ${matched.class}`;
-        document.getElementById('prestige-bonus-summary').innerText = `利潤:+${(matched.bonus*100).toFixed(0)}% 速度:+${(matched.speed*100).toFixed(0)}%`;
+        document.getElementById('prestige-bonus-summary').innerText = `利潤:+${(matched.bonus*100).toFixed(0)}% 速度:+${(matched.speed*100).toFixed(0)}% 質量:+${(matched.qa*100).toFixed(0)}%`;
+
+        if (nextRank) {
+            let progress = ((game.money - matched.min) / (nextRank.min - matched.min)) * 100;
+            document.getElementById('dashboard-prestige-bar').style.width = Math.min(100, progress) + "%";
+        } else { document.getElementById('dashboard-prestige-bar').style.width = "100%"; }
     }
 
+    // 🖥️ UI 顯示與管理員功能 (togglePrestigeModal, renderPrestigeList, updateAdminPrestigeUI, modifyPrestige, updatePrice 等)
+    function togglePrestigeModal() {
+        const modal = document.getElementById('prestige-modal');
+        if (modal.style.display === 'flex') { modal.style.display = 'none'; } 
+        else { renderPrestigeList(); modal.style.display = 'flex'; }
+    }
+
+    function renderPrestigeList() {
+        const container = document.getElementById('prestige-list-container');
+        const nextInfo = document.getElementById('next-rank-info');
+        const barFill = document.getElementById('prestige-progress-fill');
+        container.innerHTML = '';
+        let nextRank = PRESTIGE_LEVELS.find(l => l.min > game.money);
+        if (nextRank) {
+            nextInfo.innerText = `還需 $${Math.floor(nextRank.min - game.money).toLocaleString()} 晉升`;
+            barFill.style.width = Math.min(100, ((game.money - currentPrestige.min) / (nextRank.min - currentPrestige.min)) * 100) + "%";
+        } else { nextInfo.innerText = "已達成最高階級"; barFill.style.width = "100%"; }
+
+        PRESTIGE_LEVELS.forEach(l => {
+            const isCurrent = (currentPrestige.lv === l.lv);
+            const div = document.createElement('div');
+            div.className = `prestige-item ${isCurrent ? 'current-rank' : ''}`;
+            div.innerHTML = `
+                <span class="prestige-badge ${l.class}">${l.name}</span>
+                <span style="font-family:'Share Tech Mono'">${l.min === 0 ? '初始' : '$'+l.min.toLocaleString()}</span>
+                <span style="color:#3fb950">+${(l.bonus*100).toFixed(0)}%</span>
+                <span style="color:#bc8cff">+${(l.speed*100).toFixed(0)}%</span>
+                <span style="color:#58a6ff">+${(l.qa*100).toFixed(0)}%</span>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function updateAdminPrestigeUI() {
+        const container = document.getElementById('admin-prestige-settings');
+        container.innerHTML = '';
+        PRESTIGE_LEVELS.forEach((l, idx) => {
+            const row = document.createElement('div');
+            row.className = 'admin-row';
+            row.innerHTML = `
+                <span style="font-size:11px; width:100px;">${l.name}</span>
+                <input type="number" step="0.01" class="admin-input" value="${l.bonus}" onchange="modifyPrestige(${idx}, 'bonus', this.value)">
+                <input type="number" step="0.01" class="admin-input" value="${l.speed}" onchange="modifyPrestige(${idx}, 'speed', this.value)">
+                <input type="number" step="0.01" class="admin-input" value="${l.qa}" onchange="modifyPrestige(${idx}, 'qa', this.value)">
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function modifyPrestige(idx, key, val) {
+        PRESTIGE_LEVELS[idx][key] = parseFloat(val);
+        game.customPrestige = JSON.parse(JSON.stringify(PRESTIGE_LEVELS));
+        updateUI();
+    }
+
+    function updatePrice(type) {
+        cfg[type].buy = parseInt(document.getElementById(`edit-buy-${type}`).value) || 0;
+        cfg[type].r = parseInt(document.getElementById(`edit-sell-${type}`).value) || 0;
+        game.prices = JSON.parse(JSON.stringify(cfg));
+        updateUI();
+    }
+
+    // 🏗️ 初始化工廠地面：生成產線 HTML
     function initFloor() {
         const container = document.getElementById('lines-container'); container.innerHTML = '';
         const autoControls = document.getElementById('auto-controls'); autoControls.innerHTML = '';
         for(let i=1; i<=5; i++) {
             container.innerHTML += `
                 <div class="line-group" id="line-group-${i}">
-                    <div class="line-label">Line ${LINE_CONFIGS[i].n} (x${LINE_CONFIGS[i].m.toFixed(1)})</div>
+                    <div class="line-label">生產線 Line ${LINE_CONFIGS[i].n} (效率x${LINE_CONFIGS[i].m.toFixed(1)})</div>
                     <div id="lock-${i}" class="locked-line" style="${game.unlocked[i]?'display:none':''}">
-                        <button class="action-btn btn-green" style="width:140px" onclick="unlockLine(${i})">支付 $${LINE_CONFIGS[i].u} 解鎖</button>
+                        <button class="action-btn btn-green" style="width:180px" onclick="unlockLine(${i})">支付 $${LINE_CONFIGS[i].u} 解鎖</button>
                     </div>
-                    <div class="station">
-                        <div style="color:#f2cc60; font-weight:bold; margin-bottom:5px">📦 訂單</div>
+                    <div class="station" style="left: 10px; width: 220px;">
+                        <div class="status-header" style="color:#f2cc60">📦 訂單管理</div>
                         <div id="order-list-${i}" class="order-container"></div>
-                        <button id="deliver-btn-${i}" class="action-btn btn-green" onclick="processOrder(${i})" disabled>交付</button>
+                        <button id="deliver-btn-${i}" class="action-btn btn-green" onclick="processOrder(${i})" disabled>交付訂單</button>
                     </div>
-                    <div class="station">
-                        <div style="font-weight:bold">⚙️ 加工 <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></div>
+                    <div class="station" style="left: 245px; width: 280px;">
+                        <div class="status-header">⚙️ 生產 Agent <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></div>
+                        <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">設備健康度</span><span id="dur-text-${i}" style="font-size:10px; font-family:'Share Tech Mono';">100%</span></div>
                         <div class="durability-box"><div id="dur-fill-${i}" class="dur-fill"></div></div>
+                        <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">生產進度</span><span id="timer-text-${i}" style="font-size:10px; color:#bc8cff; font-family:'Share Tech Mono';">等待中</span></div>
                         <div class="progress-container" id="prog-cont-${i}"><div class="progress-bar" id="prog-bar-${i}"></div></div>
-                        <div style="display:flex; gap:5px; margin-top:auto">
-                            <button id="up-btn-${i}" class="action-btn btn-blue" onclick="upgradeLine(${i})">升級 $<span id="up-cost-${i}">0</span></button>
-                            <button id="repair-btn-${i}" class="action-btn btn-red" onclick="repair(${i})">保養</button>
+                        <div style="display:flex; width:100%; gap:8px; margin-top:auto;">
+                            <div style="flex:1;"><div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">速度: <span id="speed-val-${i}">0</span>s</div><button id="up-btn-${i}" class="action-btn btn-blue" onclick="upgradeLine(${i})">升級 <span id="up-cost-${i}" class="price-tag">$0</span></button></div>
+                            <div style="flex:1;"><div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">維護設備</div><button id="repair-btn-${i}" class="action-btn btn-red" onclick="repair(${i})">保養 <span class="price-tag">$30</span></button></div>
                         </div>
                     </div>
-                    <div class="station" style="justify-content:center; align-items:center">
-                        <div id="qa-status-${i}" style="font-weight:bold; color:#8b949e">🔍 待機</div>
+                    <div class="station" style="left: 540px; width: 170px; align-items:center; justify-content:center;">
+                        <div class="status-header" style="color:#58a6ff; position:absolute; top:8px;">🔍 質量檢測</div>
+                        <div id="qa-status-${i}" style="font-size: 14px; font-weight:bold; color:#8b949e; text-align:center;">⌛ 待機中...</div>
                     </div>
-                    <div class="station" style="border-style:dashed; justify-content:center; align-items:center">
-                        <div id="delivery-info-${i}" style="font-size:11px; text-align:center">🏁 等待產品</div>
+                    <div class="station" style="left: 725px; width: 285px; border-style: dashed; background:none; align-items:center; justify-content:center;">
+                        <div class="status-header" style="color:#3fb950; position:absolute; top:8px;">🏁 物流接收</div>
+                        <div id="delivery-info-${i}" style="font-size: 11px; color: #8b949e; text-align:center; margin-top: 45px;">等待交付產品...</div>
                     </div>
                 </div>
             `;
-            autoControls.innerHTML += `<button id="auto-btn-${i}" class="action-btn" style="background:#30363d" onclick="toggleAuto(${i})">部署 Line ${i} 自動化</button>`;
+            autoControls.innerHTML += `<button id="auto-btn-${i}" class="action-btn" style="background:#30363d" onclick="toggleAuto(${i})">部署 Line ${i} 自動化 ($500)</button>`;
         }
     }
 
-    // 核心動畫邏輯修改：動態計算位置
-    async function runPart(lId, type, idx) {
-        const lineGroup = document.getElementById(`line-group-${lId}`);
-        const stations = lineGroup.getElementsByClassName('station');
-        const part = document.createElement('div');
-        part.className = `part ${cfg[type].c}`;
-        part.innerText = idx;
-        lineGroup.appendChild(part);
-
-        const moveTo = (sIdx) => {
-            const target = stations[sIdx];
-            // 計算目標工作站中心點相對於父容器的位置
-            const x = target.offsetLeft + (target.offsetWidth / 2) - 15;
-            const y = target.offsetTop + (target.offsetHeight / 2) - 15;
-            part.style.left = `${x}px`;
-            part.style.top = `${y}px`;
-        };
-
-        moveTo(0); // 從訂單區出發
-        await new Promise(r => setTimeout(r, 100));
-
-        while(true) {
-            moveTo(1); // 到加工區
-            let timeSec = Math.max(0.5, (15 - game.lines[lId].lv * 1.3) * (1 - currentPrestige.speed));
-            const bar = document.getElementById(`prog-bar-${lId}`);
-            document.getElementById(`prog-cont-${lId}`).style.visibility = 'visible';
-            bar.style.transition = 'none'; bar.style.width = '100%'; void bar.offsetWidth;
-            bar.style.transition = `width ${timeSec}s linear`; bar.style.width = '0%';
-            await new Promise(r => setTimeout(r, timeSec * 1000));
-            document.getElementById(`prog-cont-${lId}`).style.visibility = 'hidden';
-
-            moveTo(2); // 到檢測區
-            document.getElementById(`qa-status-${lId}`).innerText = "⚙️ 檢測中";
-            await new Promise(r => setTimeout(r, 600));
-
-            let failChance = Math.max(0, (0.05 + (100 - game.lines[lId].dur)/200) - currentPrestige.qa);
-            if(Math.random() < failChance) {
-                document.getElementById(`qa-status-${lId}`).innerText = "❌ 失敗";
-                await new Promise(r => setTimeout(r, 500));
-            } else {
-                document.getElementById(`qa-status-${lId}`).innerText = "✅ 合格";
-                moveTo(3); // 到物流區
-                await new Promise(r => setTimeout(r, 600));
-                return part;
-            }
-        }
-    }
-
-    async function processOrder(id) {
-        const l = game.lines[id]; if(l.proc || l.selIdx === -1) return;
-        const o = l.orders[l.selIdx];
-        l.proc = true; game.inv[o.type] -= o.qty; updateUI();
-        const parts = [];
-        for(let i=1; i<=o.qty; i++) {
-            const p = await runPart(id, o.type, i);
-            parts.push(p); l.dur = Math.max(0, l.dur - 2); updateUI();
-        }
-        setTimeout(() => {
-            parts.forEach(p => p.remove());
-            const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
-            game.money += profit;
-            document.getElementById(`delivery-info-${id}`).innerHTML = `<b style="color:#3fb950">✅ 完成!</b><br>+$${profit}`;
-            genOrders(id); l.proc = false; l.selIdx = -1; updateUI();
-        }, 500);
-    }
-
+    // 🔄 UI 全局更新函數：同步金錢、庫存、產線等級、速度、耐久與自動化狀態
     function updateUI() {
-        updatePrestige();
+        updatePrestige(); 
         document.getElementById('money-val').innerText = `$${Math.floor(game.money).toLocaleString()}`;
         ['wood','stone','iron','core'].forEach(t => {
             document.getElementById(`${t}-val`).innerText = game.inv[t];
-            document.getElementById(`btn-p-${t}`).innerText = cfg[t].buy;
+            const btnP = document.getElementById(`btn-p-${t}`);
+            if(btnP) btnP.innerText = cfg[t].buy;
         });
+
         for(let i=1; i<=5; i++) {
-            const l = game.lines[i];
-            if(game.unlocked[i]) {
+            const l = game.lines[i]; const un = game.unlocked[i];
+            const lockEl = document.getElementById(`lock-${i}`);
+            if(lockEl) lockEl.style.display = un ? 'none' : 'flex';
+            if(un) {
                 document.getElementById(`lv-tag-${i}`).innerText = `Lv.${l.lv}`;
-                document.getElementById(`up-cost-${i}`).innerText = Math.floor((l.lv + 1) * 400 * (l.lv + 1.2));
+                let baseSpeed = (15 - (l.lv * 1.3));
+                let finalSpeed = baseSpeed * (1 - currentPrestige.speed);
+                document.getElementById(`speed-val-${i}`).innerText = Math.max(0.5, finalSpeed).toFixed(1);
+                
+                const upBtn = document.getElementById(`up-btn-${i}`);
+                const cost = Math.floor((l.lv + 1) * 400 * (l.lv + 1.2));
+                if(l.lv < 10) { document.getElementById(`up-cost-${i}`).innerText = `$${cost}`; upBtn.disabled = game.money < cost; }
+                else { document.getElementById(`up-cost-${i}`).innerText = "MAX"; upBtn.disabled = true; }
+                
                 document.getElementById(`dur-fill-${i}`).style.width = `${l.dur}%`;
+                document.getElementById(`repair-btn-${i}`).disabled = game.money < 30 || l.dur === 100;
+                
                 const ab = document.getElementById(`auto-btn-${i}`);
-                if(l.hasAuto) { ab.innerText = l.isAuto ? `🤖 L${i}: 運行` : `🤖 L${i}: 停止`; ab.style.background = l.isAuto ? "#238636" : "#d29922"; }
-                else { ab.innerText = `購買 L${i} 自動化 $500`; ab.disabled = game.money < 500; }
-                if(!l.orders.length) genOrders(i); renderOrders(i);
+                if(ab) {
+                    if(l.hasAuto) { ab.innerText = l.isAuto?`🤖 L${i}: 智能運行`:`🤖 L${i}: 停止`; ab.style.background = l.isAuto?"#238636":"#d29922"; }
+                    else { ab.innerText = `部署 Line ${i} 自動化 ($500)`; ab.disabled = game.money < 500; }
+                }
+                if (!l.orders || l.orders.length === 0) genOrders(i);
+                renderOrders(i);
                 const deliverBtn = document.getElementById(`deliver-btn-${i}`);
-                if (l.selIdx !== -1) {
+                if (l.selIdx !== -1 && l.orders[l.selIdx]) {
                     const o = l.orders[l.selIdx]; const can = game.inv[o.type] >= o.qty;
-                    deliverBtn.innerText = can ? `交付 ${o.qty}x` : `缺少材料`;
+                    deliverBtn.innerText = can ? `交付 ${o.qty} ${cfg[o.type].n}` : `材料不足`;
                     deliverBtn.disabled = !can || l.proc;
                 }
             }
         }
     }
 
-    // 其他邏輯函數保持不變
+    // ⚡ 生產執行邏輯：處理訂單、扣除耐久及計算利潤
+    async function processOrder(id) {
+        const l = game.lines[id]; if(l.proc || l.selIdx === -1) return;
+        const o = l.orders[l.selIdx]; l.proc = true; 
+        game.inv[o.type] -= o.qty; updateUI();
+        const partsToClear = [];
+        for(let i=1; i<=o.qty; i++) {
+            const p = await runPart(id, o.type, i);
+            partsToClear.push(p);
+            l.dur = Math.max(0, l.dur - 2); updateUI();
+        }
+        setTimeout(() => {
+            partsToClear.forEach(p => p.remove());
+            const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
+            game.money += profit;
+            document.getElementById(`delivery-info-${id}`).innerHTML = `<span style="color:#3fb950; font-weight:bold;">✅ 成功交付!</span><br><span style="color:#f2cc60">+$${profit}</span>`;
+            genOrders(id); l.proc = false; l.selIdx = -1; updateUI(); 
+        }, 800);
+    }
+
+    // 📦 零件運動與 QA 檢測動畫：實現零件在輸送帶上的位移與質量判定
+    async function runPart(lId, type, idx) {
+        const part = document.createElement('div');
+        part.className = `part ${cfg[type].c}`; part.innerText = idx;
+        part.style.left = "30px"; part.style.top = "80px";
+        document.getElementById(`line-group-${lId}`).appendChild(part);
+        const qa = document.getElementById(`qa-status-${lId}`);
+        await new Promise(r => setTimeout(r, 50));
+        part.style.left = "270px"; await new Promise(r => setTimeout(r, 600));
+
+        while(true) {
+            let baseSpeed = (15 - (game.lines[lId].lv * 1.3));
+            let timeSec = Math.max(0.5, baseSpeed * (1 - currentPrestige.speed));
+            const bar = document.getElementById(`prog-bar-${lId}`);
+            document.getElementById(`prog-cont-${lId}`).style.visibility = 'visible';
+            bar.style.transition = 'none'; bar.style.width = '100%'; void bar.offsetWidth;
+            bar.style.transition = `width ${timeSec}s linear`; bar.style.width = '0%';
+            let rem = timeSec;
+            const ti = setInterval(() => { rem -= 0.1; document.getElementById(`timer-text-${lId}`).innerText = `${Math.max(0, rem).toFixed(1)}s`; if(rem <=0) clearInterval(ti); }, 100);
+            await new Promise(r => setTimeout(r, timeSec * 1000));
+            document.getElementById(`prog-cont-${lId}`).style.visibility = 'hidden';
+            
+            part.style.left = "580px"; if(qa) { qa.innerText = "⚙️ 檢測中..."; qa.style.color = "#58a6ff"; }
+            await new Promise(r => setTimeout(r, 600));
+
+            let failChance = 0.05 + ((100 - game.lines[lId].dur)/200);
+            let finalFailChance = Math.max(0, failChance - currentPrestige.qa);
+            
+            if(Math.random() < finalFailChance) {
+                qa.innerText = "❌ 不合格"; qa.style.color = "#f85149";
+                part.style.left = "270px"; await new Promise(r => setTimeout(r, 800));
+            } else {
+                qa.innerText = "✅ 合格"; qa.style.color = "#3fb950";
+                part.style.left = "855px"; part.style.top = "85px";
+                await new Promise(r => setTimeout(r, 600));
+                return part;
+            }
+        }
+    }
+
+    // 💰 資源與維護函數
     function buy(t) { if(game.money >= cfg[t].buy) { game.money -= cfg[t].buy; game.inv[t]++; updateUI(); } }
     function unlockLine(id) { if (game.money >= LINE_CONFIGS[id].u) { game.money -= LINE_CONFIGS[id].u; game.unlocked[id] = true; updateUI(); } }
-    function upgradeLine(id) { const c = Math.floor((game.lines[id].lv + 1) * 400 * (game.lines[id].lv + 1.2)); if(game.money >= c) { game.money -= c; game.lines[id].lv++; updateUI(); } }
+    function upgradeLine(id) { 
+        const c = Math.floor((game.lines[id].lv + 1) * 400 * (game.lines[id].lv + 1.2)); 
+        if(game.money >= c) { game.money -= c; game.lines[id].lv++; updateUI(); } 
+    }
     function repair(id) { if (game.money >= 30) { game.money -= 30; game.lines[id].dur = 100; updateUI(); } }
-    function toggleAuto(id) { const l = game.lines[id]; if(!l.hasAuto && game.money >= 500) { game.money -= 500; l.hasAuto = true; l.isAuto = true; } else if(l.hasAuto) { l.isAuto = !l.isAuto; } updateUI(); }
-    function toggleAdmin() { const p = document.getElementById('admin-panel'); if (p.style.display !== 'flex') { if (prompt("Code?") === "0000") p.style.display = 'flex'; } else p.style.display = 'none'; }
-    function inject(t, a) { if(t === 'money') game.money += a; else game.inv[t] += a; updateUI(); }
-    function genOrders(id) { const ts=['wood','stone','iron','core']; game.lines[id].orders=[]; for(let i=0;i<3;i++) game.lines[id].orders.push({type:ts[Math.floor(Math.random()*4)], qty:Math.floor(Math.random()*5)+1}); }
-    function renderOrders(id) { 
-        const list = document.getElementById(`order-list-${id}`); list.innerHTML = '';
+    function toggleAuto(id) { 
+        const l = game.lines[id]; if(!l.hasAuto && game.money >= 500) { game.money -= 500; l.hasAuto = true; l.isAuto = true; } 
+        else if(l.hasAuto) { l.isAuto = !l.isAuto; } updateUI(); 
+    }
+
+    // 🔑 管理模式觸發與驗證
+    function secretTrigger() {
+        game.adminClicks++;
+        if (game.adminClicks >= 5) {
+            game.adminClicks = 0;
+            toggleAdmin();
+        } else {
+            togglePrestigeModal();
+        }
+    }
+    
+    function toggleAdmin() {
+        const p = document.getElementById('admin-panel');
+        if (p.style.display !== 'flex') {
+            let pass = prompt("請輸入管理員授權代碼:", "");
+            if (pass === "0000") {
+                ['wood','stone','iron','core'].forEach(t => {
+                    document.getElementById(`edit-buy-${t}`).value = cfg[t].buy;
+                    document.getElementById(`edit-sell-${t}`).value = cfg[t].r;
+                });
+                updateAdminPrestigeUI();
+                p.style.display = 'flex';
+                addLog("🔑 管理模式已開啟", "#bc8cff");
+            } else if (pass !== null) {
+                alert("代碼錯誤！");
+            }
+        } else { p.style.display = 'none'; }
+    }
+    
+    function inject(t, a) { if(t==='money') game.money+=a; else game.inv[t]+=a; updateUI(); }
+
+    // 📋 訂單系統：生成與渲染
+    function genOrders(id) {
+        const ts = ['wood', 'stone', 'iron', 'core']; game.lines[id].orders = [];
+        for(let i=0; i<3; i++) { game.lines[id].orders.push({ type: ts[Math.floor(Math.random()*4)], qty: Math.floor(Math.random()*5) + 1 }); }
+    }
+    function renderOrders(id) {
+        const list = document.getElementById(`order-list-${id}`); if(!list) return;
+        list.innerHTML = '';
         game.lines[id].orders.forEach((o, idx) => {
             const d = document.createElement('div'); d.className = `order-card ${game.lines[id].selIdx === idx ? 'selected' : ''}`;
-            d.innerHTML = `<b>${o.qty}x ${cfg[o.type].n}</b> <span style="float:right">$${Math.floor(o.qty*cfg[o.type].r*LINE_CONFIGS[id].m*(1+currentPrestige.bonus))}</span>`;
+            const totalProfit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
+            d.innerHTML = `<b>${o.qty}x ${cfg[o.type].n}</b> <span style="float:right; color:#f2cc60">+$${totalProfit}</span>`;
             d.onclick = () => { if(!game.lines[id].proc) { game.lines[id].selIdx = idx; updateUI(); } };
             list.appendChild(d);
         });
     }
-    function resetGame() { if(confirm("重置?")) { localStorage.clear(); location.reload(); } }
-    function secretTrigger() { game.adminClicks++; if(game.adminClicks > 10) toggleAdmin(); }
 
-    initFloor();
-    updateUI();
-    setInterval(() => { for(let i=1; i<=5; i++) { if(game.unlocked[i] && game.lines[i].isAuto && !game.lines[i].proc) autoCycle(i); } }, 2000);
+    // 💾 存檔與讀取
+    function saveGame() { 
+        game.prices = JSON.parse(JSON.stringify(cfg));
+        game.customPrestige = JSON.parse(JSON.stringify(PRESTIGE_LEVELS));
+        localStorage.setItem('factory_v12_3_save', JSON.stringify(game)); 
+        addLog("💾 系統自動存檔完成", "#58a6ff"); 
+    }
+    function loadGame() { 
+        const s = localStorage.getItem('factory_v12_3_save'); 
+        if(s) { 
+            const loaded = JSON.parse(s); Object.assign(game, loaded);
+            if(game.prices) cfg = JSON.parse(JSON.stringify(game.prices));
+            if(game.customPrestige) PRESTIGE_LEVELS = JSON.parse(JSON.stringify(game.customPrestige));
+            for(let i=1; i<=5; i++) game.lines[i].proc = false;
+        } updateUI(); 
+    }
+    function resetGame() { if(confirm("確定重置嗎？")) { localStorage.clear(); location.reload(); } }
 
+    // 🚀 啟動遊戲引擎
+    initFloor(); loadGame();
+    setInterval(() => { for(let i=1; i<=5; i++) { if(game.unlocked[i] && game.lines[i].isAuto && !game.lines[i].proc) autoCycle(i); } }, 1500);
+
+    // 🤖 自動化運行邏輯：自動挑選高利潤訂單並補貨
     async function autoCycle(id) {
-        const l = game.lines[id]; if (!l.orders.length) return;
-        l.selIdx = 0; const o = l.orders[0];
+        const l = game.lines[id]; if (!l.orders || l.orders.length === 0) return;
+        let bestIdx = 0; let maxP = -1;
+        l.orders.forEach((o, idx) => { let p = o.qty * cfg[o.type].r; if(p > maxP) { maxP = p; bestIdx = idx; } });
+        l.selIdx = bestIdx; const o = l.orders[l.selIdx];
         if (game.inv[o.type] < o.qty) {
-            const cost = (o.qty - game.inv[o.type]) * cfg[o.type].buy;
-            if(game.money >= cost) { game.money -= cost; game.inv[o.type] = o.qty; updateUI(); } else return;
+            const need = o.qty - game.inv[o.type]; const cost = need * cfg[o.type].buy;
+            if(game.money >= cost) { game.money -= cost; game.inv[o.type] += need; updateUI(); } else return;
         }
         processOrder(id);
     }
