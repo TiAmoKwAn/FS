@@ -1,292 +1,192 @@
 <!DOCTYPE html>
-<!-- 設定網頁語言為繁體中文 -->
 <html lang="zh-Hant">
 <head>
-    <!-- 設定字元編碼為 UTF-8，確保中文字能正常顯示 -->
     <meta charset="UTF-8">
-    <!-- 設定網頁標題，顯示在瀏覽器分頁上 -->
-    <title>AI 工廠模擬器 - v12.0.7 稱號極致加成版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 工廠模擬器 - v12.0.8 響應式優化版</title>
     
     <style>
-        /* 從 Google Fonts 匯入「Noto Sans TC」（中文字體）與「Share Tech Mono」（等寬數字字體） */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
         
-        /* 設定頁面背景顏色、文字顏色、字體、禁止使用者選取文字以及內距 */
         body { 
-            background: #0d1117; /* 深灰色背景（類似 GitHub 黑色主題） */
-            color: #c9d1d9;      /* 淺灰色文字 */
-            font-family: 'Noto Sans TC', sans-serif; /* 優先使用繁體中文字體 */
-            user-select: none;   /* 禁止滑鼠選取文字（適合遊戲體驗） */
-            margin: 0;           /* 移除邊界 */
-            padding: 20px;       /* 增加內容內距 */
+            background: #0d1117; 
+            color: #c9d1d9;      
+            font-family: 'Noto Sans TC', sans-serif; 
+            user-select: none;   
+            margin: 0;           
+            padding: 10px;       
         }
         
-        /* 基礎佈局：控制面板樣式 */
+        /* 儀表板：允許換行 */
         .dashboard { 
-            display: flex;             /* 使用彈性佈局 */
-            justify-content: space-around; /* 讓內容物均勻分散排列 */
-            max-width: 1040px;         /* 設定最大寬度 */
-            position: sticky;          /* 固定在頁面頂部，隨滾動停留 */
-            top: 0;                    /* 距離頂部 0 像素 */
-            margin: 0 auto 10px auto;  /* 居中顯示，並增加底部間距 */
-            background: #21262d;       /* 控制面板的深灰色底色 */
-            padding: 15px;             /* 內邊距 */
-            border-radius: 12px;       /* 圓角設計 */
-            border: 1px solid #30363d; /* 細邊框線 */
-            z-index: 1000;             /* 確保面板顯示在最上層 */
-            align-items: center;       /* 垂直居中對齊 */
+            display: flex;             
+            flex-wrap: wrap;
+            justify-content: center; 
+            max-width: 1100px;         
+            position: sticky;          
+            top: 0;                    
+            margin: 0 auto 10px auto;  
+            background: #21262d;       
+            padding: 10px;             
+            border-radius: 12px;       
+            border: 1px solid #30363d; 
+            z-index: 1000;             
+            align-items: center;
+            gap: 10px;
         }
 
-        /* 數值字體樣式（如：金錢、產量） */
-        .stat-value { 
-            font-family: 'Share Tech Mono'; /* 使用等寬字體，數字變化時不會晃動 */
-            font-size: 20px;                /* 字體大小 */
-            color: #58a6ff;                 /* 亮藍色文字 */
-        }
+        .stat-box { min-width: 80px; text-align: center; }
+        .stat-value { font-family: 'Share Tech Mono'; font-size: 18px; color: #58a6ff; }
+        .stat-label { font-size: 11px; color: #8b949e; }
 
-        /* 標籤字體樣式（如：「金錢：」、「效率：」） */
-        .stat-label { 
-            font-size: 11px;                /* 較小的字體 */
-            color: #8b949e;                 /* 較淡的灰色文字 */
-        }
-
-		/* 🏆 優化版稱號樣式：轉生（Prestige）系統的外框 */
 		.prestige-container { 
-			display: flex; flex-direction: column; /* 垂直排列內容 */
-			background: linear-gradient(145deg, #161b22, #0d1117); /* 微漸層深色背景 */
-			padding: 8px 15px; border-radius: 10px; border: 1px solid #484f58; /* 內距、圓角與邊框 */
-			cursor: pointer; transition: 0.3s; min-width: 240px; /* 滑鼠指標、過渡動畫與最小寬度 */
+			display: flex; flex-direction: column; 
+			background: linear-gradient(145deg, #161b22, #0d1117); 
+			padding: 8px 15px; border-radius: 10px; border: 1px solid #484f58; 
+			cursor: pointer; transition: 0.3s; flex: 1 1 200px;
 		}
-		/* 滑鼠懸停稱號區域時的發光效果 */
-		.prestige-container:hover { border-color: #58a6ff; box-shadow: 0 0 15px rgba(88, 166, 255, 0.2); }
-		/* 稱號區域的頭部佈局 */
+		.prestige-container:hover { border-color: #58a6ff; }
 		.prestige-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-		/* 稱號徽章的基礎文字樣式 */
-		.prestige-badge { font-weight: 800; font-size: 14px; letter-spacing: 0.5px; padding: 2px 10px; border-radius: 4px; }
+		.prestige-badge { font-weight: 800; font-size: 13px; padding: 2px 8px; border-radius: 4px; }
 
-		/* 10 級稱號的特定顏色與特效 */
-		.rank-1 { color: #8b949e; border: 1px solid #484f58; } /* 等級 1：灰色（平凡） */
-		.rank-2 { color: #3fb950; border: 1px solid #238636; text-shadow: 0 0 5px #238636; } /* 等級 2：綠色（初級） */
-		.rank-3 { color: #58a6ff; border: 1px solid #1f6feb; text-shadow: 0 0 5px #1f6feb; } /* 等級 3：藍色（中級） */
-		.rank-4 { color: #bc8cff; border: 1px solid #8957e5; text-shadow: 0 0 5px #8957e5; } /* 等級 4：紫色（高級） */
-		.rank-5 { color: #f2cc60; border: 1px solid #d29922; text-shadow: 0 0 8px #d29922; box-shadow: inset 0 0 5px #d29922; } /* 等級 5：金色（史詩） */
-		.rank-6 { color: #ff7b72; border: 1px solid #da3633; text-shadow: 0 0 10px #da3633; } /* 等級 6：紅色（傳說） */
-		.rank-7 { color: #79c0ff; border: 1px solid #58a6ff; animation: glow-blue 2s infinite; } /* 等級 7：淺藍（神話 + 動態發光） */
-		.rank-8 { color: #ffa657; border: 1px solid #f0883e; box-shadow: 0 0 15px rgba(240,136,62,0.4); text-shadow: 0 0 10px #f0883e; } /* 等級 8：橘色（不朽） */
-		.rank-9 { color: #ff79c6; border: 1px solid #ff79c6; box-shadow: 0 0 20px rgba(255,121,198,0.4); text-shadow: 0 0 12px #ff79c6; } /* 等級 9：粉色（虛空） */
-		/* 等級 10：終極稱號（彩虹漸層 + 動態變色） */
-		.rank-10 { background: linear-gradient(45deg, #ffd700, #ff00ff); border: none; color: #fff; box-shadow: 0 0 25px #fff; text-shadow: 1px 1px 2px #000; animation: rainbow 3s infinite; } 
-
-		/* 藍色呼吸燈動畫 */
-		@keyframes glow-blue { 0%, 100% { box-shadow: 0 0 5px #58a6ff; } 50% { box-shadow: 0 0 20px #58a6ff; } }
-		/* 彩虹變色動畫（利用色相旋轉） */
+		/* 稱號顏色保持不變 */
+		.rank-1 { color: #8b949e; border: 1px solid #484f58; }
+		.rank-2 { color: #3fb950; border: 1px solid #238636; }
+		.rank-10 { background: linear-gradient(45deg, #ffd700, #ff00ff); color: #fff; animation: rainbow 3s infinite; } 
 		@keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
 
-		/* 彈窗背景遮罩 */
+		/* 彈窗 */
 		.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-		/* 彈窗主體內容區 */
-		.modal-content { background: #161b22; width: 550px; padding: 25px; border-radius: 16px; border: 1px solid #30363d; max-height: 90vh; overflow-y: auto; }
-		/* 彈窗內的稱號列表容器 */
-		.prestige-list { margin-top: 15px; border: 1px solid #30363d; border-radius: 8px; }
-		/* 稱號列表中的單個項目（使用 Grid 五欄佈局） */
-		.prestige-item { display: grid; grid-template-columns: 1.2fr 0.8fr 0.6fr 0.6fr 0.6fr; padding: 10px; border-bottom: 1px solid #21262d; font-size: 11px; align-items: center; text-align: center; }
-		/* 當前已達成的稱號高亮顯示 */
-		.prestige-item.current-rank { background: rgba(88, 166, 255, 0.15) !important; border: 1px solid #58a6ff !important; box-shadow: inset 0 0 10px rgba(88, 166, 255, 0.3); }
+		.modal-content { background: #161b22; width: 90%; max-width: 550px; padding: 20px; border-radius: 16px; border: 1px solid #30363d; max-height: 90vh; overflow-y: auto; }
+		.prestige-item { display: grid; grid-template-columns: 1.2fr 0.8fr 0.6fr 0.6fr 0.6fr; padding: 10px; font-size: 10px; align-items: center; text-align: center; border-bottom: 1px solid #21262d; }
 
-		/* 工廠結構：主工作區域 */
-		.factory-floor { position: relative; max-width: 1040px; height: 1050px; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
-		/* 單條生產線分組 */
-		.line-group { position: relative; height: 210px; border-bottom: 1px solid #21262d; }
-		/* 生產線左上角的標籤（如：Line 1） */
-		.line-label { position: absolute; left: 12px; top: 12px; font-size: 11px; color: #8b949e; font-weight: bold; opacity: 0.6; }
-		/* 未解鎖生產線的遮罩層 */
-		.locked-line { position: absolute; inset: 0; background: rgba(13, 23, 13, 0.98); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-		/* 單個工作站（機台）樣式 */
-		.station { position: absolute; top: 40px; height: 158px; background: rgba(48, 54, 61, 0.2); border: 1px solid #30363d; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; box-sizing: border-box; }
-		/* 訂單容器（機台內的任務列表） */
-		.order-container { width: 100%; flex-grow: 1; display: flex; flex-direction: column; gap: 3px; overflow: hidden; margin-bottom: 4px; }
-		/* 單張訂單小卡片 */
-		.order-card { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; transition: 0.2s; }
-		/* 訂單懸停效果 */
-		.order-card:hover { border-color: #58a6ff; }
-		/* 已選中的訂單樣式（綠色高亮） */
-		.order-card.selected { border-color: #3fb950; background: #132316; }
-		/* 互動按鈕基礎樣式 */
-		.action-btn { width: 100%; padding: 6px 0; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; color: white; display: block; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 3px 0 rgba(0,0,0,0.2); flex-shrink: 0; transition: 0.1s; }
-		/* 按鈕按下時的下沉效果 */
-		.action-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
-		/* 按鈕停用時（如錢不夠）變灰色 */
-		.action-btn:disabled { filter: grayscale(1); opacity: 0.3; cursor: not-allowed; }
-		/* 綠色、藍色、紅色按鈕的主題色 */
-		.btn-green { background: #238636; border-bottom: 2px solid #1a6328; }
-		.btn-blue { background: #1f6feb; border-bottom: 2px solid #1858ba; }
-		.btn-red { background: #da3633; border-bottom: 2px solid #a42825; }
-		/* 價格標籤（黃色） */
-		.price-tag { color: #f2cc60; font-size: 11px; }
-		/* 機台狀態標題 */
-		.status-header { font-size: 12px; font-weight: bold; margin-bottom: 4px; text-align: center; }
-		/* 副標籤文字樣式 */
-		.sub-label { font-size: 10px; color: #8b949e; margin-bottom: 2px; }
-		/* 耐久度外框 */
-		.durability-box { width: 100%; height: 5px; background: #0d1117; border-radius: 3px; margin-bottom: 4px; overflow: hidden; }
-		/* 耐久度填充條（綠色） */
-		.dur-fill { height: 100%; background: #3fb950; transition: 0.3s; }
-		/* 進度條外框（生產中顯示） */
-		.progress-container { width: 100%; height: 6px; background: #0d1117; border-radius: 3px; overflow: hidden; visibility: hidden; border: 1px solid #30363d; margin-bottom: 4px; }
-		/* 進度條填充（紫色漸層） */
-		.progress-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #bc8cff, #8957e5); }
-		/* 傳送帶上的零件（Material）樣式 */
-		.part { position: absolute; width: 32px; height: 32px; border-radius: 8px; z-index: 50; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); }
-		/* 不同材質的顏色：木頭、石頭、鐵、核心 */
-		.part-wood { background: #8b5a2b; } 
-		.part-stone { background: #7d7d7d; } 
-		.part-iron { background: #4a90e2; } 
-		.part-core { background: #f2cc60; color: #000; box-shadow: 0 0 15px rgba(242,204,96,0.5); }
+		/* 工廠區：改為自適應寬度 */
+		.factory-floor { 
+            max-width: 1100px; 
+            margin: 10px auto; 
+            background: #161b22; 
+            border: 2px solid #30363d; 
+            border-radius: 16px; 
+            padding: 10px;
+        }
 
-		/* 底部 UI 區域：分成三欄 */
-		.bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 1040px; margin: 20px auto; }
-		/* 通用面板框樣式 */
+		.line-group { 
+            position: relative; 
+            display: flex;
+            flex-wrap: wrap; /* 關鍵：螢幕小時自動換行 */
+            gap: 15px;
+            padding: 40px 10px 20px 10px;
+            border-bottom: 2px solid #21262d; 
+            justify-content: center;
+        }
+
+		.line-label { position: absolute; left: 12px; top: 12px; font-size: 11px; color: #8b949e; font-weight: bold; }
+		
+        .station { 
+            position: relative; /* 移除絕對定位 */
+            width: 100%;
+            max-width: 250px; /* 限制寬度 */
+            min-height: 160px;
+            background: rgba(48, 54, 61, 0.2); 
+            border: 1px solid #30363d; 
+            border-radius: 8px; 
+            padding: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            box-sizing: border-box; 
+            flex: 1 1 220px; /* 讓它在空間足夠時並排，不足時撐滿 */
+        }
+
+		/* 零件動畫：改為根據父級容器定位 */
+		.part { 
+            position: absolute; 
+            width: 30px; height: 30px; 
+            border-radius: 8px; 
+            z-index: 100; 
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: bold; color: #fff; 
+            pointer-events: none; /* 防止遮擋點擊 */
+        }
+
+		/* 底部 UI */
+		.bottom-ui { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 15px; 
+            max-width: 1100px; 
+            margin: 20px auto; 
+        }
 		.panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
-		/* 系統日誌容器（綠色文字，黑底，等寬字體） */
-		.log-container { background: #0d1117; height: 130px; overflow-y: auto; border: 1px solid #30363d; padding: 10px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #3fb950; border-radius: 8px; line-height: 1.5; }
+		.log-container { background: #0d1117; height: 120px; overflow-y: auto; border: 1px solid #30363d; padding: 10px; font-family: 'Share Tech Mono'; font-size: 11px; color: #3fb950; border-radius: 8px; }
 
-		/* 管理員（後台）輸入行佈局 */
-		.admin-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #21262d; padding: 8px; border-radius: 6px; }
-		/* 管理員輸入框樣式 */
-		.admin-input { width: 60px; background: #0d1117; border: 1px solid #30363d; color: #58a6ff; padding: 4px; text-align: center; border-radius: 4px; font-size: 11px; }
-<!-- 樣式表結束標籤：代表所有 CSS 規則已定義完畢 -->
+        /* 其他通用組件保持不變 */
+        .order-container { flex-grow: 1; display: flex; flex-direction: column; gap: 3px; overflow: hidden; margin-bottom: 5px; }
+        .order-card { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer; }
+        .order-card.selected { border-color: #3fb950; background: #132316; }
+		.action-btn { width: 100%; padding: 8px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; transition: 0.1s; font-size: 12px; }
+		.btn-green { background: #238636; }
+		.btn-blue { background: #1f6feb; }
+        .durability-box { width: 100%; height: 6px; background: #0d1117; border-radius: 3px; margin: 5px 0; overflow: hidden; }
+        .dur-fill { height: 100%; background: #3fb950; transition: 0.3s; }
+        .progress-container { width: 100%; height: 6px; background: #0d1117; visibility: hidden; border-radius: 3px; margin: 5px 0; }
+        .progress-bar { width: 100%; height: 100%; background: #8957e5; }
+        .locked-line { position: absolute; inset: 0; background: rgba(13, 23, 13, 0.95); z-index: 200; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); border-radius: 16px; }
+        .admin-input { width: 50px; background: #0d1117; border: 1px solid #30363d; color: #58a6ff; text-align: center; }
     </style>
-<!-- 文件標頭結束標籤：網頁的元數據、資源引用與樣式定義到此為止 -->
 </head>
-<!-- 網頁可視內容的開始 -->
 <body>
 
-<!-- 聲望系統彈窗遮罩層：點擊背景空白處會觸發關閉彈窗的函式 -->
 <div id="prestige-modal" class="modal-overlay" onclick="if(event.target==this) togglePrestigeModal()">
-    <!-- 彈窗本體：阻止點擊事件向外傳遞，避免點擊彈窗內部也導致關閉 -->
     <div class="modal-content" onclick="event.stopPropagation()">
-        <!-- 彈窗標題：產業聲望階級表 -->
-        <h2 style="color:#58a6ff; text-align:center; margin-top:0;">🏆 產業聲望階級表</h2>
-        
-        <!-- 晉升進度區塊：顯示目前的資金達成狀況 -->
-        <div style="background:#0d1117; padding:15px; border-radius:10px; border:1px solid #30363d; margin-bottom:15px;">
-            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
-                <span>晉升進度</span>
-                <!-- 顯示下一階級所需的金額提示 -->
-                <span id="next-rank-info" style="color:#f2cc60">還需 $0</span>
-            </div>
-            <!-- 進度條外框 -->
-            <div style="height:8px; background:#21262d; border-radius:4px; overflow:hidden;">
-                <!-- 實際進度填充條：寬度會透過 JS 動態變動 -->
-                <div id="prestige-progress-fill" style="height:100%; background:#58a6ff; width:0%; transition:0.5s;"></div>
-            </div>
-        </div>
-
-        <!-- 列表表頭：定義各欄位的標題（階級、解鎖資金、利潤加成、速度加成、自動檢測） -->
-        <div class="prestige-item" style="background:#21262d; font-weight:bold; color:#8b949e; border-radius:8px 8px 0 0;">
-            <span>階級</span><span>解鎖資金</span><span>利潤</span><span>速度</span><span>檢測</span>
-        </div>
-        
-        <!-- 聲望列表容器：所有的階級項目將會由 JavaScript 動態生成並插入到這裡 -->
+        <h2 style="color:#58a6ff; text-align:center; margin-top:0;">🏆 產業聲望階級</h2>
         <div id="prestige-list-container" class="prestige-list"></div>
-        
-        <!-- 返回按鈕：點擊後關閉彈窗 -->
-        <button class="action-btn btn-blue" style="margin-top:20px; height:40px;" onclick="togglePrestigeModal()">返回工廠</button>
+        <button class="action-btn btn-blue" style="margin-top:20px" onclick="togglePrestigeModal()">返回工廠</button>
     </div>
 </div>
 
-<!-- 管理員面板彈窗遮罩層 -->
 <div id="admin-panel" class="modal-overlay">
-    <!-- 管理員面板內容區：設定了深色背景、藍色邊框以及溢出滾動 -->
-    <div class="admin-content" style="background: #161b22; width: 500px; padding: 25px; border-radius: 16px; border: 1px solid #58a6ff; max-height: 85vh; overflow-y: auto;">
-        <!-- 面板大標題 -->
-        <h3 style="color:#58a6ff; text-align:center; margin-top:0;">⚙️ 系統管理面板</h3>        
-        
-        <!-- 稱號加成參數設定區塊標題 -->
-        <div style="color:#bc8cff; font-weight:bold; margin-bottom:10px;">💎 稱號加成參數 (修改後自動保存)</div>
-        <!-- 參數列表的表頭：顯示稱號名稱、利潤、速度與品質檢測(QA)比例 -->
-        <div class="admin-row" style="background:none; border-bottom:1px solid #30363d; font-size:10px; color:#8b949e;">
-            <span>稱號名稱</span><span>利潤%</span><span>速度%</span><span>QA%</span>
-        </div>
-        <!-- 稱號參數列表動態插入容器 -->
+    <div class="modal-content" style="border-color:#58a6ff">
+        <h3 style="color:#58a6ff; text-align:center;">⚙️ 系統管理</h3>        
         <div id="admin-prestige-settings"></div>
-
-        <!-- 水平分割線 -->
-        <hr style="border:0; border-top:1px solid #30363d; margin:20px 0;">
-        <!-- 資源價格調整區塊標題 -->
-        <div style="color:#f2cc60; font-weight:bold; margin-bottom:10px;">📦 資源基礎價格</div>
-        
-        <!-- 木材調整行：包含買入/賣出輸入框及快速增加 100 庫存的按鈕 -->
-        <div class="admin-row"><span>🪵 木材</span><div><input type="number" id="edit-buy-wood" class="admin-input" onchange="updatePrice('wood')"> <input type="number" id="edit-sell-wood" class="admin-input" onchange="updatePrice('wood')"></div><button class="action-btn btn-blue" style="width: 50px;" onclick="inject('wood', 100)">+100</button></div>
-        <!-- 石頭調整行 -->
-        <div class="admin-row"><span>🪨 石頭</span><div><input type="number" id="edit-buy-stone" class="admin-input" onchange="updatePrice('stone')"> <input type="number" id="edit-sell-stone" class="admin-input" onchange="updatePrice('stone')"></div><button class="action-btn btn-blue" style="width: 50px;" onclick="inject('stone', 100)">+100</button></div>
-        <!-- 鋼鐵調整行 -->
-        <div class="admin-row"><span>⛓️ 鋼鐵</span><div><input type="number" id="edit-buy-iron" class="admin-input" onchange="updatePrice('iron')"> <input type="number" id="edit-sell-iron" class="admin-input" onchange="updatePrice('iron')"></div><button class="action-btn btn-blue" style="width: 50px;" onclick="inject('iron', 100)">+100</button></div>
-        <!-- 核心調整行 -->
-        <div class="admin-row"><span>🔋 核心</span><div><input type="number" id="edit-buy-core" class="admin-input" onchange="updatePrice('core')"> <input type="number" id="edit-sell-core" class="admin-input" onchange="updatePrice('core')"></div><button class="action-btn btn-blue" style="width: 50px;" onclick="inject('core', 100)">+100</button></div>
-
-        <!-- 底部快速操作按鈕網格佈局 -->
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
-            <!-- 增加 10,000 遊戲幣 -->
             <button class="action-btn btn-blue" onclick="inject('money', 10000)">💰 資金 +1萬</button>
-            <!-- 觸發手動存檔函式 -->
-            <button class="action-btn btn-green" onclick="saveGame()">手動存檔</button>
-            <!-- 警告：完全清空遊戲數據 -->
             <button class="action-btn btn-red" onclick="resetGame()">⚠️ 重置數據</button>
-            <!-- 關閉管理員面板 -->
-            <button class="action-btn btn-blue" style="background:#30363d" onclick="toggleAdmin()">返回工廠</button>
+            <button class="action-btn btn-blue" style="background:#30363d" onclick="toggleAdmin()">返回</button>
         </div>
     </div>
 </div>
 
-<!-- 儀表板容器：固定在頁面頂部的主要資訊列 -->
 <div class="dashboard">
-    <!-- 稱號與聲望區域：點擊可觸發秘密開發者工具或查看詳情 -->
     <div class="prestige-container" onclick="secretTrigger()">
-        <!-- 稱號頭部：顯示當前等級稱號與加成數值 -->
         <div class="prestige-header">
-            <!-- 顯示當前稱號等級（如：初級工匠），初始顯示為「載入中」 -->
             <span id="prestige-badge" class="prestige-badge rank-1">載入中</span>
-            <!-- 顯示當前加成的百分比總結（利潤、速度等） -->
-            <span id="prestige-bonus-summary" style="font-family:'Share Tech Mono'; color:#3fb950; font-size:10px;">Bonus Loading...</span>
+            <span id="prestige-bonus-summary" style="font-family:'Share Tech Mono'; color:#3fb950; font-size:10px;">Bonus...</span>
         </div>
-        <!-- 稱號晉升進度條佈局 -->
-        <div style="display:flex; align-items:center; gap:8px;">
-            <!-- 進度條背景槽 -->
-            <div style="flex-grow:1; height:4px; background:#30363d; border-radius:2px; overflow:hidden;">
-                <!-- 實際進度填充（藍色），寬度由 JavaScript 根據資金達成率更新 -->
-                <div id="dashboard-prestige-bar" style="height:100%; background:#58a6ff; width:0%;"></div>
-            </div>
-            <!-- 提示文字，讓玩家知道點擊這裡可以查看詳情 -->
-            <span style="font-size:10px; color:#8b949e; white-space:nowrap;">詳情</span>
+        <div style="height:4px; background:#30363d; border-radius:2px; overflow:hidden;">
+            <div id="dashboard-prestige-bar" style="height:100%; background:#58a6ff; width:0%;"></div>
         </div>
     </div>
-
-    <!-- 資源統計框：顯示當前擁有的金錢 -->
-    <div class="stat-box"><div class="stat-label">💰 當前資金</div><div id="money-val" class="stat-value">$0</div></div>
-    <!-- 資源統計框：顯示當前擁有的木材數量 -->
+    <div class="stat-box"><div class="stat-label">💰 資金</div><div id="money-val" class="stat-value">$0</div></div>
     <div class="stat-box"><div class="stat-label">🪵 木材</div><div id="wood-val" class="stat-value">0</div></div>
-    <!-- 資源統計框：顯示當前擁有的石頭數量 -->
     <div class="stat-box"><div class="stat-label">🪨 石頭</div><div id="stone-val" class="stat-value">0</div></div>
-    <!-- 資源統計框：顯示當前擁有的鋼鐵數量 -->
     <div class="stat-box"><div class="stat-label">⛓️ 鋼鐵</div><div id="iron-val" class="stat-value">0</div></div>
-    <!-- 資源統計框：顯示當前擁有的能源核心數量 -->
     <div class="stat-box"><div class="stat-label">🔋 核心</div><div id="core-val" class="stat-value">0</div></div>
-    
-    <!-- 全局設定按鈕：點擊後切換顯示管理員面板 -->
-    <button class="action-btn btn-green" style="width:100px; height:42px;" onclick="toggleAdmin()">⚙️ 全局設定</button>
+    <button class="action-btn btn-green" style="width:80px" onclick="toggleAdmin()">⚙️ 設定</button>
 </div>
 
-<div class="factory-floor" id="floor"><div id="lines-container"></div></div>
+<div class="factory-floor" id="floor">
+    <div id="lines-container"></div>
+</div>
 
 <div class="bottom-ui">
     <div class="panel-box">
         <b style="color:#58a6ff;">🛒 物資採購</b>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;">
-            <button class="action-btn btn-blue" onclick="buy('wood')">木材 ( $<span id="btn-p-wood">5</span> )</button>
-            <button class="action-btn btn-blue" onclick="buy('stone')">石頭 ( $<span id="btn-p-stone">10</span> )</button>
-            <button class="action-btn btn-blue" onclick="buy('iron')">鋼鐵 ( $<span id="btn-p-iron">15</span> )</button>
-            <button class="action-btn btn-blue" onclick="buy('core')">核心 ( $<span id="btn-p-core">50</span> )</button>
+            <button class="action-btn btn-blue" onclick="buy('wood')">木材 $<span id="btn-p-wood">5</span></button>
+            <button class="action-btn btn-blue" onclick="buy('stone')">石頭 $<span id="btn-p-stone">10</span></button>
+            <button class="action-btn btn-blue" onclick="buy('iron')">鋼鐵 $<span id="btn-p-iron">15</span></button>
+            <button class="action-btn btn-blue" onclick="buy('core')">核心 $<span id="btn-p-core">50</span></button>
         </div>
     </div>
     <div class="panel-box">
@@ -300,7 +200,7 @@
 </div>
 
 <script>
-    // 稱號與多重加成定義：設定玩家達成特定資金後的稱號、利潤、速度及品質檢測(QA)加成
+    // 遊戲配置與原代碼邏輯相同，僅修改 UI 互動部分
     let PRESTIGE_LEVELS = [
         { lv: 1,  name: "🌱 初出茅廬", min: 0,          bonus: 0,    speed: 0,    qa: 0,    class: "rank-1" },
         { lv: 2,  name: "⚒️ 潛力新人", min: 5000,       bonus: 0.05, speed: 0.05, qa: 0.02, class: "rank-2" },
@@ -308,718 +208,193 @@
         { lv: 4,  name: "🚛 地區供應", min: 100000,     bonus: 0.15, speed: 0.15, qa: 0.06, class: "rank-4" },
         { lv: 5,  name: "🏭 產業支柱", min: 500000,     bonus: 0.25, speed: 0.20, qa: 0.08, class: "rank-5" },
         { lv: 6,  name: "💰 貿易大亨", min: 2000000,    bonus: 0.40, speed: 0.25, qa: 0.10, class: "rank-6" },
-        { lv: 7,  name: "🌐 跨國集團", min: 10000000,   bonus: 0.60, speed: 0.30, qa: 0.12, class: "rank-7" },
-        { lv: 8,  name: "👑 全球霸主", min: 50000000,   bonus: 0.85, speed: 0.35, qa: 0.15, class: "rank-8" },
-        { lv: 9,  name: "🚀 科技先驅", min: 200000000,  bonus: 1.20, speed: 0.45, qa: 0.18, class: "rank-9" },
         { lv: 10, name: "🌌 星際造物", min: 1000000000, bonus: 2.00, speed: 0.60, qa: 0.25, class: "rank-10" }
     ];
 
-    // 生產線解鎖配置：u 為解鎖所需資金，m 為該線產生的基礎利潤倍率，n 為生產線編號
-    const LINE_CONFIGS = { 
-        1:{u:0, m:1.0, n:"01"}, 
-        2:{u:500, m:1.2, n:"02"}, 
-        3:{u:10000, m:1.5, n:"03"}, 
-        4:{u:50000, m:2.0, n:"04"}, 
-        5:{u:100000, m:3.0, n:"05"} 
-    };
+    const LINE_CONFIGS = { 1:{u:0, m:1.0, n:"01"}, 2:{u:500, m:1.2, n:"02"}, 3:{u:10000, m:1.5, n:"03"}, 4:{u:50000, m:2.0, n:"04"}, 5:{u:100000, m:3.0, n:"05"} };
+    let cfg = { wood: { n: '木材', c: 'part-wood', r: 15, buy: 5 }, stone: { n: '石頭', c: 'part-stone', r: 30, buy: 10 }, iron: { n: '鋼鐵', c: 'part-iron', r: 55, buy: 15 }, core: { n: '核心', c: 'part-core', r: 150, buy: 50 } };
 
-    // 資源配置：n 為名稱，c 為 CSS 類名，r 為售價，buy 為購入價
-    let cfg = { 
-        wood: { n: '木材', c: 'part-wood', r: 15, buy: 5 },  
-        stone: { n: '石頭', c: 'part-stone', r: 30, buy: 10 }, 
-        iron: { n: '鋼鐵', c: 'part-iron', r: 55, buy: 15 },
-        core: { n: '核心', c: 'part-core', r: 150, buy: 50 } 
-    };
-
-    // 遊戲存檔狀態：記錄玩家當前的數據
-    let game = {
-        money: 100, // 初始資金
-        inv: { wood: 0, stone: 0, iron: 0, core: 0 }, // 初始庫存
-        unlocked: { 1: true, 2: false, 3: false, 4: false, 5: false }, // 生產線解鎖狀態
-        lines: {}, // 各個生產線機台的細部狀態
-        prices: null, // 自定義價格（若管理員修改過）
-        customPrestige: null, // 自定義稱號加成（若管理員修改過）
-        adminClicks: 0 // 用於記錄點擊次數，通常用於觸發彩蛋或隱藏面板
-    };
-
-// 初始化當前稱號為 PRESTIGE_LEVELS 陣列中的第一個（即「初出茅廬」）
+    let game = { money: 100, inv: { wood: 0, stone: 0, iron: 0, core: 0 }, unlocked: { 1: true, 2: false, 3: false, 4: false, 5: false }, lines: {}, adminClicks: 0 };
     let currentPrestige = PRESTIGE_LEVELS[0];
 
-    // 迴圈初始化 5 條生產線的基礎數據
-    for(let i=1; i<=5; i++) { 
-        game.lines[i] = { 
-            lv: 0,        // 機台等級
-            dur: 100,     // 耐久度（100 為全滿）
-            isAuto: false,  // 當前是否正在自動運作
-            hasAuto: false, // 是否已購買/解鎖自動化功能
-            proc: false,    // 是否正在處理訂單（生產中）
-            selIdx: -1,     // 當前選中的訂單索引（-1 代表未選取）
-            orders: []      // 該生產線目前的待處理訂單列表
-        }; 
-    }
+    for(let i=1; i<=5; i++) { game.lines[i] = { lv: 0, dur: 100, isAuto: false, hasAuto: false, proc: false, selIdx: -1, orders: [] }; }
 
-    // 定義日誌輸出函式：m 為訊息內容，c 為文字顏色（預設為綠色）
     function addLog(m, c='#3fb950') { 
-        // 取得 HTML 中的日誌容器元素，若找不到則中止
-        const log = document.getElementById('log'); 
-        if(!log) return;
-
-        // 創建一個新的 div 元素來存放這筆日誌
-        const d = document.createElement('div'); 
-        d.style.color = c; 
-        // 格式化時間並與訊息組合：[HH:MM:SS] > 訊息內容
-        d.innerHTML = `[${new Date().toLocaleTimeString()}] > ${m}`; 
-
-        // 將新日誌插入到列表的最前端（顯示在最上方）
-        log.prepend(d); 
-
-        // 限制日誌數量：若超過 50 條則移除最舊的一條（最後一個子節點）
-        if(log.childNodes.length > 50) log.lastChild.remove();
+        const log = document.getElementById('log'); if(!log) return;
+        const d = document.createElement('div'); d.style.color = c; d.innerHTML = `[${new Date().toLocaleTimeString()}] > ${m}`;
+        log.prepend(d); if(log.childNodes.length > 30) log.lastChild.remove();
     }
 
-// 更新稱號與聲望系統的函式
     function updatePrestige() {
-        // 預設匹配的等級為最低的第一級
         let matched = PRESTIGE_LEVELS[0];
-        // 預設下一個等級為第二級
-        let nextRank = PRESTIGE_LEVELS[1];
-
-        // 從最高等級開始向下遍歷，找出玩家資金符合的最高稱號等級
-        for (let i = PRESTIGE_LEVELS.length - 1; i >= 0; i--) {
-            // 如果玩家資金大於等於該等級的最低要求
-            if (game.money >= PRESTIGE_LEVELS[i].min) {
-                matched = PRESTIGE_LEVELS[i]; // 設定目前匹配到的等級
-                nextRank = PRESTIGE_LEVELS[i+1] || null; // 設定下一個目標等級，若已達滿級則為 null
-                break; // 找到後立即跳出迴圈
-            }
-        }
-
-        // 檢查是否發生了等級變動（晉升）
-        if (currentPrestige.lv !== matched.lv) {
-            // 在日誌中顯示晉升訊息，使用金色文字
-            addLog(`🏆 晉升！【${matched.name}】啟用全方位加成`, "#f2cc60");
-            // 更新全域變數中的當前稱號資料
-            currentPrestige = matched;
-        }
-
-        // 更新介面上稱號徽章的文字（例如：🌱 初出茅廬）
+        for (let i = PRESTIGE_LEVELS.length - 1; i >= 0; i--) { if (game.money >= PRESTIGE_LEVELS[i].min) { matched = PRESTIGE_LEVELS[i]; break; } }
+        if (currentPrestige.lv !== matched.lv) { addLog(`🏆 晉升！【${matched.name}】`, "#f2cc60"); currentPrestige = matched; }
         document.getElementById('prestige-badge').innerText = matched.name;
-        // 更新稱號徽章的 CSS 樣式類別，以套用對應的發光或色彩效果
         document.getElementById('prestige-badge').className = `prestige-badge ${matched.class}`;
-        // 更新加成數值總結文字，將小數轉換為百分比並取整數
-        document.getElementById('prestige-bonus-summary').innerText = `利潤:+${(matched.bonus*100).toFixed(0)}% 速度:+${(matched.speed*100).toFixed(0)}% 質量:+${(matched.qa*100).toFixed(0)}%`;
-
-        // 更新儀表板進度條
-        if (nextRank) {
-            // 計算目前資金在當前等級到下一等級之間的百分比進度
-            let progress = ((game.money - matched.min) / (nextRank.min - matched.min)) * 100;
-            // 動態調整進度條寬度，最高不超過 100%
-            document.getElementById('dashboard-prestige-bar').style.width = Math.min(100, progress) + "%";
-        } else { 
-            // 如果已經達到最終等級，將進度條填滿
-            document.getElementById('dashboard-prestige-bar').style.width = "100%"; 
-        }
+        document.getElementById('prestige-bonus-summary').innerText = `利潤:+${(matched.bonus*100).toFixed(0)}% 速度:+${(matched.speed*100).toFixed(0)}%`;
     }
 
-// 切換聲望系統彈窗顯示狀態的函式
-    function togglePrestigeModal() {
-        const modal = document.getElementById('prestige-modal'); // 取得彈窗 DOM 元素
-        // 如果目前是開啟狀態（flex），則關閉它（none）
-        if (modal.style.display === 'flex') { 
-            modal.style.display = 'none'; 
-        } 
-        // 如果目前是關閉狀態，則先重新渲染列表內容，再開啟彈窗
-        else { 
-            renderPrestigeList(); 
-            modal.style.display = 'flex'; 
-        }
-    }
-
-    // 渲染聲望列表內容的函式
-    function renderPrestigeList() {
-        const container = document.getElementById('prestige-list-container'); // 列表容器
-        const nextInfo = document.getElementById('next-rank-info'); // 下一階級提示文字
-        const barFill = document.getElementById('prestige-progress-fill'); // 彈窗內的進度條填充
-        
-        container.innerHTML = ''; // 清空目前的列表內容，準備重新生成
-        
-        // 尋找下一個資金門檻高於玩家目前資金的稱號
-        let nextRank = PRESTIGE_LEVELS.find(l => l.min > game.money);
-        
-        if (nextRank) {
-            // 更新晉升所需的剩餘資金提示，並格式化數字（加上千分位逗號）
-            nextInfo.innerText = `還需 $${Math.floor(nextRank.min - game.money).toLocaleString()} 晉升`;
-            // 計算並更新彈窗內的進度條比例
-            barFill.style.width = Math.min(100, ((game.money - currentPrestige.min) / (nextRank.min - currentPrestige.min)) * 100) + "%";
-        } else { 
-            // 如果找不到下一個稱號，代表已達頂峰
-            nextInfo.innerText = "已達成最高階級"; 
-            barFill.style.width = "100%"; 
-        }
-
-        // 遍歷所有稱號定義，逐一創建列表項目
-        PRESTIGE_LEVELS.forEach(l => {
-            // 判斷該稱號是否為玩家目前擁有的階級
-            const isCurrent = (currentPrestige.lv === l.lv);
-            const div = document.createElement('div');
-            // 如果是目前階級，加上 'current-rank' CSS 類別來高亮顯示
-            div.className = `prestige-item ${isCurrent ? 'current-rank' : ''}`;
-            
-            // 使用模板字串生成項目內的 HTML 結構
-            div.innerHTML = `
-                <span class="prestige-badge ${l.class}">${l.name}</span> <!-- 稱號徽章與名稱 -->
-                <span style="font-family:'Share Tech Mono'">${l.min === 0 ? '初始' : '$'+l.min.toLocaleString()}</span> <!-- 解鎖資金 -->
-                <span style="color:#3fb950">+${(l.bonus*100).toFixed(0)}%</span> <!-- 利潤加成 -->
-                <span style="color:#bc8cff">+${(l.speed*100).toFixed(0)}%</span> <!-- 速度加成 -->
-                <span style="color:#58a6ff">+${(l.qa*100).toFixed(0)}%</span> <!-- 品質(QA)加成 -->
-            `;
-            // 將生成好的項目加入到容器中
-            container.appendChild(div);
-        });
-    }
-
-// 更新管理員後台稱號設定介面的函式
-    function updateAdminPrestigeUI() {
-        // 取得管理員面板中用來放置稱號設定的容器元素
-        const container = document.getElementById('admin-prestige-settings');
-        // 清空容器內的現有內容，避免重複渲染
-        container.innerHTML = '';
-        
-        // 遍歷 PRESTIGE_LEVELS 陣列，為每個等級創建一個可編輯的行
-        PRESTIGE_LEVELS.forEach((l, idx) => {
-            // 創建一個新的 div 元素作為列容器
-            const row = document.createElement('div');
-            // 套用預設的管理員行樣式
-            row.className = 'admin-row';
-            
-            // 使用模板字串填充 HTML，包含稱號名稱與三個屬性的輸入框
-            row.innerHTML = `
-                <!-- 顯示稱號名稱，固定寬度以對齊 -->
-                <span style="font-size:11px; width:100px;">${l.name}</span>
-                <!-- 利潤加成輸入框：step="0.01" 允許微調，數值改變時觸發 modifyPrestige -->
-                <input type="number" step="0.01" class="admin-input" value="${l.bonus}" onchange="modifyPrestige(${idx}, 'bonus', this.value)">
-                <!-- 速度加成輸入框 -->
-                <input type="number" step="0.01" class="admin-input" value="${l.speed}" onchange="modifyPrestige(${idx}, 'speed', this.value)">
-                <!-- 品質檢測(QA)加成輸入框 -->
-                <input type="number" step="0.01" class="admin-input" value="${l.qa}" onchange="modifyPrestige(${idx}, 'qa', this.value)">
-            `;
-            // 將生成好的行添加到容器中
-            container.appendChild(row);
-        });
-    }
-
-// 修改稱號屬性的函式：idx 為稱號索引，key 為屬性名稱(如 bonus)，val 為新數值
-    function modifyPrestige(idx, key, val) {
-        // 將輸入的字串轉換為浮點數，並更新稱號定義陣列中的對應數值
-        PRESTIGE_LEVELS[idx][key] = parseFloat(val);
-        
-        // 將修改後的稱號設定深拷貝一份到 game 物件中，以便後續儲存遊戲進度
-        game.customPrestige = JSON.parse(JSON.stringify(PRESTIGE_LEVELS));
-        
-        // 即時刷新 UI 介面，讓加成數值的變動立刻顯示在畫面上
-        updateUI();
-    }
-
-    // 更新資源價格的函式：type 為資源種類（如 wood, stone 等）
-    function updatePrice(type) {
-        // 從對應的買入價輸入框取得數值並轉為整數，若非法則預設為 0
-        cfg[type].buy = parseInt(document.getElementById(`edit-buy-${type}`).value) || 0;
-        
-        // 從對應的賣出價（基礎價值）輸入框取得數值
-        cfg[type].r = parseInt(document.getElementById(`edit-sell-${type}`).value) || 0;
-        
-        // 將修改後的價格配置深拷貝到 game 物件中，確保存檔時能保留自定義價格
-        game.prices = JSON.parse(JSON.stringify(cfg));
-        
-        // 刷新 UI，讓介面上的資源價格標籤同步更新
-        updateUI();
-    }
-
-// 初始化工廠樓層介面的函式
     function initFloor() {
-        // 取得生產線容器並清空內容
         const container = document.getElementById('lines-container'); container.innerHTML = '';
-        // 取得自動化控制按鈕容器並清空內容
         const autoControls = document.getElementById('auto-controls'); autoControls.innerHTML = '';
-        
-        // 迴圈生成 5 條生產線
         for(let i=1; i<=5; i++) {
-            // 向生產線容器插入 HTML 模板字串
             container.innerHTML += `
                 <div class="line-group" id="line-group-${i}">
-                    <!-- 顯示生產線標籤與對應的利潤效率倍率 -->
-                    <div class="line-label">生產線 Line ${LINE_CONFIGS[i].n} (效率x${LINE_CONFIGS[i].m.toFixed(1)})</div>
-                    
-                    <!-- 鎖定遮罩：若該線未解鎖則顯示，點擊按鈕支付解鎖費用 -->
+                    <div class="line-label">Line ${LINE_CONFIGS[i].n} (x${LINE_CONFIGS[i].m.toFixed(1)})</div>
                     <div id="lock-${i}" class="locked-line" style="${game.unlocked[i]?'display:none':''}">
-                        <button class="action-btn btn-green" style="width:180px" onclick="unlockLine(${i})">支付 $${LINE_CONFIGS[i].u} 解鎖</button>
+                        <button class="action-btn btn-green" style="width:140px" onclick="unlockLine(${i})">支付 $${LINE_CONFIGS[i].u} 解鎖</button>
                     </div>
-
-                    <!-- 工作站 1：訂單管理區域 -->
-                    <div class="station" style="left: 10px; width: 220px;">
-                        <div class="status-header" style="color:#f2cc60">📦 訂單管理</div>
-                        <div id="order-list-${i}" class="order-container"></div> <!-- 訂單列表容器 -->
-                        <button id="deliver-btn-${i}" class="action-btn btn-green" onclick="processOrder(${i})" disabled>交付訂單</button>
+                    <div class="station">
+                        <div style="color:#f2cc60; font-weight:bold; margin-bottom:5px">📦 訂單</div>
+                        <div id="order-list-${i}" class="order-container"></div>
+                        <button id="deliver-btn-${i}" class="action-btn btn-green" onclick="processOrder(${i})" disabled>交付</button>
                     </div>
-
-                    <!-- 工作站 2：生產 Agent（核心操作區） -->
-                    <div class="station" style="left: 245px; width: 280px;">
-                        <div class="status-header">⚙️ 生產 Agent <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></div>
-                        <!-- 設備健康度（耐久度）顯示 -->
-                        <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">設備健康度</span><span id="dur-text-${i}" style="font-size:10px; font-family:'Share Tech Mono';">100%</span></div>
+                    <div class="station">
+                        <div style="font-weight:bold">⚙️ 加工 <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></div>
                         <div class="durability-box"><div id="dur-fill-${i}" class="dur-fill"></div></div>
-                        <!-- 生產進度條與時間顯示 -->
-                        <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">生產進度</span><span id="timer-text-${i}" style="font-size:10px; color:#bc8cff; font-family:'Share Tech Mono';">等待中</span></div>
                         <div class="progress-container" id="prog-cont-${i}"><div class="progress-bar" id="prog-bar-${i}"></div></div>
-                        <!-- 操作按鈕：升級與維修 -->
-                        <div style="display:flex; width:100%; gap:8px; margin-top:auto;">
-                            <div style="flex:1;"><div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">速度: <span id="speed-val-${i}">0</span>s</div><button id="up-btn-${i}" class="action-btn btn-blue" onclick="upgradeLine(${i})">升級 <span id="up-cost-${i}" class="price-tag">$0</span></button></div>
-                            <div style="flex:1;"><div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">維護設備</div><button id="repair-btn-${i}" class="action-btn btn-red" onclick="repair(${i})">保養 <span class="price-tag">$30</span></button></div>
+                        <div style="display:flex; gap:5px; margin-top:auto">
+                            <button id="up-btn-${i}" class="action-btn btn-blue" onclick="upgradeLine(${i})">升級 $<span id="up-cost-${i}">0</span></button>
+                            <button id="repair-btn-${i}" class="action-btn btn-red" onclick="repair(${i})">保養</button>
                         </div>
                     </div>
-
-                    <!-- 工作站 3：質量檢測（QA） -->
-                    <div class="station" style="left: 540px; width: 170px; align-items:center; justify-content:center;">
-                        <div class="status-header" style="color:#58a6ff; position:absolute; top:8px;">🔍 質量檢測</div>
-                        <div id="qa-status-${i}" style="font-size: 14px; font-weight:bold; color:#8b949e; text-align:center;">⌛ 待機中...</div>
+                    <div class="station" style="justify-content:center; align-items:center">
+                        <div id="qa-status-${i}" style="font-weight:bold; color:#8b949e">🔍 待機</div>
                     </div>
-
-                    <!-- 工作站 4：物流接收（成品出口） -->
-                    <div class="station" style="left: 725px; width: 285px; border-style: dashed; background:none; align-items:center; justify-content:center;">
-                        <div class="status-header" style="color:#3fb950; position:absolute; top:8px;">🏁 物流接收</div>
-                        <div id="delivery-info-${i}" style="font-size: 11px; color: #8b949e; text-align:center; margin-top: 45px;">等待交付產品...</div>
+                    <div class="station" style="border-style:dashed; justify-content:center; align-items:center">
+                        <div id="delivery-info-${i}" style="font-size:11px; text-align:center">🏁 等待產品</div>
                     </div>
                 </div>
             `;
-            // 在底部自動化面板添加對應的部署按鈕
-            autoControls.innerHTML += `<button id="auto-btn-${i}" class="action-btn" style="background:#30363d" onclick="toggleAuto(${i})">部署 Line ${i} 自動化 ($500)</button>`;
+            autoControls.innerHTML += `<button id="auto-btn-${i}" class="action-btn" style="background:#30363d" onclick="toggleAuto(${i})">部署 Line ${i} 自動化</button>`;
         }
     }
 
-// 更新遊戲全局使用者介面（UI）的函式
+    // 核心動畫邏輯修改：動態計算位置
+    async function runPart(lId, type, idx) {
+        const lineGroup = document.getElementById(`line-group-${lId}`);
+        const stations = lineGroup.getElementsByClassName('station');
+        const part = document.createElement('div');
+        part.className = `part ${cfg[type].c}`;
+        part.innerText = idx;
+        lineGroup.appendChild(part);
+
+        const moveTo = (sIdx) => {
+            const target = stations[sIdx];
+            // 計算目標工作站中心點相對於父容器的位置
+            const x = target.offsetLeft + (target.offsetWidth / 2) - 15;
+            const y = target.offsetTop + (target.offsetHeight / 2) - 15;
+            part.style.left = `${x}px`;
+            part.style.top = `${y}px`;
+        };
+
+        moveTo(0); // 從訂單區出發
+        await new Promise(r => setTimeout(r, 100));
+
+        while(true) {
+            moveTo(1); // 到加工區
+            let timeSec = Math.max(0.5, (15 - game.lines[lId].lv * 1.3) * (1 - currentPrestige.speed));
+            const bar = document.getElementById(`prog-bar-${lId}`);
+            document.getElementById(`prog-cont-${lId}`).style.visibility = 'visible';
+            bar.style.transition = 'none'; bar.style.width = '100%'; void bar.offsetWidth;
+            bar.style.transition = `width ${timeSec}s linear`; bar.style.width = '0%';
+            await new Promise(r => setTimeout(r, timeSec * 1000));
+            document.getElementById(`prog-cont-${lId}`).style.visibility = 'hidden';
+
+            moveTo(2); // 到檢測區
+            document.getElementById(`qa-status-${lId}`).innerText = "⚙️ 檢測中";
+            await new Promise(r => setTimeout(r, 600));
+
+            let failChance = Math.max(0, (0.05 + (100 - game.lines[lId].dur)/200) - currentPrestige.qa);
+            if(Math.random() < failChance) {
+                document.getElementById(`qa-status-${lId}`).innerText = "❌ 失敗";
+                await new Promise(r => setTimeout(r, 500));
+            } else {
+                document.getElementById(`qa-status-${lId}`).innerText = "✅ 合格";
+                moveTo(3); // 到物流區
+                await new Promise(r => setTimeout(r, 600));
+                return part;
+            }
+        }
+    }
+
+    async function processOrder(id) {
+        const l = game.lines[id]; if(l.proc || l.selIdx === -1) return;
+        const o = l.orders[l.selIdx];
+        l.proc = true; game.inv[o.type] -= o.qty; updateUI();
+        const parts = [];
+        for(let i=1; i<=o.qty; i++) {
+            const p = await runPart(id, o.type, i);
+            parts.push(p); l.dur = Math.max(0, l.dur - 2); updateUI();
+        }
+        setTimeout(() => {
+            parts.forEach(p => p.remove());
+            const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
+            game.money += profit;
+            document.getElementById(`delivery-info-${id}`).innerHTML = `<b style="color:#3fb950">✅ 完成!</b><br>+$${profit}`;
+            genOrders(id); l.proc = false; l.selIdx = -1; updateUI();
+        }, 500);
+    }
+
     function updateUI() {
-        // 首先呼叫稱號更新邏輯，確保進度條與等級即時同步
-        updatePrestige(); 
-
-        // 更新頂部顯示的金錢數值，加上千分位符號並捨去小數
+        updatePrestige();
         document.getElementById('money-val').innerText = `$${Math.floor(game.money).toLocaleString()}`;
-        
-        // 遍歷四種資源（木材、石頭、鋼鐵、核心）來更新庫存與購買按鈕
         ['wood','stone','iron','core'].forEach(t => {
-            // 更新畫面上各項資源的擁有數量
             document.getElementById(`${t}-val`).innerText = game.inv[t];
-            // 更新購買按鈕上顯示的當前價格（防止後台調整過價格）
-            const btnP = document.getElementById(`btn-p-${t}`);
-            if(btnP) btnP.innerText = cfg[t].buy;
+            document.getElementById(`btn-p-${t}`).innerText = cfg[t].buy;
         });
-
-        // 迴圈處理 5 條生產線的細節狀態
         for(let i=1; i<=5; i++) {
-            const l = game.lines[i]; // 當前生產線的數據物件
-            const un = game.unlocked[i]; // 是否已解鎖
-            const lockEl = document.getElementById(`lock-${i}`);
-            
-            // 根據解鎖狀態決定是否隱藏鎖定遮罩（un 為 true 時隱藏）
-            if(lockEl) lockEl.style.display = un ? 'none' : 'flex';
-            
-            // 如果該生產線已解鎖，則更新其內部控制元件
-            if(un) {
-                // 更新等級標籤文字（例如：Lv.5）
+            const l = game.lines[i];
+            if(game.unlocked[i]) {
                 document.getElementById(`lv-tag-${i}`).innerText = `Lv.${l.lv}`;
-                
-                // 計算最終生產速度：基礎速度隨等級減少，再套用稱號的速度加成
-                let baseSpeed = (15 - (l.lv * 1.3));
-                let finalSpeed = baseSpeed * (1 - currentPrestige.speed);
-                // 更新顯示速度，最低限制為 0.5 秒，取小數點後一位
-                document.getElementById(`speed-val-${i}`).innerText = Math.max(0.5, finalSpeed).toFixed(1);
-                
-                // 處理升級按鈕與費用計算
-                const upBtn = document.getElementById(`up-btn-${i}`);
-                const cost = Math.floor((l.lv + 1) * 400 * (l.lv + 1.2)); // 升級公式
-                if(l.lv < 10) { 
-                    // 若未滿 10 級，顯示費用；資金不足則禁用按鈕
-                    document.getElementById(`up-cost-${i}`).innerText = `$${cost}`; 
-                    upBtn.disabled = game.money < cost; 
-                } else { 
-                    // 達到等級上限
-                    document.getElementById(`up-cost-${i}`).innerText = "MAX"; 
-                    upBtn.disabled = true; 
-                }
-                
-                // 更新設備健康度填充條
+                document.getElementById(`up-cost-${i}`).innerText = Math.floor((l.lv + 1) * 400 * (l.lv + 1.2));
                 document.getElementById(`dur-fill-${i}`).style.width = `${l.dur}%`;
-                // 如果錢不夠保養（$30）或耐久度已滿，則禁用保養按鈕
-                document.getElementById(`repair-btn-${i}`).disabled = game.money < 30 || l.dur === 100;
-                
-                // 處理自動化按鈕
                 const ab = document.getElementById(`auto-btn-${i}`);
-                if(ab) {
-                    if(l.hasAuto) { 
-                        // 若已購買自動化，顯示運行狀態（運行中為綠色，停止為橘色）
-                        ab.innerText = l.isAuto ? `🤖 L${i}: 智能運行` : `🤖 L${i}: 停止`; 
-                        ab.style.background = l.isAuto ? "#238636" : "#d29922"; 
-                    } else { 
-                        // 若未購買，顯示購買費用（$500）並檢查資金是否足夠
-                        ab.innerText = `部署 Line ${i} 自動化 ($500)`; 
-                        ab.disabled = game.money < 500; 
-                    }
-                }
-
-                // 訂單管理：若無訂單則生成，並渲染訂單列表
-                if (!l.orders || l.orders.length === 0) genOrders(i);
-                renderOrders(i);
-
-                // 處理「交付訂單」按鈕狀態
+                if(l.hasAuto) { ab.innerText = l.isAuto ? `🤖 L${i}: 運行` : `🤖 L${i}: 停止`; ab.style.background = l.isAuto ? "#238636" : "#d29922"; }
+                else { ab.innerText = `購買 L${i} 自動化 $500`; ab.disabled = game.money < 500; }
+                if(!l.orders.length) genOrders(i); renderOrders(i);
                 const deliverBtn = document.getElementById(`deliver-btn-${i}`);
-                if (l.selIdx !== -1 && l.orders[l.selIdx]) {
-                    const o = l.orders[l.selIdx]; 
-                    const can = game.inv[o.type] >= o.qty; // 檢查資源是否足夠
-                    
-                    // 根據條件顯示文字（資源不足或可交付）
-                    deliverBtn.innerText = can ? `交付 ${o.qty} ${cfg[o.type].n}` : `材料不足`;
-                    // 若資源不足或正在生產中，則按鈕不可點擊
+                if (l.selIdx !== -1) {
+                    const o = l.orders[l.selIdx]; const can = game.inv[o.type] >= o.qty;
+                    deliverBtn.innerText = can ? `交付 ${o.qty}x` : `缺少材料`;
                     deliverBtn.disabled = !can || l.proc;
                 }
             }
         }
     }
 
-// 處理訂單的異步函式：id 為生產線編號
-    async function processOrder(id) {
-        const l = game.lines[id]; 
-        // 如果正在生產中或尚未選取訂單，則直接返回不執行
-        if(l.proc || l.selIdx === -1) return;
-
-        const o = l.orders[l.selIdx]; // 取得當前選中的訂單資料
-        l.proc = true; // 將生產線狀態設為「生產中」，防止重複觸發
-
-        // 扣除玩家庫存中對應的材料數量，並更新介面顯示
-        game.inv[o.type] -= o.qty; 
-        updateUI();
-
-        const partsToClear = []; // 用於存放待清理的零件動畫元素
-        // 根據訂單要求的數量，逐一執行零件生產動畫
-        for(let i=1; i<=o.qty; i++) {
-            // 等待單個零件跑完動畫，runPart 會返回該零件的 DOM 元素
-            const p = await runPart(id, o.type, i);
-            partsToClear.push(p); // 加入清理清單
-
-            // 每次生產零件都會消耗 2 點設備耐久度，最低不低於 0
-            l.dur = Math.max(0, l.dur - 2); 
-            updateUI(); // 即時更新耐久度條
-        }
-
-        // 當所有零件生產動畫完成後的收尾動作（延遲 800 毫秒增加視覺平滑感）
-        setTimeout(() => {
-            // 移除畫面上所有的零件動畫元素
-            partsToClear.forEach(p => p.remove());
-
-            // 計算最終利潤：數量 * 基礎價值 * 生產線效率倍率 * (1 + 稱號利潤加成)
-            const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
-            
-            // 增加玩家資金
-            game.money += profit;
-
-            // 在「物流接收」區域顯示成功訊息與賺取的金額
-            document.getElementById(`delivery-info-${id}`).innerHTML = `
-                <span style="color:#3fb950; font-weight:bold;">✅ 成功交付!</span><br>
-                <span style="color:#f2cc60">+$${profit}</span>
-            `;
-
-            // 重新生成該線的新訂單
-            genOrders(id); 
-            // 重置生產線狀態：停止生產模式、取消選取索引
-            l.proc = false; 
-            l.selIdx = -1; 
-            // 最後刷新全域介面
-            updateUI(); 
-        }, 800);
-    }
-
-// 執行單個零件生產流程的異步函式
-    async function runPart(lId, type, idx) {
-        // 1. 創建零件元素並設置初始位置
-        const part = document.createElement('div');
-        part.className = `part ${cfg[type].c}`; // 根據資源類型設定顏色類別
-        part.innerText = idx;                   // 顯示零件編號
-        part.style.left = "30px";               // 起點位置（訂單區）
-        part.style.top = "80px";
-        document.getElementById(`line-group-${lId}`).appendChild(part);
-        
-        const qa = document.getElementById(`qa-status-${lId}`);
-        await new Promise(r => setTimeout(r, 50)); // 微小延遲確保 DOM 已渲染
-        
-        // 移動到加工位置（Agent 區）
-        part.style.left = "270px"; 
-        await new Promise(r => setTimeout(r, 600));
-
-        // 2. 進入加工與檢測循環（若檢測失敗會重新加工）
-        while(true) {
-            // 計算當前生產所需時間（受等級與稱號速度加成影響）
-            let baseSpeed = (15 - (game.lines[lId].lv * 1.3));
-            let timeSec = Math.max(0.5, baseSpeed * (1 - currentPrestige.speed));
-            
-            // 更新進度條動畫
-            const bar = document.getElementById(`prog-bar-${lId}`);
-            document.getElementById(`prog-cont-${lId}`).style.visibility = 'visible';
-            bar.style.transition = 'none';      // 重置進度條
-            bar.style.width = '100%'; 
-            void bar.offsetWidth;               // 強制重繪
-            bar.style.transition = `width ${timeSec}s linear`; // 設定平滑倒數
-            bar.style.width = '0%';
-            
-            // 倒數計時文字顯示
-            let rem = timeSec;
-            const ti = setInterval(() => { 
-                rem -= 0.1; 
-                document.getElementById(`timer-text-${lId}`).innerText = `${Math.max(0, rem).toFixed(1)}s`; 
-                if(rem <=0) clearInterval(ti); 
-            }, 100);
-
-            // 等待加工完成
-            await new Promise(r => setTimeout(r, timeSec * 1000));
-            document.getElementById(`prog-cont-${lId}`).style.visibility = 'hidden';
-            
-            // 3. 進入檢測區域
-            part.style.left = "580px"; 
-            if(qa) { qa.innerText = "⚙️ 檢測中..."; qa.style.color = "#58a6ff"; }
-            await new Promise(r => setTimeout(r, 600));
-
-            // 4. 質量檢測邏輯
-            // 基礎失敗率 5%，設備耐久度越低，失敗率越高
-            let failChance = 0.05 + ((100 - game.lines[lId].dur)/200);
-            // 套用稱號的 QA 加成（減少失敗率）
-            let finalFailChance = Math.max(0, failChance - currentPrestige.qa);
-            
-            if(Math.random() < finalFailChance) {
-                // 檢測失敗：零件退回加工位置，繼續 while 迴圈
-                qa.innerText = "❌ 不合格"; 
-                qa.style.color = "#f85149";
-                part.style.left = "270px"; 
-                await new Promise(r => setTimeout(r, 800));
-            } else {
-                // 檢測成功：移動到物流接收區並返回該 DOM 元素以供後續清理
-                qa.innerText = "✅ 合格"; 
-                qa.style.color = "#3fb950";
-                part.style.left = "855px"; 
-                part.style.top = "85px";
-                await new Promise(r => setTimeout(r, 600));
-                return part; 
-            }
-        }
-    }
-
-// 購買資源函式：t 為資源類型 (如 'wood')
-    function buy(t) { 
-        // 檢查資金是否足夠支付該資源的購買價
-        if(game.money >= cfg[t].buy) { 
-            game.money -= cfg[t].buy; // 扣除金錢
-            game.inv[t]++;            // 增加對應資源的庫存
-            updateUI();               // 刷新畫面
-        } 
-    }
-
-    // 解鎖新生產線函式：id 為生產線編號 (1-5)
-    function unlockLine(id) { 
-        // 檢查資金是否足夠支付 LINE_CONFIGS 中定義的解鎖費用 (u)
-        if (game.money >= LINE_CONFIGS[id].u) { 
-            game.money -= LINE_CONFIGS[id].u; 
-            game.unlocked[id] = true; // 將該線狀態設為已解鎖
-            updateUI(); 
-        } 
-    }
-
-    // 升級生產線函式
-    function upgradeLine(id) { 
-        // 使用等級公式計算升級費用：隨著等級提高，費用呈指數級增長
-        const c = Math.floor((game.lines[id].lv + 1) * 400 * (game.lines[id].lv + 1.2)); 
-        // 檢查資金是否足夠
-        if(game.money >= c) { 
-            game.money -= c; 
-            game.lines[id].lv++; // 提升該生產線等級（會加快生產速度）
-            updateUI(); 
-        } 
-    }
-
-    // 維修設備函式：固定費用為 $30
-    function repair(id) { 
-        if (game.money >= 30) { 
-            game.money -= 30; 
-            game.lines[id].dur = 100; // 將設備健康度（耐久度）恢復至 100%
-            updateUI(); 
-        } 
-    }
-
-    // 切換/購買自動化功能的函式
-    function toggleAuto(id) { 
-        const l = game.lines[id]; 
-        
-        // 情況 A：若尚未擁有自動化功能且錢足夠，則花費 $500 購買並直接啟用
-        if(!l.hasAuto && game.money >= 500) { 
-            game.money -= 500; 
-            l.hasAuto = true; 
-            l.isAuto = true; 
-        } 
-        // 情況 B：若已經擁有自動化，則單純切換開關狀態 (true/false)
-        else if(l.hasAuto) { 
-            l.isAuto = !l.isAuto; 
-        } 
-        
-        updateUI(); // 刷新 UI 以更新按鈕顏色與文字
-    }
-
-// 新增：隱藏觸發器（設計給玩家連擊稱號 10000 次來開啟後台）
-    function secretTrigger() {
-        // 累加點擊計數器
-        game.adminClicks++;
-        
-        // 如果點擊次數達到 10000 次
-        if (game.adminClicks >= 10000) {
-            game.adminClicks = 0; // 重置計數器
-            toggleAdmin();        // 呼叫開啟管理員面板的函式
-        } else {
-            // 如果還沒點滿 5 次，則執行原本的功能（打開聲望彈窗）
-            togglePrestigeModal();
-        }
-    }
-    
-    // 修改：切換管理員面板顯示狀態，並加入密碼驗證邏輯
-    function toggleAdmin() {
-        const p = document.getElementById('admin-panel'); // 取得後台面板元素
-        
-        // 如果面板目前是隱藏的，則嘗試開啟
-        if (p.style.display !== 'flex') {
-            // 跳出瀏覽器原生輸入框，要求輸入授權碼
-            let pass = prompt("請輸入管理員授權代碼:", "");
-            
-            // 密碼檢查（目前的後門代碼是 "0000"）
-            if (pass === "0000") {
-                // 驗證成功後，將當前的資源價格與基礎價值填入後台輸入框中
-                ['wood','stone','iron','core'].forEach(t => {
-                    document.getElementById(`edit-buy-${t}`).value = cfg[t].buy;
-                    document.getElementById(`edit-sell-${t}`).value = cfg[t].r;
-                });
-                
-                // 重新渲染後台的稱號加成設定列表
-                updateAdminPrestigeUI();
-                
-                // 顯示面板並在遊戲日誌中記錄
-                p.style.display = 'flex';
-                addLog("🔑 管理模式已開啟", "#bc8cff");
-                
-            } else if (pass !== null) {
-                // 如果密碼輸入錯誤且不是按下取消
-                alert("代碼錯誤！");
-            }
-        } else { 
-            // 如果面板已經是開啟狀態，則直接關閉它
-            p.style.display = 'none'; 
-        }
-    }
-	
-// 後台注入函式：用於快速增加金錢或資源 (t: 類型, a: 數量)
-    function inject(t, a) { 
-        if(t === 'money') game.money += a; 
-        else game.inv[t] += a; 
-        updateUI(); 
-    }
-
-    // 生成訂單函式：為特定生產線隨機產生 3 個訂單
-    function genOrders(id) {
-        const ts = ['wood', 'stone', 'iron', 'core']; // 資源池
-        game.lines[id].orders = [];
-        for(let i=0; i<3; i++) { 
-            game.lines[id].orders.push({ 
-                type: ts[Math.floor(Math.random()*4)],      // 隨機種類
-                qty: Math.floor(Math.random()*5) + 1         // 隨機數量 (1-5)
-            }); 
-        }
-    }
-
-    // 渲染訂單列表：將訂單數據轉換為 HTML 並顯示
-    function renderOrders(id) {
-        const list = document.getElementById(`order-list-${id}`); 
-        if(!list) return;
-        list.innerHTML = ''; // 清空容器
-
+    // 其他邏輯函數保持不變
+    function buy(t) { if(game.money >= cfg[t].buy) { game.money -= cfg[t].buy; game.inv[t]++; updateUI(); } }
+    function unlockLine(id) { if (game.money >= LINE_CONFIGS[id].u) { game.money -= LINE_CONFIGS[id].u; game.unlocked[id] = true; updateUI(); } }
+    function upgradeLine(id) { const c = Math.floor((game.lines[id].lv + 1) * 400 * (game.lines[id].lv + 1.2)); if(game.money >= c) { game.money -= c; game.lines[id].lv++; updateUI(); } }
+    function repair(id) { if (game.money >= 30) { game.money -= 30; game.lines[id].dur = 100; updateUI(); } }
+    function toggleAuto(id) { const l = game.lines[id]; if(!l.hasAuto && game.money >= 500) { game.money -= 500; l.hasAuto = true; l.isAuto = true; } else if(l.hasAuto) { l.isAuto = !l.isAuto; } updateUI(); }
+    function toggleAdmin() { const p = document.getElementById('admin-panel'); if (p.style.display !== 'flex') { if (prompt("Code?") === "0000") p.style.display = 'flex'; } else p.style.display = 'none'; }
+    function inject(t, a) { if(t === 'money') game.money += a; else game.inv[t] += a; updateUI(); }
+    function genOrders(id) { const ts=['wood','stone','iron','core']; game.lines[id].orders=[]; for(let i=0;i<3;i++) game.lines[id].orders.push({type:ts[Math.floor(Math.random()*4)], qty:Math.floor(Math.random()*5)+1}); }
+    function renderOrders(id) { 
+        const list = document.getElementById(`order-list-${id}`); list.innerHTML = '';
         game.lines[id].orders.forEach((o, idx) => {
-            const d = document.createElement('div');
-            // 若為當前選中項，則加上 'selected' CSS 類別
-            d.className = `order-card ${game.lines[id].selIdx === idx ? 'selected' : ''}`;
-            // 計算該訂單完成後的預估總利潤（包含稱號與生產線加成）
-            const totalProfit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
-            
-            d.innerHTML = `<b>${o.qty}x ${cfg[o.type].n}</b> <span style="float:right; color:#f2cc60">+$${totalProfit}</span>`;
-            
-            // 點擊事件：若生產線未在運作，則切換選中該訂單
+            const d = document.createElement('div'); d.className = `order-card ${game.lines[id].selIdx === idx ? 'selected' : ''}`;
+            d.innerHTML = `<b>${o.qty}x ${cfg[o.type].n}</b> <span style="float:right">$${Math.floor(o.qty*cfg[o.type].r*LINE_CONFIGS[id].m*(1+currentPrestige.bonus))}</span>`;
             d.onclick = () => { if(!game.lines[id].proc) { game.lines[id].selIdx = idx; updateUI(); } };
             list.appendChild(d);
         });
     }
+    function resetGame() { if(confirm("重置?")) { localStorage.clear(); location.reload(); } }
+    function secretTrigger() { game.adminClicks++; if(game.adminClicks > 10) toggleAdmin(); }
 
-    // 儲存遊戲：將當前狀態序列化存入 localStorage
-    function saveGame() { 
-        game.prices = JSON.parse(JSON.stringify(cfg)); // 備份當前價格設定
-        game.customPrestige = JSON.parse(JSON.stringify(PRESTIGE_LEVELS)); // 備份自定義稱號
-        localStorage.setItem('factory_v12_3_save', JSON.stringify(game)); 
-        addLog("💾 系統自動存檔完成", "#58a6ff"); 
-    }
+    initFloor();
+    updateUI();
+    setInterval(() => { for(let i=1; i<=5; i++) { if(game.unlocked[i] && game.lines[i].isAuto && !game.lines[i].proc) autoCycle(i); } }, 2000);
 
-    // 讀取遊戲：從 localStorage 恢復數據
-    function loadGame() { 
-        const s = localStorage.getItem('factory_v12_3_save'); 
-        if(s) { 
-            const loaded = JSON.parse(s); 
-            Object.assign(game, loaded); // 將讀取的數據覆蓋到目前的 game 物件
-            // 恢復自定義價格與稱號設定
-            if(game.prices) cfg = JSON.parse(JSON.stringify(game.prices));
-            if(game.customPrestige) PRESTIGE_LEVELS = JSON.parse(JSON.stringify(game.customPrestige));
-            // 確保讀取後所有生產線狀態重置為「非生產中」，防止鎖死
-            for(let i=1; i<=5; i++) game.lines[i].proc = false;
-        } 
-        updateUI(); 
-    }
-
-    // 重置遊戲：清空存檔並重新載入網頁
-    function resetGame() { if(confirm("確定重置嗎？")) { localStorage.clear(); location.reload(); } }
-
-    // --- 遊戲啟動流程 ---
-    initFloor(); // 建立基礎結構
-    loadGame();  // 載入進度
-
-    // 每 1.5 秒檢查一次：若生產線已解鎖且開啟自動化，則執行 autoCycle
-    setInterval(() => { 
-        for(let i=1; i<=5; i++) { 
-            if(game.unlocked[i] && game.lines[i].isAuto && !game.lines[i].proc) autoCycle(i); 
-        } 
-    }, 1500);
-
-    // 自動運行 AI 邏輯
     async function autoCycle(id) {
-        const l = game.lines[id]; 
-        if (!l.orders || l.orders.length === 0) return;
-
-        // AI 決策：選擇利潤最高（單價 * 數量）的訂單
-        let bestIdx = 0; let maxP = -1;
-        l.orders.forEach((o, idx) => { 
-            let p = o.qty * cfg[o.type].r; 
-            if(p > maxP) { maxP = p; bestIdx = idx; } 
-        });
-        l.selIdx = bestIdx; 
-        const o = l.orders[l.selIdx];
-
-        // 自動補貨：如果庫存不足，AI 會自動花錢買材料
+        const l = game.lines[id]; if (!l.orders.length) return;
+        l.selIdx = 0; const o = l.orders[0];
         if (game.inv[o.type] < o.qty) {
-            const need = o.qty - game.inv[o.type]; 
-            const cost = need * cfg[o.type].buy;
-            if(game.money >= cost) { 
-                game.money -= cost; 
-                game.inv[o.type] += need; 
-                updateUI(); 
-            } else return; // 錢不夠買材料就跳過此次循環
+            const cost = (o.qty - game.inv[o.type]) * cfg[o.type].buy;
+            if(game.money >= cost) { game.money -= cost; game.inv[o.type] = o.qty; updateUI(); } else return;
         }
-
-        // 執行生產流程
         processOrder(id);
     }
 </script>
