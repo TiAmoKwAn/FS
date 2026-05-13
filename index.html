@@ -460,24 +460,18 @@ for(let i=1; i<=LINE_COUNT; i++) {
             const canBuy = (i === 1) || game.unlocked[i - 1];
             
             // 3. 開始拼接產線的 HTML 字符串
-            container.innerHTML += `
-                <div class="line-group" id="line-group-${i}">
-                    <div class="line-label">生產線 Line ${LINE_CONFIGS[i].n} (效率x${LINE_CONFIGS[i].m.toFixed(1)})</div>
-                    
-                    <div id="lock-${i}" class="locked-line" style="${game.unlocked[i] ? 'display:none' : 'display:flex'}">
-                        <button class="action-btn" 
-                            style="width:180px; 
-                                   /* 動態樣式：可買時綠色，不可買時深灰色 */
-                                   background: ${canBuy ? '#238636' : '#30363d'}; 
-                                   /* 動態鼠標：不可買時顯示禁用符號 */
-                                   cursor: ${canBuy ? 'pointer' : 'not-allowed'};
-                                   border: 1px solid ${canBuy ? '#2ea043' : '#21262d'};
-                                   color: ${canBuy ? '#fff' : '#8b949e'};"
-                            /* 動態點擊：可買時觸發解鎖函數，不可買時點擊無效 */
-                            onclick="${canBuy ? `unlockLine(${i})` : ''}">
-                            ${canBuy ? `支付 $${LINE_CONFIGS[i].u} 解鎖` : `🔒 需先解鎖 Line ${ (i-1).toString().padStart(2, '0') }`}
-                        </button>
-                    </div>
+container.innerHTML += `
+    <div class="line-group" id="line-group-${i}">
+        <div class="line-label">生產線 Line ${LINE_CONFIGS[i].n} (效率x${LINE_CONFIGS[i].m.toFixed(1)})</div>
+        
+        <div id="lock-${i}" class="locked-line" style="${game.unlocked[i] ? 'display:none' : 'display:flex'}">
+            <button id="buy-line-btn-${i}" class="action-btn" 
+                style="width:180px; transition: all 0.3s;"
+                onclick="unlockLine(${i})">
+                載入中...
+            </button>
+        </div>
+
 
                     <div class="station" style="left: 10px; width: 220px;">
                         <div class="status-header" style="color:#f2cc60">📦 訂單管理</div>
@@ -538,49 +532,116 @@ for(let i=1; i<=LINE_COUNT; i++) {
 }
 
     // 🔄 UI 全局更新函數：同步金錢、庫存、產線等級、速度、耐久與自動化狀態
-    function updateUI() {
-        updatePrestige(); 
-        document.getElementById('money-val').innerText = `$${Math.floor(game.money).toLocaleString()}`;
-        Object.keys(cfg).forEach(t => {
-			// 🛡️ 加入安全檢查：只有當 ID 存在時才更新文字
-			const valEl = document.getElementById(`${t}-val`);
-			if(valEl) valEl.innerText = game.inv[t];
+  function updateUI() {
+        if (typeof updatePrestige === 'function') updatePrestige(); 
         
-			const btnP = document.getElementById(`btn-p-${t}`);
-			if(btnP) btnP.innerText = cfg[t].buy;
-		});
+        // 1. 更新金錢 (先檢查 money-val 是否存在)
+        const moneyValEl = document.getElementById('money-val');
+        if(moneyValEl) moneyValEl.innerText = `$${Math.floor(game.money).toLocaleString()}`;
+        
+        // 2. 更新資源庫存
+        Object.keys(cfg).forEach(t => {
+            const valEl = document.getElementById(`${t}-val`);
+            if(valEl) valEl.innerText = game.inv[t];
+        
+            const btnP = document.getElementById(`btn-p-${t}`);
+            if(btnP) btnP.innerText = cfg[t].buy;
+        });
 
+        // 3. 更新生產線
         for(let i=1; i<=LINE_COUNT; i++) {
-            const l = game.lines[i]; const un = game.unlocked[i];
+            const l = game.lines[i]; 
+            const un = game.unlocked[i];
             const lockEl = document.getElementById(`lock-${i}`);
-            if(lockEl) lockEl.style.display = un ? 'none' : 'flex';
-            if(un) {
-                document.getElementById(`lv-tag-${i}`).innerText = `Lv.${l.lv}`;
-                let baseSpeed = (15 - (l.lv * 1.3));
-                let finalSpeed = baseSpeed * (1 - currentPrestige.speed);
-                document.getElementById(`speed-val-${i}`).innerText = Math.max(0.5, finalSpeed).toFixed(1);
+            
+            // 🛡️ 防護：如果 HTML 還沒畫出這個生產線的 lock 區塊，直接跳過這條線
+			if(lockEl) {
+				lockEl.style.display = un ? 'none' : 'flex';
+            
+			// --- ✨ 新增這段：處理未解鎖按鈕的狀態 ---
+			if(!un) {
+                const buyBtn = document.getElementById(`buy-line-btn-${i}`);
+                if(buyBtn) {
+                    const cost = LINE_CONFIGS[i].u;
+                    const prevUnlocked = (i === 1) || game.unlocked[i-1];
+                    
+                    if(!prevUnlocked) {
+                        // 如果前一條線沒解鎖，這條線鎖死
+                        buyBtn.innerText = `🔒 需先解鎖 Line ${(i-1).toString().padStart(2, '0')}`;
+                        buyBtn.disabled = true;
+                        buyBtn.style.background = "#30363d";
+                        buyBtn.style.cursor = "not-allowed";
+                    } else {
+                        // 如果前一條線已解鎖，根據錢數動態開關
+                        const enoughMoney = game.money >= cost;
+                        buyBtn.innerText = `支付 $${cost.toLocaleString()} 解鎖`;
+                        buyBtn.disabled = !enoughMoney;
+                        
+                        // 亮綠色 vs 暗灰色
+                        buyBtn.style.background = enoughMoney ? "#238636" : "#30363d";
+                        buyBtn.style.border = enoughMoney ? "1px solid #2ea043" : "1px solid #21262d";
+                        buyBtn.style.color = enoughMoney ? "#fff" : "#8b949e";
+                        buyBtn.style.cursor = enoughMoney ? "pointer" : "not-allowed";
+                        buyBtn.style.opacity = enoughMoney ? "1" : "0.6";
+                    }
+                }
+            }
+        }
+
+            // --- 如果已經解鎖，更新內部資訊 ---
+            if(un && l) {
+                // 每一個 getElementById 都要檢查是否存在 (使用 Safe Access)
+                const lvTag = document.getElementById(`lv-tag-${i}`);
+                if(lvTag) lvTag.innerText = `Lv.${l.lv}`;
+
+                const speedVal = document.getElementById(`speed-val-${i}`);
+                if(speedVal) {
+                    let baseSpeed = (15 - (l.lv * 1.3));
+                    let finalSpeed = baseSpeed * (1 - (currentPrestige.speed || 0));
+                    speedVal.innerText = Math.max(0.5, finalSpeed).toFixed(1);
+                }
                 
                 const upBtn = document.getElementById(`up-btn-${i}`);
+                const upCost = document.getElementById(`up-cost-${i}`);
                 const cost = Math.floor((l.lv + 1) * 400 * (l.lv + 1.2));
-                if(l.lv < 10) { document.getElementById(`up-cost-${i}`).innerText = `$${cost}`; upBtn.disabled = game.money < cost; }
-                else { document.getElementById(`up-cost-${i}`).innerText = "MAX"; upBtn.disabled = true; }
                 
-				// 確保你的代碼中這三行是連在一起執行的
-				document.getElementById(`dur-fill-${i}`).style.width = `${l.dur}%`; // 更新綠色條長度
-				
-				document.getElementById(`dur-text-${i}`).innerText = `${Math.floor(l.dur)}%`; // 更新百分比文字
-                document.getElementById(`repair-btn-${i}`).disabled = game.money < 30 || l.dur === 100;
+                if(upBtn && upCost) {
+                    if(l.lv < 10) { 
+                        upCost.innerText = `$${cost}`; 
+                        upBtn.disabled = game.money < cost; 
+                    } else { 
+                        upCost.innerText = "MAX"; 
+                        upBtn.disabled = true; 
+                    }
+                }
+                
+                const durFill = document.getElementById(`dur-fill-${i}`);
+                if(durFill) durFill.style.width = `${l.dur}%`;
+                
+                const durText = document.getElementById(`dur-text-${i}`);
+                if(durText) durText.innerText = `${Math.floor(l.dur)}%`;
+                
+                const repairBtn = document.getElementById(`repair-btn-${i}`);
+                if(repairBtn) repairBtn.disabled = game.money < 30 || l.dur === 100;
                 
                 const ab = document.getElementById(`auto-btn-${i}`);
                 if(ab) {
-                    if(l.hasAuto) { ab.innerText = l.isAuto?`🤖 L${i}: 智能運行`:`🤖 L${i}: 停止`; ab.style.background = l.isAuto?"#238636":"#d29922"; }
-                    else { ab.innerText = `部署 Line ${i} 自動化 ($500)`; ab.disabled = game.money < 500; }
+                    if(l.hasAuto) { 
+                        ab.innerText = l.isAuto ? `🤖 L${i}: 智能運行` : `🤖 L${i}: 停止`; 
+                        ab.style.background = l.isAuto ? "#238636" : "#d29922"; 
+                    } else { 
+                        ab.innerText = `部署 Line ${i} 自動化 ($500)`; 
+                        ab.disabled = game.money < 500; 
+                    }
                 }
+
                 if (!l.orders || l.orders.length === 0) genOrders(i);
-                renderOrders(i);
+                if (typeof renderOrders === 'function') renderOrders(i);
+
                 const deliverBtn = document.getElementById(`deliver-btn-${i}`);
-                if (l.selIdx !== -1 && l.orders[l.selIdx]) {
-                    const o = l.orders[l.selIdx]; const can = game.inv[o.type] >= o.qty;
+                if (deliverBtn && l.selIdx !== -1 && l.orders[l.selIdx]) {
+                    const o = l.orders[l.selIdx]; 
+                    const can = game.inv[o.type] >= o.qty;
                     deliverBtn.innerText = can ? `交付 ${o.qty} ${cfg[o.type].n}` : `材料不足`;
                     deliverBtn.disabled = !can || l.proc;
                 }
@@ -589,64 +650,159 @@ for(let i=1; i<=LINE_COUNT; i++) {
     }
 
     // ⚡ 生產執行邏輯：處理訂單、扣除耐久及計算利潤
-    async function processOrder(id) {
-        const l = game.lines[id]; if(l.proc || l.selIdx === -1) return;
-        const o = l.orders[l.selIdx]; l.proc = true; 
-        game.inv[o.type] -= o.qty; updateUI();
-        const partsToClear = [];
-        for(let i=1; i<=o.qty; i++) {
-            const p = await runPart(id, o.type, i);
-            partsToClear.push(p);
-            l.dur = Math.max(0, l.dur - 2); updateUI();
-        }
-        setTimeout(() => {
-            partsToClear.forEach(p => p.remove());
-            const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
-            game.money += profit;
-            document.getElementById(`delivery-info-${id}`).innerHTML = `<span style="color:#3fb950; font-weight:bold;">✅ 成功交付!</span><br><span style="color:#f2cc60">+$${profit}</span>`;
-            genOrders(id); l.proc = false; l.selIdx = -1; updateUI(); 
-        }, 800);
+	// ⚡ 這個函數負責檢查資源、扣除消耗、啟動循環生產並結算利潤。
+	async function processOrder(id) {
+    // 獲取生產線對象；如果正在生產中 (l.proc) 或未選中訂單 (selIdx === -1)，則終止執行
+    const l = game.lines[id]; if(l.proc || l.selIdx === -1) return;
+    
+    // 獲取當前選中的訂單對象；將生產線狀態設為「生產中」
+    const o = l.orders[l.selIdx]; l.proc = true; 
+    
+    // 從全局庫存中扣除該訂單所需的原材料數量；更新 UI 顯示
+    game.inv[o.type] -= o.qty; updateUI();
+    
+    // 建立數組，用來存放生產完成的零件 DOM 元素，方便後續清理
+    const partsToClear = [];
+    
+    // 根據訂單要求的數量 (o.qty) 循環執行零件生產
+    for(let i=1; i<=o.qty; i++) {
+        // 調用 runPart 等待單個零件完成生產動畫與檢測，返回該零件的 DOM
+        const p = await runPart(id, o.type, i);
+        if (p) partsToClear.push(p); // 將完成的零件加入清理列表
+        
+        // 每次生產一個零件，生產線耐久度減少 2，最低不低於 0；更新 UI
+        l.dur = Math.max(0, l.dur - 2); updateUI();
     }
+    
+    // 所有零件生產完成後，延遲 800 毫秒執行結算（模擬打包/交付感）
+    setTimeout(() => {
+        // 移除所有在畫面上顯示的零件實體
+		partsToClear.forEach(p => { if(p && p.remove) p.remove(); });
+        
+        // 計算利潤：數量 * 單價 * 生產線倍率 * (1 + 聲望加成)，取整數
+        const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
+        
+        // 增加金錢並更新交付狀態文字
+        game.money += profit;
+		
+		let feedbackHTML = ""; // 用來存放顯示在方格內的文字
+
+	
+		// ==========================================
+        // ✨ 新增：客戶回饋邏輯 (加入在此處)
+        // ==========================================
+		// 25% 機率觸發回饋
+        if (Math.random() < 1.0) {
+			const feedbackList = [
+				{ msg: "「品質優良，下次再買！」", bonus: 0.2, color: "#3fb950" },
+				{ msg: "「交貨準時，效率極高。」", bonus: 0.1, color: "#58a6ff" },
+				{ msg: "「包裝完整，服務不錯。」", bonus: 0.05, color: "#bc8cff" }
+			];
+			
+			// 25% 機率獲得客戶小費
+            const f = feedbackList[Math.floor(Math.random() * feedbackList.length)];
+            const extraTip = Math.floor(profit * f.bonus); // 根據該訂單利潤給小費
+            game.money += extraTip;
+			
+			// 構建要顯示在貨物下面的一行小字
+            feedbackHTML = `<div style="color:${f.color}; font-size:12px; margin-top:4px; font-style:italic;">
+                ${f.msg} (+$${extraTip})
+            </div>`;
+            
+            // 在日誌欄顯示客戶的聲音
+			// 同時在日誌欄備份一份（可選）
+            if (typeof addLog === 'function') 
+				addLog(`💬 Line ${id}：${f.msg}`, f.color);
+			}
+       
+        // ==========================================
+		
+		// 更新交付狀態文字（記得加入 feedbackHTML）
+		const displayEl = document.getElementById(`delivery-info-${id}`);
+        if (displayEl) {
+            displayEl.innerHTML = `
+                <span style="color:#3fb950; font-weight:bold;">✅ 成功交付!</span><br>
+                <span style="color:#f2cc60">+$${profit}</span>
+                ${feedbackHTML}
+            `;
+        }
+		
+        // 重新生成新訂單，重置生產線狀態為空閒，更新 UI
+        genOrders(id); l.proc = false; l.selIdx = -1; updateUI(); 
+    }, 800);
+}
+
 
     // 📦 零件運動與 QA 檢測動畫：實現零件在輸送帶上的位移與質量判定
-    async function runPart(lId, type, idx) {
-        const part = document.createElement('div');
-        part.className = `part ${cfg[type].c}`; part.innerText = idx;
-        part.style.left = "30px"; part.style.top = "80px";
-        document.getElementById(`line-group-${lId}`).appendChild(part);
-        const qa = document.getElementById(`qa-status-${lId}`);
-        await new Promise(r => setTimeout(r, 50));
-        part.style.left = "270px"; await new Promise(r => setTimeout(r, 600));
+	// 📦 這個函數處理單個零件的動畫流程：
+	// 📦 移動 -> 加工等待 -> QA 檢測 ->（若失敗則重走流程）-> 完成。
+	async function runPart(lId, type, idx) {
+    // 創建零件的 div 元素，根據類型賦予顏色類名，並顯示其序號
+    const part = document.createElement('div');
+    part.className = `part ${cfg[type].c}`; part.innerText = idx;
+    
+    // 設置零件初始位置（起點）
+    part.style.left = "30px"; part.style.top = "80px";
+    
+    // 將零件添加到對應生產線的容器中
+    document.getElementById(`line-group-${lId}`).appendChild(part);
+    const qa = document.getElementById(`qa-status-${lId}`);
+    
+    // 短暫延遲確保 DOM 已渲染，然後移動零件到加工區 (270px)
+    await new Promise(r => setTimeout(r, 50));
+    part.style.left = "270px"; await new Promise(r => setTimeout(r, 600));
 
-        while(true) {
-            let baseSpeed = (15 - (game.lines[lId].lv * 1.3));
-            let timeSec = Math.max(0.5, baseSpeed * (1 - currentPrestige.speed));
-            const bar = document.getElementById(`prog-bar-${lId}`);
-            document.getElementById(`prog-cont-${lId}`).style.visibility = 'visible';
-            bar.style.transition = 'none'; bar.style.width = '100%'; void bar.offsetWidth;
-            bar.style.transition = `width ${timeSec}s linear`; bar.style.width = '0%';
-            let rem = timeSec;
-            const ti = setInterval(() => { rem -= 0.1; document.getElementById(`timer-text-${lId}`).innerText = `${Math.max(0, rem).toFixed(1)}s`; if(rem <=0) clearInterval(ti); }, 100);
-            await new Promise(r => setTimeout(r, timeSec * 1000));
-            document.getElementById(`prog-cont-${lId}`).style.visibility = 'hidden';
-            
-            part.style.left = "580px"; if(qa) { qa.innerText = "⚙️ 檢測中..."; qa.style.color = "#58a6ff"; }
+    // 使用死循環，直到零件通過 QA 檢測才會 return
+    while(true) {
+        // 計算加工速度：基礎時間隨等級 (lv) 降低，並受聲望 (Prestige) 加速加成
+        let baseSpeed = (15 - (game.lines[lId].lv * 1.3));
+        let timeSec = Math.max(0.5, baseSpeed * (1 - currentPrestige.speed));
+        
+        // 顯示進度條與倒計時文字
+        const bar = document.getElementById(`prog-bar-${lId}`);
+        document.getElementById(`prog-cont-${lId}`).style.visibility = 'visible';
+        
+        // 重置進度條動畫（先設為 none 瞬間回到 100%，再啟動 transition）
+        bar.style.transition = 'none'; bar.style.width = '100%'; void bar.offsetWidth;
+        bar.style.transition = `width ${timeSec}s linear`; bar.style.width = '0%';
+        
+        // 設置定時器更新 UI 上的剩餘秒數文字
+        let rem = timeSec;
+        const ti = setInterval(() => { 
+            rem -= 0.1; 
+            document.getElementById(`timer-text-${lId}`).innerText = `${Math.max(0, rem).toFixed(1)}s`; 
+            if(rem <=0) clearInterval(ti); 
+        }, 100);
+        
+        // 等待加工時間結束，隱藏進度條容器
+        await new Promise(r => setTimeout(r, timeSec * 1000));
+        document.getElementById(`prog-cont-${lId}`).style.visibility = 'hidden';
+        
+        // 將零件移至 QA 檢測區 (580px) 並更新狀態文字
+        part.style.left = "580px"; 
+        if(qa) { qa.innerText = "⚙️ 檢測中..."; qa.style.color = "#58a6ff"; }
+        await new Promise(r => setTimeout(r, 600));
+
+        // 計算失敗率：基礎 5% + (耐久度越低失敗率越高)，最後減去聲望加成
+        let failChance = 0.05 + ((100 - game.lines[lId].dur)/200);
+        let finalFailChance = Math.max(0, failChance - currentPrestige.qa);
+        
+        // 判定隨機數是否小於失敗率
+        if(Math.random() < finalFailChance) {
+            // 檢測失敗：更新文字為紅色，零件送回加工點 (270px)，重新循環 while 內容
+            qa.innerText = "❌ 不合格"; qa.style.color = "#f85149";
+            part.style.left = "270px"; await new Promise(r => setTimeout(r, 800));
+        } else {
+            // 檢測成功：更新文字為綠色，零件移至終點 (855px)
+            qa.innerText = "✅ 合格"; qa.style.color = "#3fb950";
+            part.style.left = "855px"; part.style.top = "85px";
             await new Promise(r => setTimeout(r, 600));
-
-            let failChance = 0.05 + ((100 - game.lines[lId].dur)/200);
-            let finalFailChance = Math.max(0, failChance - currentPrestige.qa);
             
-            if(Math.random() < finalFailChance) {
-                qa.innerText = "❌ 不合格"; qa.style.color = "#f85149";
-                part.style.left = "270px"; await new Promise(r => setTimeout(r, 800));
-            } else {
-                qa.innerText = "✅ 合格"; qa.style.color = "#3fb950";
-                part.style.left = "855px"; part.style.top = "85px";
-                await new Promise(r => setTimeout(r, 600));
-                return part;
-            }
+            // 返回零件 DOM 對象，跳出 while 循環，結束此零件的 runPart 函數
+            return part;
         }
     }
+}
 
     // 💰 資源與維護函數
     function buy(t) { if(game.money >= cfg[t].buy) { game.money -= cfg[t].buy; game.inv[t]++; updateUI(); } }
@@ -761,42 +917,114 @@ for(let i=1; i<=LINE_COUNT; i++) {
         });
     }
 
-    // 💾 存檔與讀取
+	// ==========================================
+    // 💾 1. 存檔與讀取系統 (確保結構完整)
+    // ==========================================
     function saveGame() { 
         game.prices = JSON.parse(JSON.stringify(cfg));
         game.customPrestige = JSON.parse(JSON.stringify(PRESTIGE_LEVELS));
         localStorage.setItem('factory_v12_3_save', JSON.stringify(game)); 
         addLog("💾 系統自動存檔完成", "#58a6ff"); 
     }
+
     function loadGame() { 
         const s = localStorage.getItem('factory_v12_3_save'); 
-        if(s) { 
-            const loaded = JSON.parse(s); Object.assign(game, loaded);
+        if(!s) { updateUI(); return; }
+        try {
+            const loaded = JSON.parse(s); 
+            Object.assign(game, loaded);
             if(game.prices) cfg = JSON.parse(JSON.stringify(game.prices));
             if(game.customPrestige) PRESTIGE_LEVELS = JSON.parse(JSON.stringify(game.customPrestige));
-            for(let i=1; i<=LINE_COUNT; i++) game.lines[i].proc = false;
-        } updateUI(); 
+            
+            // 強制重置生產狀態，防止存檔卡死畫面
+            if(game.lines) {
+                for(let i=1; i<=LINE_COUNT; i++) {
+                    if(game.lines[i]) game.lines[i].proc = false;
+                }
+            }
+        } catch(e) { console.error("存檔損壞:", e); }
+        updateUI(); 
     }
-    function resetGame() { if(confirm("確定重置嗎？")) { localStorage.clear(); location.reload(); } }
 
-    // 🚀 啟動遊戲引擎
-    initFloor();
-	renderShop(); // <--- 加入這行，確保一開遊戲就生成按鈕
-	loadGame();
-    setInterval(() => { for(let i=1; i<=LINE_COUNT; i++) { if(game.unlocked[i] && game.lines[i].isAuto && !game.lines[i].proc) autoCycle(i); } }, 1500);
-
-    // 🤖 自動化運行邏輯：自動挑選高利潤訂單並補貨
+    function resetGame() { 
+        if(confirm("確定重置嗎？數據將永久刪除。")) { 
+            localStorage.clear(); 
+            location.reload(); 
+        } 
+    }
+	
+	// ==========================================
+    // 🤖 2. 自動化運行邏輯：自動挑選高利潤訂單並補貨
+    // ==========================================
     async function autoCycle(id) {
-        const l = game.lines[id]; if (!l.orders || l.orders.length === 0) return;
-        let bestIdx = 0; let maxP = -1;
-        l.orders.forEach((o, idx) => { let p = o.qty * cfg[o.type].r; if(p > maxP) { maxP = p; bestIdx = idx; } });
-        l.selIdx = bestIdx; const o = l.orders[l.selIdx];
-        if (game.inv[o.type] < o.qty) {
-            const need = o.qty - game.inv[o.type]; const cost = need * cfg[o.type].buy;
-            if(game.money >= cost) { game.money -= cost; game.inv[o.type] += need; updateUI(); } else return;
+        const l = game.lines[id]; 
+        if (!l.orders || l.orders.length === 0) return;
+        let bestIdx = 0; 
+        let maxP = -1;
+        
+        // 尋找最高利潤訂單
+        l.orders.forEach((o, idx) => {
+            const p = o.qty * cfg[o.type].r;
+            if(p > maxP) { maxP = p; bestIdx = idx; }
+        });
+
+        l.selIdx = bestIdx;
+        const o = l.orders[l.selIdx];
+        
+        // 自動補貨機制
+        if(game.inv[o.type] < o.qty) {
+            const need = o.qty - game.inv[o.type];
+            const cost = need * cfg[o.type].buy;
+            if(game.money >= cost) {
+                game.money -= cost;
+                game.inv[o.type] += need;
+                updateUI();
+            } else { return; } // 錢不夠就等下次
         }
-        processOrder(id);
+        
+        // 執行交付
+        if(game.inv[o.type] >= o.qty && !l.proc) {
+            // 呼叫原本的 processOrder 函數
+            if(typeof processOrder === 'function') processOrder(id);
+        }
     }
+	
+	// ==========================================
+    // 🚀 3. 唯一的啟動引擎 (嚴格順序)
+    // ==========================================
+    function startEngine() {
+        try {
+            console.log("Step 1: 繪製工廠地面...");
+            initFloor();   
+            
+            console.log("Step 2: 繪製商店區域...");
+            renderShop();  
+            
+            console.log("Step 3: 載入玩家數據...");
+            loadGame();    
+            
+            // 啟動主計時循環 (自動化檢查)
+            setInterval(() => { 
+				for(let i=1; i<=LINE_COUNT; i++) { 
+                    if(game.unlocked[i] && game.lines[i] && game.lines[i].isAuto && !game.lines[i].proc) {
+                        if(typeof autoCycle === 'function') autoCycle(i);
+                    }
+                } 
+            }, 1500);
+
+            // 每3分鐘自動存檔一次
+            setInterval(saveGame, 18000);
+            
+            console.log("✅ 遊戲所有系統啟動完成！");
+        } catch (err) {
+            console.error("❌ 啟動過程發生錯誤:", err);
+            // 萬一出錯，至少顯示在遊戲日誌中
+            if(typeof addLog === 'function') addLog("系統啟動異常: " + err.message, "#ff4d4d");
+        }
+    }
+
+    // 啟動點 (整個檔案只會執行這一次)
+    startEngine();
 </script>
 </body>
 </html>
