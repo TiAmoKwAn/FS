@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>AI 工廠模擬器 - v12.0.13</title>
+    <title>AI 工廠模擬器 - v12.0.15</title>
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
@@ -187,6 +187,12 @@
         <div id="money-val" class="stat-value">$0</div>
     </div>
 
+    <!-- 🧪 研究點數顯示方塊：展示玩家目前擁有的研究點數 -->	
+	<div class="stat-item">
+		<div class="stat-label">🧪 研究點數</div>
+		<div id="rp-val" class="stat-value" style="color: #a371f7;">0</div>
+	</div>
+
     <!-- 🪵 木材顯示方塊：當前倉庫木材庫存 -->
     <div class="stat-box">
         <div class="stat-label">🪵 木材</div>
@@ -229,6 +235,28 @@
 <!-- 🏭 工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
 <div class="factory-floor" id="floor">
     <div id="lines-container"></div>
+</div>
+
+    <!-- 👨‍🔧 研發實驗室面板面板 -->
+<div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 1040px; margin-left: auto; margin-right: auto;">
+    <h2 style="color: #a371f7; margin-top:0;">👨‍🔧 研發實驗室 (Tech Tree)</h2>
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div class="shop-item" style="flex:1; min-width:200px;">
+            <div style="font-weight:bold; color:#a371f7;">🛠️ 全自動維修</div>
+            <div style="font-size:12px; color:#8b949e; margin:5px 0;">設備健康度 < 20% 時自動消耗 $30 修復</div>
+            <button id="tech-repair-btn" class="action-btn" style="width:100%;" onclick="buyTech('autoRepair', 50)">解鎖 (50 RP)</button>
+        </div>
+        <div class="shop-item" style="flex:1; min-width:200px;">
+            <div style="font-weight:bold; color:#a371f7;">⚡ 加班模式</div>
+            <div style="font-size:12px; color:#8b949e; margin:5px 0;">生產速度 +50%，但健康度損耗速度加倍</div>
+            <button id="tech-overtime-btn" class="action-btn" style="width:100%;" onclick="buyTech('overtime', 150)">解鎖 (150 RP)</button>
+        </div>
+        <div class="shop-item" style="flex:1; min-width:200px;">
+            <div style="font-weight:bold; color:#a371f7;">📦 高階訂單</div>
+            <div style="font-size:12px; color:#8b949e; margin:5px 0;">訂單將有機率出現 3 種複合材料，利潤更高</div>
+            <button id="tech-order-btn" class="action-btn" style="width:100%;" onclick="buyTech('highOrder', 300)">解鎖 (300 RP)</button>
+        </div>
+    </div>
 </div>
 
 <!-- 📱 底部 UI 面板：採用三欄式佈局，包含採購、自動化與日誌 -->
@@ -302,12 +330,18 @@ for(let i=1; i<=LINE_COUNT; i++) {
     let game = {
         money: 100,
 		maxMoney: 0, // ✨ 新增：紀錄歷史最高資金
-        inv: {},
+		inv: {},
         unlocked: {},
-        lines: {},
-        prices: null,
+		lines: {},
+		prices: null,
         customPrestige: null,
-        adminClicks: 0 
+        adminClicks: 0,
+		researchPoints: 0,	// 🧪 研究點數
+		tech: {
+			autoRepair: false,
+			overtime: false,
+			highOrder: false
+		}
     };
 	
 	// 新增這段：自動根據 cfg 建立所有材料庫存
@@ -538,7 +572,11 @@ container.innerHTML += `
         // 1. 更新金錢 (先檢查 money-val 是否存在)
         const moneyValEl = document.getElementById('money-val');
         if(moneyValEl) moneyValEl.innerText = `$${Math.floor(game.money).toLocaleString()}`;
-        
+		
+		// ✨ 新增：更新研究點數
+        const rpValEl = document.getElementById('rp-val');
+        if(rpValEl) rpValEl.innerText = (game.researchPoints || 0).toLocaleString();
+		
         // 2. 更新資源庫存
         Object.keys(cfg).forEach(t => {
             const valEl = document.getElementById(`${t}-val`);
@@ -594,10 +632,16 @@ container.innerHTML += `
                 const lvTag = document.getElementById(`lv-tag-${i}`);
                 if(lvTag) lvTag.innerText = `Lv.${l.lv}`;
 
-                const speedVal = document.getElementById(`speed-val-${i}`);
+				const speedVal = document.getElementById(`speed-val-${i}`);
                 if(speedVal) {
                     let baseSpeed = (15 - (l.lv * 1.3));
-                    let finalSpeed = baseSpeed * (1 - (currentPrestige.speed || 0));
+                    
+                    // ✨ 嵌入點：獲取科技加成
+                    let otBonus = (game.tech && game.tech.overtime) ? 0.5 : 0; 
+                    
+                    // ✨ 嵌入點：將 otBonus 減去，速度會變更快
+                    let finalSpeed = baseSpeed * (1 - (currentPrestige.speed || 0) - otBonus);
+                    
                     speedVal.innerText = Math.max(0.5, finalSpeed).toFixed(1);
                 }
                 
@@ -647,6 +691,24 @@ container.innerHTML += `
                 }
             }
         }
+		
+		// ✨ 新增：更新科技按鈕狀態
+        if(game.tech) {
+            const techMap = { 
+                autoRepair: 'tech-repair-btn', 
+                overtime: 'tech-overtime-btn', 
+                highOrder: 'tech-order-btn' 
+            };
+            Object.keys(techMap).forEach(key => {
+                const btn = document.getElementById(techMap[key]);
+                if(btn && game.tech[key]) {
+                    btn.innerText = "已解鎖";
+                    btn.disabled = true;
+                    btn.style.background = "#21262d";
+                    btn.style.color = "#8b949e";
+                }
+            });
+        }
     }
 
     // ⚡ 生產執行邏輯：處理訂單、扣除耐久及計算利潤
@@ -674,24 +736,39 @@ container.innerHTML += `
         l.dur = Math.max(0, l.dur - 2); updateUI();
     }
     
-    // 所有零件生產完成後，延遲 800 毫秒執行結算（模擬打包/交付感）
-    setTimeout(() => {
-        // 移除所有在畫面上顯示的零件實體
-		partsToClear.forEach(p => { if(p && p.remove) p.remove(); });
-        
-        // 計算利潤：數量 * 單價 * 生產線倍率 * (1 + 聲望加成)，取整數
-        const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
-        
-        // 增加金錢並更新交付狀態文字
-        game.money += profit;
+	// 所有零件生產完成後，延遲 800 毫秒執行結算（模擬打包/交付感）
+	setTimeout(() => {
+        partsToClear.forEach(p => { if(p && p.remove) p.remove(); });
 		
-		let feedbackHTML = ""; // 用來存放顯示在方格內的文字
+		// 確保獲取當前訂單資料
+        const o = l.orders[l.selIdx];
+        if (!o) return;
+        
+        // 1. 計算利潤 (高階訂單 1.5 倍利潤)
+        const bonus = (o.isHigh) ? 1.5 : 1.0;
+        const profit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus) * bonus);
+        game.money += profit;
+        
+        // 2. 增加研究點數
+        game.researchPoints = (game.researchPoints || 0) + (o.isHigh ? 2 : 1);
 
-	
+        // 3. 計算損耗 (如果有 tech 且開啟加班)
+        let wear = (2 + l.lv * 0.5);
+        if (game.tech && game.tech.overtime) wear *= 2;
+        l.dur = Math.max(0, l.dur - wear);
+
+        // 4. 全自動維修
+        if (game.tech && game.tech.autoRepair && l.dur < 20 && game.money >= 30) {
+            game.money -= 30;
+            l.dur = 100;
+            if(typeof addLog === 'function') addLog(`🤖 Line ${id} 已觸發自動維修`, "#2ea043");
+        }
+		
 		// ==========================================
-        // ✨ 新增：客戶回饋邏輯 (加入在此處)
+        // ✨ 新增：客戶回饋邏輯 (加入在 setTimeout 此處)
         // ==========================================
 		// 25% 機率觸發回饋
+		let feedbackHTML = ""; // 用來存放顯示在方格內的文字
         if (Math.random() < 1.0) {
 			const feedbackList = [
 				{ msg: "「品質優良，下次再買！」", bonus: 0.2, color: "#3fb950" },
@@ -886,25 +963,36 @@ container.innerHTML += `
     
     function inject(t, a) { if(t==='money') game.money+=a; else game.inv[t]+=a; updateUI(); }
 
-    // 📋 訂單系統：生成與渲染
+	// 📋 訂單系統：生成與渲染
 	function genOrders(id) {
-		// 1. 根據目前產線 ID，過濾出符合 range 要求的材料
-		const availableTypes = Object.keys(cfg).filter(type => {
-			const range = cfg[type].range || [1, 100]; 
-			return id >= range[0] && id <= range[1];
-		});
+        const availableTypes = Object.keys(cfg).filter(type => {
+            const range = cfg[type].range || [1, 100]; 
+            return id >= range[0] && id <= range[1];
+        });
 
-		game.lines[id].orders = [];
+        game.lines[id].orders = [];
     
-		// 2. 從符合資格的材料中抽取 3 個訂單
-		for(let i=0; i<3; i++) {
-			const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-			game.lines[id].orders.push({ 
-				type: randomType, 
-				qty: Math.floor(Math.random() * 5) + 1 
-			});
-		}
-	}
+        for(let i=0; i<3; i++) {
+            const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+            
+            // ✨ 邏輯：判斷是否產生高階訂單
+            let isHigh = false;
+            let qty = Math.floor(Math.random() * 5) + 1;
+
+            if (game.tech && game.tech.highOrder && Math.random() < 0.3) {
+                isHigh = true;
+                qty = Math.floor(qty * 2.5); // 難度提升
+            }
+
+            game.lines[id].orders.push({ 
+                type: randomType, 
+                qty: qty,
+                isHigh: isHigh 
+            });
+        }
+    }
+		
+		
     function renderOrders(id) {
         const list = document.getElementById(`order-list-${id}`); if(!list) return;
         list.innerHTML = '';
@@ -1025,6 +1113,20 @@ container.innerHTML += `
 
     // 啟動點 (整個檔案只會執行這一次)
     startEngine();
+	
+	// 🧪 研發實驗室購買邏輯 (加在檔案結尾即可)
+    function buyTech(key, cost) {
+        if (!game.tech) game.tech = { autoRepair: false, overtime: false, highOrder: false };
+        if (game.researchPoints >= cost && !game.tech[key]) {
+            game.researchPoints -= cost;
+            game.tech[key] = true;
+            if(typeof addLog === 'function') addLog(`🧪 研發成功！`, "#a371f7");
+            updateUI();
+            saveGame();
+        } else if (game.researchPoints < cost) {
+            if(typeof addLog === 'function') addLog("🚫 研究點數不足", "#ff4d4d");
+        }
+    }
 </script>
 </body>
 </html>
