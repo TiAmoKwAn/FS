@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>AI 工廠模擬器 - v12.0.15</title>
+    <title>AI 工廠模擬器 - v12.0.16</title>
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
@@ -316,15 +316,46 @@ for(let i=1; i<=LINE_COUNT; i++) {
     };
 }
 
-    // 📦 資源屬性：n 為名稱，c 為 CSS 類，r 為基礎售價，buy 為買入價格
-	let cfg = { 
-		wood:  { n: '木材', c: 'part-wood',  r: 15,  buy: 5,  range: [1, 100] }, // 1號產線以上都可
-		stone: { n: '石頭', c: 'part-stone', r: 30,  buy: 10, range: [1, 100] }, 
-		iron:  { n: '鋼鐵', c: 'part-iron',  r: 55,  buy: 15, range: [1, 100] },
-		core:  { n: '核心', c: 'part-core',  r: 150, buy: 50, range: [3, 100] }, // 3號線以上才有
-		diamond: { n: '鑽石', c: 'part-diamond', r: 500, buy: 200, range: [8, 10] }, // 限制在 8~10 線
-		gold: { n: '黃金', c: 'part-gold', r: 1000, buy: 300, range: [8, 10] } // 限制在 8~10 線
-	};
+// ==========================================
+// [數據驅動層] 核心配置中心 (v13.0.1)
+// 📦 資源屬性定義：
+// n: 名稱 | c: CSS類 | r: 基礎售價 | buy: 買入價格 
+// range: 產線出現區間 [起始線, 結束線]
+// workload: 加工負荷 (1.0為標準, 數字越大加工越久)
+// requiredLv: 解鎖所需稱號等級 (1:初出茅廬, 5:產業支柱 等)
+// ==========================================
+const MATERIALS_CONFIG = { 
+    wood: { 
+        n: '木材', c: 'part-wood', r: 15, buy: 5, 
+        range: [1, 10], workload: 1.0, requiredLv: 1 
+    }, 
+    stone: { 
+        n: '石頭', c: 'part-stone', r: 30, buy: 10, 
+        range: [1, 10], workload: 1.2, requiredLv: 1 
+    }, 
+    iron: { 
+        n: '鋼鐵', c: 'part-iron', r: 55, buy: 15, 
+        range: [2, 10], workload: 1.5, requiredLv: 2 
+    },
+    core: { 
+        n: '核心', c: 'part-core', r: 150, buy: 50, 
+        range: [4, 10], workload: 2.0, requiredLv: 4 
+    },
+    diamond: { 
+        n: '鑽石', c: 'part-diamond', r: 500, buy: 200, 
+        range: [7, 10], workload: 3.0, requiredLv: 6 
+    },
+    gold: { 
+        n: '黃金', c: 'part-gold', r: 1200, buy: 400, 
+        range: [8, 10], workload: 2.5, requiredLv: 7 
+    }
+};
+
+// 為了保持與舊邏輯兼容，建立一個指向配置的引用
+let cfg = MATERIALS_CONFIG; 
+// ==========================================
+// [數據驅動層] 核心配置中心 完結 (v13.0.1)
+// ==========================================
 
     // 💾 遊戲主狀態對象
     let game = {
@@ -355,16 +386,6 @@ for(let i=1; i<=LINE_COUNT; i++) {
 
     let currentPrestige = PRESTIGE_LEVELS[0];
 
-    // 初始化 5 條產線數據
-    //for(let i=1; i<=LINE_COUNT; i++) { game.lines[i] = { lv: 0, dur: 100, isAuto: false, hasAuto: false, proc: false, selIdx: -1, orders: [] }; }
-
-// 原本的初始化
-//for(let i=1; i<=LINE_COUNT; i++) { 
-//    if(!game.lines[i]) { // 確保讀取存檔時不會覆蓋已有數據
-//        game.lines[i] = { lv: 0, dur: 100, isAuto: false, hasAuto: false, proc: false, selIdx: -1, orders: [] }; 
-//    }
-//    if(i === 1) game.unlocked[i] = true; // 第一條預設解鎖
-//}
 
     // 📜 系統日誌功能
     function addLog(m, c='#3fb950') { 
@@ -963,35 +984,180 @@ container.innerHTML += `
     
     function inject(t, a) { if(t==='money') game.money+=a; else game.inv[t]+=a; updateUI(); }
 
-	// 📋 訂單系統：生成與渲染
-	function genOrders(id) {
-        const availableTypes = Object.keys(cfg).filter(type => {
-            const range = cfg[type].range || [1, 100]; 
-            return id >= range[0] && id <= range[1];
+// ==========================================
+// [邏輯處理層] 智能訂單生成器 (v13.0.1)
+// 根據產線編號 (id) 與玩家當前稱號等級 (currentPrestige.lv) 過濾可用訂單
+// ==========================================
+function genOrders(id) {
+    // 根據材料配置進行過濾
+    const availableTypes = Object.keys(MATERIALS_CONFIG).filter(type => {
+        const item = MATERIALS_CONFIG[type];
+        const range = item.range || [1, 100];
+        const reqLv = item.requiredLv || 1;
+        
+        // 條件：產線在範圍內 且 玩家稱號等級已達標
+        return id >= range[0] && id <= range[1] && currentPrestige.lv >= reqLv;
+    });
+
+    // 如果沒有符合條件的材料（防錯機制），至少提供木材
+    if (availableTypes.length === 0) availableTypes.push('wood');
+
+    game.lines[id].orders = [];
+
+    for(let i=0; i<3; i++) {
+        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+        const itemCfg = MATERIALS_CONFIG[randomType];
+        
+        let isHigh = false;
+        let qty = Math.floor(Math.random() * 5) + 1;
+
+        // 判斷是否產生高階訂單 (需解鎖相關科技)
+        if (game.tech && game.tech.highOrder && Math.random() < 0.3) {
+            isHigh = true;
+            qty = Math.floor(qty * 2.5);
+        }
+
+        game.lines[id].orders.push({ 
+            type: randomType, 
+            qty: qty,
+            isHigh: isHigh 
         });
+    }
+}
+// ==========================================
+// [邏輯處理層] 智能訂單生成器 完結 (v13.0.1)
+// ==========================================
 
-        game.lines[id].orders = [];
-    
-        for(let i=0; i<3; i++) {
-            const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-            
-            // ✨ 邏輯：判斷是否產生高階訂單
-            let isHigh = false;
-            let qty = Math.floor(Math.random() * 5) + 1;
+// ==========================================
+// [邏輯處理層] 核心生產控制器 (v13.0.4)
+// ⚙️ 功能：統一管理產線啟動，整合數據驅動的時間計算
+// 📦 屬性：id 為產線編號
+// ==========================================
+function startProc(id) {
+    // 1. 安全檢查：產線是否存在、是否解鎖、是否正在加工、是否損壞
+    if (!game.lines[id] || !game.unlocked[id]) return;
+    if (game.lines[id].proc || game.lines[id].broken) return;
 
-            if (game.tech && game.tech.highOrder && Math.random() < 0.3) {
-                isHigh = true;
-                qty = Math.floor(qty * 2.5); // 難度提升
-            }
+    // 2. 訂單檢查：如果該產線沒有訂單，則無法開工
+    if (!game.lines[id].orders || game.lines[id].orders.length === 0) {
+        if(typeof addLog === 'function') addLog(`產線 ${id} 目前沒有訂單！`, "#ff4d4d");
+        return;
+    }
 
-            game.lines[id].orders.push({ 
-                type: randomType, 
-                qty: qty,
-                isHigh: isHigh 
-            });
+    // 3. 獲取當前第一筆訂單數據
+    const order = game.lines[id].orders[0];
+    const itemCfg = MATERIALS_CONFIG[order.type]; // 讀取 v13.0.1 定義的配置
+
+    // 4. 計算加工時間 (數據驅動)
+    // 公式：基礎 3000ms * 材料負荷 (workload) / 效率加成
+    const baseTime = 3000;
+    const itemWorkload = itemCfg ? (itemCfg.workload || 1.0) : 1.0;
+    const speedBuff = game.lines[id].speedBuff || 1; 
+    const duration = (baseTime * itemWorkload) / speedBuff;
+
+    // 5. 寫入生產狀態
+    game.lines[id].proc = {
+        type: order.type,
+        qty: order.qty,
+        timer: 0,
+        limit: duration,
+        isHigh: order.isHigh || false
+    };
+
+    // 6. 更新 UI 介面 (若有該函數)
+    if (typeof renderLine === 'function') renderLine(id);
+
+    // 7. 記錄日誌
+    if (typeof addLog === 'function') {
+        const name = itemCfg ? itemCfg.n : "未知材料";
+        addLog(`產線 ${id} 啟動：加工 ${name} x${order.qty}，預計 ${(duration/1000).toFixed(1)}s`, "#58a6ff");
+    }
+}
+// ==========================================
+// [邏輯處理層] 核心生產控制器 完結 (v13.0.4)
+// ==========================================
+		
+// ==========================================
+// [交互介面層] 產線點擊處理器 (v13.0.5)
+// 🖱️ 功能：處理玩家點擊產線的動作，並接入數據驅動控制器
+// ==========================================
+function handleLineClick(id) {
+    // 如果產線還沒解鎖，執行解鎖邏輯
+    if (!game.unlocked[id]) {
+        if (typeof unlockLine === 'function') unlockLine(id);
+        return;
+    }
+
+    // 如果產線壞了，執行維修邏輯
+    if (game.lines[id].broken) {
+        if (typeof repairLine === 'function') repairLine(id);
+        return;
+    }
+
+    // 如果產線沒在加工，則嘗試啟動生產
+    if (!game.lines[id].proc) {
+        // 呼叫我們剛剛建立的數據驅動控制器
+        startProc(id);
+    } else {
+        // 如果正在加工，點擊可能代表加速或其他互動（目前維持原樣）
+        if (typeof addLog === 'function') addLog(`產線 ${id} 正在全力運作中...`, "#8b949e");
+    }
+}
+// ==========================================
+// [交互介面層] 產線點擊處理器 完結 (v13.0.5)
+// ==========================================
+
+// ==========================================
+// [數據驅動層] 自動化訂單結算系統 (v13.0.6)
+// 💰 功能：當生產完成時，根據材料配置自動結算金錢與經驗
+// 📦 屬性：id 為產線編號
+// ==========================================
+function finishProc(id) {
+    const line = game.lines[id];
+    if (!line.proc) return;
+
+    const type = line.proc.type;
+    const isHigh = line.proc.isHigh;
+    const itemCfg = MATERIALS_CONFIG[type];
+
+    if (itemCfg) {
+        // 1. 基礎售價由配置定義
+        let reward = itemCfg.r;
+
+        // 2. 高階訂單加成 (2.5倍)
+        if (isHigh) reward *= 2.5;
+
+        // 3. 稱號加成 (每級加 5%)
+        const prestigeBonus = 1 + (currentPrestige.lv * 0.05);
+        const finalReward = Math.floor(reward * prestigeBonus);
+
+        // 4. 更新金錢與總產量
+        game.money += finalReward;
+        game.totalProduced = (game.totalProduced || 0) + 1;
+
+        // 5. 記錄日誌
+        if (typeof addLog === 'function') {
+            const color = isHigh ? "#ffca28" : "#7ee787";
+            addLog(`產線 ${id} 完成 ${itemCfg.n}！獲得 $${finalReward}`, color);
         }
     }
-		
+
+    // 6. 移除已完成的訂單並清理生產狀態
+    line.orders.shift();
+    line.proc = null;
+
+    // 7. 如果訂單空了，自動生成新訂單
+    if (line.orders.length === 0) {
+        genOrders(id);
+    }
+
+    // 8. 刷新 UI
+    if (typeof renderLine === 'function') renderLine(id);
+    if (typeof updateDashboard === 'function') updateDashboard();
+}
+// ==========================================
+// [數據驅動層] 自動化訂單結算系統 完結 (v13.0.6)
+// ==========================================
 		
     function renderOrders(id) {
         const list = document.getElementById(`order-list-${id}`); if(!list) return;
@@ -1100,8 +1266,8 @@ container.innerHTML += `
                 } 
             }, 1500);
 
-            // 每3分鐘自動存檔一次
-            setInterval(saveGame, 18000);
+            // 每3分鐘自動存檔一次 , 1000 = 1秒
+            setInterval(saveGame, 180000);
             
             console.log("✅ 遊戲所有系統啟動完成！");
         } catch (err) {
