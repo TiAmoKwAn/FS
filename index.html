@@ -930,7 +930,7 @@ container.innerHTML += `
 	}
 
     function upgradeLine(id) { 
-        const c = Math.floor((game.lines[i].lv + 1) * 400 * (game.lines[i].lv + 1.2)); 
+        const c = Math.floor((game.lines[id].lv + 1) * 400 * (game.lines[id].lv + 1.2)); 
         if(game.money >= c) { game.money -= c; game.lines[id].lv++; updateUI(); } 
     }
     function repair(id) { if (game.money >= 30) { game.money -= 30; game.lines[id].dur = 100; updateUI(); } }
