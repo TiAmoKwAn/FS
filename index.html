@@ -1499,17 +1499,63 @@ function toggleAdmin() {
     }
 		
 		
-    function renderOrders(id) {
-        const list = document.getElementById(`order-list-${id}`); if(!list) return;
-        list.innerHTML = '';
-        game.lines[id].orders.forEach((o, idx) => {
-            const d = document.createElement('div'); d.className = `order-card ${game.lines[id].selIdx === idx ? 'selected' : ''}`;
+function renderOrders(id) {
+    const list = document.getElementById(`order-list-${id}`); 
+    if(!list) return;
+    
+    const line = game.lines[id];
+    if (!line || !line.orders) return;
+
+    // 取得畫面上現有的卡片數量
+    const existingCards = list.getElementsByClassName('order-card');
+
+    // ✨ 關鍵優化：如果畫面上卡片數量跟數據一樣，代表結構冇變，只更新內容，防止閃爍！
+    if (existingCards.length === line.orders.length) {
+        line.orders.forEach((o, idx) => {
+            const d = existingCards[idx];
+            if (!d) return;
+
+            // 1. 重新計算利潤 (保持你原本的公式)
             const totalProfit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
-            d.innerHTML = `<b>${o.qty}x ${cfg[o.type].n}</b> <span style="float:right; color:#f2cc60">+$${totalProfit}</span>`;
-            d.onclick = () => { if(!game.lines[id].proc) { game.lines[id].selIdx = idx; updateUI(); } };
-            list.appendChild(d);
+            
+            // 2. 只更新入面的文字，唔會破壞 Hover 狀態
+            const newHTML = `<b>${o.qty}x ${cfg[o.type].n}</b> <span style="float:right; color:#f2cc60">+$${totalProfit}</span>`;
+            if (d.innerHTML !== newHTML) {
+                d.innerHTML = newHTML;
+            }
+
+            // 3. 只切換選中狀態的 Class (selected)
+            const isSelected = line.selIdx === idx;
+            if (isSelected && !d.classList.contains('selected')) {
+                d.classList.add('selected');
+            } else if (!isSelected && d.classList.contains('selected')) {
+                d.classList.remove('selected');
+            }
         });
+        return; // 搞定，直接退出，唔行下面嘅清空重砌邏輯！
     }
+
+    // =============================================================
+    // 只有當訂單數量變咗（例如新訂單生成），才會行下面原本嘅清空與新建邏輯
+    // =============================================================
+    list.innerHTML = '';
+    
+    line.orders.forEach((o, idx) => {
+        const d = document.createElement('div'); 
+        d.className = `order-card ${line.selIdx === idx ? 'selected' : ''}`;
+        
+        const totalProfit = Math.floor(o.qty * cfg[o.type].r * LINE_CONFIGS[id].m * (1 + currentPrestige.bonus));
+        d.innerHTML = `<b>${o.qty}x ${cfg[o.type].n}</b> <span style="float:right; color:#f2cc60">+$${totalProfit}</span>`;
+        
+        d.onclick = () => { 
+            if(!line.proc) { 
+                line.selIdx = idx; 
+                updateUI(); 
+            } 
+        };
+        list.appendChild(d);
+    });
+}
 
 	// ==========================================
     // 💾 1. 存檔與讀取系統 (確保結構完整)
