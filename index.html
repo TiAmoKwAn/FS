@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>AI 工廠模擬器 - v12.0.16</title>
+    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.0</title>
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
@@ -67,7 +67,7 @@
 
 /* 統一容器寬度與置中 */
 .dashboard, .factory-floor {
-    width: 550px;
+    width: 1040px;
     max-width: 1040px; /* 設定一個統一的像素上限 */
     margin-left: auto;
     margin-right: auto;
@@ -220,11 +220,53 @@
         </div>
 
         <!-- 系統綜合功能按鈕：資金注入、存檔、重置及關閉面板 -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
+		<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
             <button class="action-btn btn-blue" onclick="inject('money', 999999999)">💰 資金 +9億9</button>
             <button class="action-btn btn-green" onclick="saveGame()">手動存檔</button>
             <button class="action-btn btn-red" onclick="resetGame()">⚠️ 重置數據</button>
             <button class="action-btn btn-blue" style="background:#30363d" onclick="toggleAdmin()">返回工廠</button>
+			<div style="background: #1c2128; border: 1px dashed #444c56; border-radius: 8px; padding: 12px; margin-top: 15px;">
+		<strong style="color: #f2cc60; font-size: 13px; display: block; margin-bottom: 8px;">🛠️ 開發者後台：全材料數量修改 (完美分流版)</strong>
+		<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        
+		<div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+				<span style="font-size: 11px; color: #adbac7;">🌿 草藥:</span>
+				<button onclick="window.modifyMaterialDebug('herb', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+				<button onclick="window.modifyMaterialDebug('herb', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
+		</div>
+
+        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+            <span style="font-size: 11px; color: #adbac7;">🪨 原礦:</span>
+            <button onclick="window.modifyMaterialDebug('ore', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+            <button onclick="window.modifyMaterialDebug('ore', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
+        </div>
+
+        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+            <span style="font-size: 11px; color: #adbac7;">⚙️ 鐵錠:</span>
+            <button onclick="window.modifyMaterialDebug('iron_bar', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+            <button onclick="window.modifyMaterialDebug('iron_bar', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
+        </div>
+
+        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+            <span style="font-size: 11px; color: #adbac7;">🧪 藥水:</span>
+            <button onclick="window.modifyMaterialDebug('potion', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+            <button onclick="window.modifyMaterialDebug('potion', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
+        </div>
+
+        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+            <span style="font-size: 11px; color: #adbac7;">🟢 黏液:</span>
+            <button onclick="window.modifyMaterialDebug('slime', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+            <button onclick="window.modifyMaterialDebug('slime', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
+        </div>
+
+        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+            <span style="font-size: 11px; color: #adbac7;">👂 耳朵:</span>
+            <button onclick="window.modifyMaterialDebug('goblinEar', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+            <button onclick="window.modifyMaterialDebug('goblinEar', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
+        </div>
+
+    </div>
+</div>
         </div>
     </div>
 </div>
@@ -266,8 +308,22 @@
 	</div>
 
 	<div id="resource-stats" style="display: contents;">
+		<!-- 新資源（草藥、原礦、藥水） -->
+		<div class="stat-box">
+    <span class="label">🌿 草藥</span>
+    <span class="value" id="res-herbs">0</span>
+</div>
+<div class="stat-box">
+    <span class="label">🪨 原礦</span>
+    <span class="value" id="res-ore">0</span>
+</div>
+<div class="stat-box">
+    <span class="label">🧪 生命藥水</span>
+    <span class="value" id="res-potion">0</span>
+</div>
+	
         </div>
-
+		
     <!-- ⚙️ 全局設定按鈕：點擊後觸發 toggleAdmin() 開啟管理員後台面板 -->
     <button class="action-btn btn-green" style="width:100px; height:42px;" onclick="toggleAdmin()">⚙️ 全局設定</button>
 </div>
@@ -275,6 +331,183 @@
 <!-- 🏭 工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
 <div class="factory-floor" id="floor">
     <div id="lines-container"></div>
+</div>
+<!-- 生成野外區域（採集）& 煉金術工坊（合成） -->
+<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
+
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; gap: 20px; box-sizing: border-box; width: 100%;">
+        
+        <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
+            <div style="font-size: 32px; background: #21262d; padding: 8px 12px; border-radius: 10px; border: 1px solid #30363d;">🤠</div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong style="font-size: 15px; color: #c9d1d9; white-space: nowrap;">冒險者核心</strong>
+                    <span id="char-lv" style="background: #f2cc60; color: #0d1117; font-weight: bold; font-size: 11px; padding: 1px 6px; border-radius: 4px; white-space: nowrap;">Lv.1</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                    <span style="font-size: 11px; color: #8b949e; min-width: 25px;">EXP</span>
+                    <div style="width: 140px; background: #0d1117; height: 6px; border-radius: 3px; overflow: hidden; border: 1px solid #30363d;">
+                        <div id="char-exp-bar" style="width: 0%; height: 100%; background: #3fb950; transition: width 0.3s;"></div>
+                    </div>
+                    <span id="char-exp-text" style="font-size: 11px; color: #8b949e; font-family: 'Share Tech Mono'; white-space: nowrap;">0/100</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 30px; background: #0d1117; padding: 10px 20px; border-radius: 8px; border: 1px solid #21262d; flex-grow: 1; margin: 0 20px; justify-content: space-around;">
+            <div style="flex-grow: 1; max-width: 300px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                    <span style="color: #ff7b72; font-weight: bold; white-space: nowrap;">❤️ 生命值 (HP)</span>
+                    <span id="char-hp-text" style="font-family: 'Share Tech Mono'; color: #ff7b72; white-space: nowrap;">100 / 100</span>
+                </div>
+                <div style="width: 100%; background: #21262d; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div id="char-hp-bar" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ff7b72, #f2594b); transition: width 0.2s;"></div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 80px;">
+                <span style="color: #f2cc60; font-size: 11px; font-weight: bold; white-space: nowrap;">⚔️ 攻擊力 (ATK)</span>
+                <span id="char-atk" style="font-family: 'Share Tech Mono'; font-size: 16px; color: #ffffff; font-weight: bold; margin-top: 2px;">10</span>
+            </div>
+        </div>
+
+        <div style="text-align: right; flex-shrink: 0; min-width: 160px;">
+			<button onclick="window.useHealthPotion()" class="action-btn btn-blue" style="...">
+				🧪 使用藥水
+			</button>
+            <div style="font-size: 10px; color: #8b949e; margin-top: 5px; white-space: nowrap; text-align: center;">每瓶回復 50 點 HP</div>
+        </div>
+
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; box-sizing: border-box;">
+        
+		<!-- 🌲 野外區域 開始 -->
+        <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px;">
+            <h3 style="color: #58a6ff; margin-top: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                🌲 野外區域 (微風森林)
+            </h3>
+            <p style="font-size: 11px; color: #8b949e; margin: 5px 0 15px 0; line-height: 1.4;">
+                手動派遣探索，隨機收集基礎物資（木/石）或進階煉金材料（草藥/原礦）。
+            </p>
+			<!-- 採集 -->
+            <div style="text-align: center;">
+                <button id="btn-gather" onclick="startGathering()" class="action-btn btn-green" style="width: 100%; height: 38px; font-size: 13px;">
+                    🪵 開始野外採集
+                </button>
+                <div id="gather-progress-bar" style="width: 100%; background: #0d1117; border: 1px solid #30363d; height: 6px; border-radius: 3px; margin-top: 12px; overflow: hidden; display: none;">
+                    <div id="gather-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3fb950, #2ea44f); transition: width 0.1s linear;"></div>
+                </div>
+                <div id="gather-status" style="font-size: 11px; color: #8b949e; margin-top: 6px; min-height: 15px;">準備就緒</div>
+            </div>
+			<!-- 打怪 -->
+			<hr style="border: 0; border-top: 1px dashed #30363d; margin: 15px 0;">
+            
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #8b949e; white-space: nowrap;">選擇對手：</label>
+                <select id="monster-select" style="background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 4px 8px; font-size: 12px; width: 100%; cursor: pointer;">
+                    <option value="slime">🟢 綠色史萊姆 (LV.1 | 傷害: 12 HP | 掉落: 黏液/EXP)</option>
+                    <option value="goblin">👺 森林哥布林 (LV.3 | 傷害: 28 HP | 掉落: 哥布林耳/EXP)</option>
+                </select>
+            </div>
+
+            <button id="btn-battle" onclick="startBattle()" class="action-btn" style="width: 100%; height: 38px; font-size: 13px; background: #da3637; border-color: #f85149; color: #ffffff;">
+                ⚔️ 派遣出征打怪
+            </button>
+            
+            <div id="battle-progress-bar" style="width: 100%; background: #0d1117; border: 1px solid #30363d; height: 6px; border-radius: 3px; margin-top: 12px; overflow: hidden; display: none;">
+                <div id="battle-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f85149, #da3637); transition: width 0.1s linear;"></div>
+            </div>
+            <div id="battle-status" style="font-size: 11px; color: #ff7b72; margin-top: 6px; min-height: 15px; text-align: center;"></div>
+        </div>
+		<!-- 🌲 野外區域 完結 -->
+		
+		<!-- ⚗️ 煉金術工坊 開始 -->
+        <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px;">
+            <h3 style="color: #a371f7; margin-top: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                ⚗️ 煉金術工坊
+            </h3>
+            <p style="font-size: 11px; color: #8b949e; margin: 5px 0 15px 0; line-height: 1.4;">
+                利用採集獲得的稀有材料，提煉初級生命藥水。
+            </p>
+			<!-- 提煉 -->
+            <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #c9d1d9; font-size: 12px;">🧪 初級生命藥水</strong>
+                        <div style="font-size: 10px; color: #8b949e; margin-top: 3px;">
+                            需求：🌿 草藥 x2 + 🪨 原礦 x1
+                        </div>
+                    </div>
+					<button id="btn-craft-potion" onclick="craftPotion()" class="action-btn btn-blue" style="width: 70px; height: 30px; font-size: 11px;">
+						提煉
+					</button>
+                </div>
+                <div id="alchemy-progress-bar" style="width: 100%; background: #0d1117; border: 1px solid #30363d; height: 6px; border-radius: 3px; margin-top: 10px; overflow: hidden; display: none;">
+                    <div id="alchemy-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #bc8cff, #8957e5); transition: width 0.1s linear;"></div>
+                </div>
+                <div id="alchemy-status" style="font-size: 10px; color: #8b949e; margin-top: 6px; min-height: 15px; text-align: center;">設備空閒</div>
+            </div>
+			<!-- 提煉 -->
+			<!-- 熔煉 -->
+			<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #c9d1d9; font-size: 12px;">⚙️ 熔煉鋼鐵錠</strong>
+                        <div style="font-size: 10px; color: #8b949e; margin-top: 3px;">
+                            需求：🪨 原礦 x3 🔥 ⚙️ 鐵錠 x1
+                        </div>
+                    </div>
+                    <button id="btn-melt-iron" onclick="startMeltingIron()" class="action-btn btn-blue" style="width: 70px; height: 30px; font-size: 11px; background: #f2cc60; border-color: #d29922; color: #0d1117; font-weight: bold;">
+                        熔煉
+                    </button>
+                </div>
+                <div id="iron-progress-bar" style="width: 100%; background: #0d1117; border: 1px solid #30363d; height: 6px; border-radius: 3px; margin-top: 10px; overflow: hidden; display: none;">
+                    <div id="iron-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f2cc60, #ff9b30); transition: width 0.1s linear;"></div>
+                </div>
+                <div id="iron-melt-status" style="font-size: 10px; color: #8b949e; margin-top: 6px; min-height: 15px; text-align: center;">設備空閒</div>
+            </div>
+			<!-- 熔煉 -->
+        </div>
+		<!-- ⚗️ 煉金術工坊 完結 -->
+		
+		<!-- 🔨 鐵匠鍛造舖 開始 -->
+		<div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-top: 15px;">
+            <h3 style="color: #ff9b30; margin-top: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                🔨 鐵匠鍛造舖
+            </h3>
+            <p style="font-size: 11px; color: #8b949e; margin: 5px 0 15px 0; line-height: 1.4;">
+                使用打怪獲得的特殊材料與工廠的鐵錠，鍛造強力裝備提升角色實力。
+            </p>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; font-size: 11px;">
+                <div style="flex: 1; background: #0d1117; padding: 6px 10px; border-radius: 6px; border: 1px solid #21262d;">
+                    ⚔️ 武器：<span id="eq-weapon" style="color: #58a6ff; font-weight: bold;">無</span> <span id="eq-atk-bonus" style="color:#58a6ff;"></span>
+                </div>
+                <div style="flex: 1; background: #0d1117; padding: 6px 10px; border-radius: 6px; border: 1px solid #21262d;">
+                    🛡️ 防具：<span id="eq-armor" style="color: #3fb950; font-weight: bold;">無</span> <span id="eq-hp-bonus" style="color:#3fb950;"></span>
+                </div>
+            </div>
+
+            <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <select id="craft-eq-select" onchange="updateForgePreview()" style="background: #161b22; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 4px 6px; font-size: 12px; cursor: pointer;">
+                            <option value="ironSword">⚔️ 鋼鐵大劍 (+15 攻擊力)</option>
+                            <option value="slimeArmor">🛡️ 史萊姆輕甲 (+50 生命上限)</option>
+                        </select>
+                        <div id="forge-req-text" style="font-size: 10px; color: #8b949e; margin-top: 5px;">
+                            需求：⚙️ 鐵錠 x10 + 🧪 黏液 x3
+                        </div>
+                    </div>
+                    <button id="btn-forge-eq" onclick="craftEquipment()" class="action-btn btn-blue" style="width: 70px; height: 30px; font-size: 11px; background: #ff9b30; border-color: #d29922;">
+                        打造
+                    </button>
+                </div>
+            </div>
+        </div>
+		<!-- 🔨 鐵匠鍛造舖 完給 -->
+
+    </div>
+
 </div>
 
     <!-- 👨‍🔧 研發實驗室面板面板 -->
@@ -419,7 +652,16 @@ let cfg = {
     let game = {
         money: 100,				// 1. money: 當前持有的可用資金。
 		maxMoney: 0,			// 2. maxMoney: 歷史最高資金（用於判斷聲望/稱號等級的晉升）。
-		inv: {},				// 3. inv: 庫存系統，紀錄玩家持有的材料數量（例如 {wood: 50, iron: 10}）。
+		// 3. inv: 庫存系統，紀錄玩家持有的材料數量（例如 {wood: 50, iron: 10}）。
+		inv: {
+			// 🌿 [新增野外資源儲存欄位]
+			herbs: 0,			// 草藥數量
+			ore: 0,				// 原礦數量
+			potion: 0,			// 初級生命藥水數量
+			// ⚔️ [冒險怪物素材] (徹底刪除舊的 monsterMaterials 重疊物件)
+            slimeGlow: 0,		// 🧪 史萊姆黏液 數量
+            goblinEar: 0		// 👂 哥布林耳朵 數量
+		},	
         unlocked: {},			// 4. unlocked: 紀錄哪些生產線已被玩家支付費用解鎖。
 		lines: {},				// 5. lines: 每條生產線的詳細運行狀態（如進度、當前項目、耐久度、自動化開關）。
 		prices: null,			// 6. prices: 遊戲內的價格表副本，用於在後台修改價格後同步。
@@ -430,7 +672,45 @@ let cfg = {
 			autoRepair: false,	//     - autoRepair: 是否開啟自動維修。
 			overtime: false,	//     - overtime: 是否開啟加班模式（提升速度）。
 			highOrder: false	//     - highOrder: 是否解鎖高額報酬訂單。
-		}
+		},
+
+        // 🌲 [新增野外採集冷卻狀態]
+        adventure: {
+            isGathering: false, // 是否正在採集
+            cooldownLeft: 0,    // 剩餘冷卻時間（秒）
+            cooldownMax: 5      // 基礎採集冷卻時間（5秒）
+        },
+
+        // ⚗️ [新增煉金工坊狀態]
+        alchemy: {
+            isCrafting: false,  // 是否正在合成
+            cooldownLeft: 0,    // 剩餘合成時間（秒）
+            cooldownMax: 8      // 基礎合成時間（8秒）
+        },
+		// ==========================================
+        // ⚔️ [新增角色冒險屬性欄位] (新增至 game 物件內)
+        // ==========================================
+        player: {
+            lv: 1,              // 角色等級
+            exp: 0,             // 當前經驗值
+            maxExp: 100,        // 升級所需經驗值
+            hp: 100,            // 當前生命值
+            maxHp: 100,         // 最大生命值上限
+            atk: 10,            // 基礎攻擊力
+            def: 5              // 基礎防禦力
+        },
+		equipment: {
+            weapon: "無",      // 當前武器名稱
+            armor: "無",       // 當前防具名稱
+            atkBonus: 0,       // 裝備加成的攻擊力
+            hpBonus: 0         // 裝備加成的生命值上限
+        },
+
+        battle: {
+            isFighting: false,  // 是否正在戰鬥
+            cooldownMax: 4      // 基礎戰鬥時間（4秒）
+        },
+        // ==========================================
     };
 // ==========================================
 // [Script] game 遊戲主狀態對象 - 完結
@@ -864,7 +1144,7 @@ container.innerHTML += `
 // ==========================================
 
 // ==========================================
-// [Script] updateUI 全域數據同步刷新 (整合優化版)
+// [Script] updateUI 全域數據同步刷新 (終極隔離防禦版) - 開首
 // ==========================================
 function updateUI() {
     // ⭐ [整合] 同步稱號數據與儀表板進度條
@@ -878,10 +1158,10 @@ function updateUI() {
     const rpValEl = document.getElementById('rp-val');
     if(rpValEl) rpValEl.innerText = (game.researchPoints || 0).toLocaleString();
     
-    // 2. 更新資源庫存與商店價格
+    // 2. 更新舊工廠基本資源庫存與商店價格
     Object.keys(cfg).forEach(t => {
         const valEl = document.getElementById(`${t}-val`);
-        if(valEl) valEl.innerText = game.inv[t];
+        if(valEl) valEl.innerText = game.inv[t] || 0;
     
         const btnP = document.getElementById(`btn-p-${t}`);
         if(btnP) btnP.innerText = cfg[t].buy;
@@ -894,10 +1174,7 @@ function updateUI() {
         const lockEl = document.getElementById(`lock-${i}`);
         
         if(lockEl) {
-            // 處理鎖定遮罩顯示/隱藏
             lockEl.style.display = un ? 'none' : 'flex';
-        
-            // 如果未解鎖：處理「階梯式解鎖」邏輯 (需前一條線開啟)
             if(!un) {
                 const buyBtn = document.getElementById(`buy-line-btn-${i}`);
                 if(buyBtn) {
@@ -919,13 +1196,10 @@ function updateUI() {
             }
         }
 
-        // --- 如果已經解鎖，更新內部精密資訊 ---
         if(un && l) {
-            // 更新等級標籤
             const lvTag = document.getElementById(`lv-tag-${i}`);
             if(lvTag) lvTag.innerText = `Lv.${l.lv}`;
 
-            // 更新生產速度 (計算科技加成與稱號加成)
             const speedVal = document.getElementById(`speed-val-${i}`);
             if(speedVal) {
                 let baseSpeed = (15 - (l.lv * 1.3));
@@ -934,7 +1208,6 @@ function updateUI() {
                 speedVal.innerText = Math.max(0.5, finalSpeed).toFixed(1);
             }
             
-            // 更新升級按鈕狀態
             const upBtn = document.getElementById(`up-btn-${i}`);
             const upCost = document.getElementById(`up-cost-${i}`);
             const cost = Math.floor((l.lv + 1) * 400 * (l.lv + 1.2));
@@ -949,17 +1222,14 @@ function updateUI() {
                 }
             }
             
-            // 更新耐久度 (Bar 與 文字)
             const durFill = document.getElementById(`dur-fill-${i}`);
             if(durFill) durFill.style.width = `${l.dur}%`;
             const durText = document.getElementById(`dur-text-${i}`);
             if(durText) durText.innerText = `${Math.floor(l.dur)}%`;
             
-            // 維修按鈕狀態
             const repairBtn = document.getElementById(`repair-btn-${i}`);
             if(repairBtn) repairBtn.disabled = game.money < 30 || l.dur === 100;
             
-            // 自動化按鈕樣式切換
             const ab = document.getElementById(`auto-btn-${i}`);
             if(ab) {
                 if(l.hasAuto) { 
@@ -971,11 +1241,9 @@ function updateUI() {
                 }
             }
 
-            // 訂單渲染邏輯
             if (!l.orders || l.orders.length === 0) genOrders(i);
             if (typeof renderOrders === 'function') renderOrders(i);
 
-            // 交付按鈕邏輯
             const deliverBtn = document.getElementById(`deliver-btn-${i}`);
             if (deliverBtn && l.selIdx !== -1 && l.orders[l.selIdx]) {
                 const o = l.orders[l.selIdx]; 
@@ -986,7 +1254,6 @@ function updateUI() {
         }
     }
     
-    // ✨ 更新科技樹按鈕狀態 (已解鎖則禁用)
     if(game.tech) {
         const techMap = { 
             autoRepair: 'tech-repair-btn', 
@@ -1003,9 +1270,28 @@ function updateUI() {
             }
         });
     }
+
+    // ==========================================
+    // 🚀【單一數據源：六大冒險/煉金新材料精準點對點刷新】
+    // 說明：徹底拔除所有舊分身變數與多管猜測，理直氣壯更新網頁畫面
+    // ==========================================
+    if (!game.inv) game.inv = {};
+
+    if (document.getElementById('res-herbs'))     document.getElementById('res-herbs').innerText     = game.inv.herbs || 0;
+    if (document.getElementById('res-ore'))       document.getElementById('res-ore').innerText       = game.inv.ore || 0;
+    if (document.getElementById('res-potion'))    document.getElementById('res-potion').innerText    = game.inv.potion || 0;
+    if (document.getElementById('res-iron'))      document.getElementById('res-iron').innerText      = game.inv.iron_bar || 0;
+    if (document.getElementById('res-slime'))     document.getElementById('res-slime').innerText     = game.inv.slime || 0;
+    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar || 0;
+
+    // 🔄 執行其他子系統 UI 同步
+    if (typeof updateAdventureUI === 'function') updateAdventureUI();
+    if (typeof updateCharacterUI === 'function') updateCharacterUI();
+    if (typeof updateBattleUI === 'function') updateBattleUI();
+    if (typeof updateForgeUI === 'function') updateForgeUI();
 }
 // ==========================================
-// [Script] updateUI 全域數據同步刷新 (整合優化版) - 完結
+// [Script] updateUI 全域數據同步刷新 (終極隔離防禦版) - 結尾
 // ==========================================
 	
 // ==========================================
@@ -1088,7 +1374,36 @@ let htmlCombined = `
         `;
     });
 
+	// 🌿 【核心追加點】在 cfg 循環結束後，安全塞入我們獨立的野外與煉金新資源格子
     htmlCombined += `
+        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
+            <span style="font-size:15px; color:#adb5bd;">🌿草藥</span>
+            <span id="res-herbs" style="color:#58a6ff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
+        </div>
+        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
+            <span style="font-size:15px; color:#adb5bd;">🪨原礦</span>
+            <span id="res-ore" style="color:#ff7b72; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
+        </div>
+		<div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
+            <span style="font-size:15px; color:#adb5bd;">⚙️ 鐵錠</span>
+            <span id="res-iron" style="color:#f2cc60; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
+        </div>
+        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
+            <span style="font-size:15px; color:#adb5bd;">🧪生命藥水</span>
+            <span id="res-potion" style="color:#bc8cff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
+        </div>
+		<div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
+            <span style="font-size:15px; color:#adb5bd;">🧪黏液</span>
+            <span id="res-slimeGlow" style="color:#a5d6ff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
+        </div>
+        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
+            <span style="font-size:15px; color:#adb5bd;">👂哥布林耳</span>
+            <span id="res-goblinEar" style="color:#ff7b72; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
+        </div>
+    `;
+
+    // 關閉中間的區塊標籤
+    htmlCombined += `																									  
             </div>
         </div>
     `;
@@ -1100,6 +1415,7 @@ let htmlCombined = `
         </div>
     `;
 
+    // 合併並寫入主面板
     dash.innerHTML = htmlLeft + htmlCombined + htmlRight ;
     updateUI(); // 渲染後同步數據 + htmlRight
 }
@@ -1557,33 +1873,92 @@ function renderOrders(id) {
     });
 }
 
-	// ==========================================
-    // 💾 1. 存檔與讀取系統 (確保結構完整)
+// ==========================================
+    // 💾 1. 存檔與讀取系統 (⚠️ 修正版：完美保護工廠、冒險者、鐵匠鋪全數據)
     // ==========================================
     function saveGame() { 
+        // 🛠️【新增防禦】存檔前強制把當前記憶體中的角色同裝備狀態同步塞入 game 物件
+        if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5 };
+        if (!game.equipment) game.equipment = { weapon: "無", armor: "無", atkBonus: 0, hpBonus: 0 };
+        if (!game.monsterMaterials) game.monsterMaterials = { slimeGlow: 0, goblinEar: 0 };
+
         game.prices = JSON.parse(JSON.stringify(cfg));
         game.customPrestige = JSON.parse(JSON.stringify(PRESTIGE_LEVELS));
+        
+        // 使用你原本的 Key 值，確保不影響舊工廠數據
         localStorage.setItem('factory_v12_3_save', JSON.stringify(game)); 
-        addLog("💾 系統自動存檔完成", "#58a6ff"); 
-    }
+        
+        // 為了不讓自動存檔瘋狂刷屏日誌，可以用 console.log 或者保留 addLog
+        //if (typeof addLog === 'function') addLog("💾 系統自動存檔完成", "#58a6ff"); 
+		// 🤫【核心修正】把原本的 addLog 換成 console.log
+        // 咁樣後台依然有安全存檔，但「系統日誌」就唔會再被洗版喇！
+        console.log("💾 系統自動存檔完成 (後台靜音運作中)");
+	}
 
-    function loadGame() { 
+function loadGame() { 
         const s = localStorage.getItem('factory_v12_3_save'); 
-        if(!s) { updateUI(); return; }
+        if(!s) { 
+            if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5 };
+            if (!game.equipment) game.equipment = { weapon: "無", armor: "無", atkBonus: 0, hpBonus: 0 };
+            if (!game.monsterMaterials) game.monsterMaterials = { slimeGlow: 0, goblinEar: 0 };
+            updateUI(); 
+            if (typeof updateForgeUI === 'function') updateForgeUI();
+            return; 
+        }
         try {
             const loaded = JSON.parse(s); 
             Object.assign(game, loaded);
+            
             if(game.prices) cfg = JSON.parse(JSON.stringify(game.prices));
             if(game.customPrestige) PRESTIGE_LEVELS = JSON.parse(JSON.stringify(game.customPrestige));
             
-            // 強制重置生產狀態，防止存檔卡死畫面
             if(game.lines) {
                 for(let i=1; i<=LINE_COUNT; i++) {
                     if(game.lines[i]) game.lines[i].proc = false;
                 }
             }
-        } catch(e) { console.error("存檔損壞:", e); }
+
+            // 確保數據 100% 寫入後台記憶體
+            if (loaded.player) game.player = loaded.player;
+            if (loaded.equipment) game.equipment = loaded.equipment;
+            if (loaded.monsterMaterials) game.monsterMaterials = loaded.monsterMaterials;
+
+            console.log("step 4: 📂 [冒險系統] 角色與裝備存檔讀取成功！", game.player);
+
+            // ==========================================
+            // 🚨【終極加固：強制畫面渲染鎖】
+            // 說明：趁工廠其他異步函數反應過來前，立刻把 Lv.2 硬寫入 HTML
+            // ==========================================
+            if (game.player) {
+                // 1. 刷新等級與攻擊力文字
+                const elLv = document.getElementById('char-lv');
+                const elAtk = document.getElementById('char-atk');
+                if (elLv) elLv.innerText = `Lv.${game.player.lv}`;
+                if (elAtk) elAtk.innerText = game.player.atk;
+
+                // 2. 刷新 EXP 進度條
+                const expPercent = Math.min(100, Math.max(0, (game.player.exp / game.player.maxExp) * 100));
+                const elExpBar = document.getElementById('char-exp-bar');
+                const elExpText = document.getElementById('char-exp-text');
+                if (elExpBar) elExpBar.style.width = `${expPercent}%`;
+                if (elExpText) elExpText.innerText = `${game.player.exp}/${game.player.maxExp}`;
+
+                // 3. 刷新 HP 進度條
+                const hpPercent = Math.min(100, Math.max(0, (game.player.hp / game.player.maxHp) * 100));
+                const elHpBar = document.getElementById('char-hp-bar');
+                const elHpText = document.getElementById('char-hp-text');
+                if (elHpBar) elHpBar.style.width = `${hpPercent}%`;
+                if (elHpText) elHpText.innerText = `${Math.floor(game.player.hp)} / ${game.player.maxHp}`;
+            }
+
+        } catch(e) { 
+            console.error("存檔損壞:", e); 
+        }
+        
+        // 執行全域刷新
         updateUI(); 
+        if (typeof updateBattleUI === 'function') updateBattleUI();
+        if (typeof updateForgeUI === 'function') updateForgeUI();
     }
 
     function resetGame() { 
@@ -1659,7 +2034,7 @@ function renderOrders(id) {
             // 每3分鐘自動存檔一次 , 1000 = 1秒
             setInterval(saveGame, 180000);
             
-            console.log("✅ 遊戲所有系統啟動完成！");
+            console.log("step 5: ✅ 遊戲所有系統啟動完成！");
         } catch (err) {
             console.error("❌ 啟動過程發生錯誤:", err);
             // 萬一出錯，至少顯示在遊戲日誌中
@@ -1683,16 +2058,838 @@ function renderOrders(id) {
             if(typeof addLog === 'function') addLog("🚫 研究點數不足", "#ff4d4d");
         }
     }
+	
+// ==========================================
+// 🌲 [功能核心層] 野外探索與煉金合成系統邏輯 (防回彈、平滑讀秒完全體版)
+// ==========================================
+
+/**
+ * 🛠️ 輔助功能：同步更新介面上的野外與煉金數據
+ * ⚙️ 說明：確保數據即時刷新，並動態亮起/灰化提煉按鈕
+ */
+function updateAdventureUI() {
+    if (!game.inv) game.inv = {};
+	
+    // 📥 1. 直接讀取統一後的「草藥」
+    const herbAmt = game.inv.herbs || 0;
+
+    // 📥 2. 直接讀取統一後的「原礦」
+    const oreAmt = game.inv.ore || 0;
+
+    // 📥 3. 直接讀取統一後的「生命藥水」
+    const potionAmt = game.inv.potion || 0;
+
+    // 安全重新渲染頂部儀表板的新資源數值
+    if (document.getElementById('res-herbs')) document.getElementById('res-herbs').innerText = Math.floor(herbAmt);
+    if (document.getElementById('res-ore')) document.getElementById('res-ore').innerText = Math.floor(oreAmt);
+    if (document.getElementById('res-potion')) document.getElementById('res-potion').innerText = Math.floor(potionAmt);
+
+    // 4. 自動檢查動態按鈕狀態：煉金藥水按鈕是否滿足材料足夠的條件 (如果正在提煉中，交給定時器控制)
+    const btnPotion = document.getElementById('btn-craft-potion') || document.getElementById('btn-make-potion');
+    if (btnPotion && (!game.alchemy || !game.alchemy.isCrafting)) {
+        if (herbAmt >= 2 && oreAmt >= 1) {
+            btnPotion.disabled = false;
+            btnPotion.style.background = '#238636'; // 夠料變亮綠色
+            btnPotion.style.cursor = 'pointer';
+        } else {
+            btnPotion.disabled = true;
+            btnPotion.style.background = '#21262d';
+            btnPotion.style.cursor = 'not-allowed';
+        }
+    }
+}
+
+/**
+ * 🌲 觸發野外採集行為 (帶有平滑進度條動畫)
+ */
+function startGathering() {
+    if (!game.adventure) {
+        game.adventure = { isGathering: false, cooldownLeft: 0, cooldownMax: 5 };
+    }
+
+    if (game.adventure.isGathering) return;
+
+    game.adventure.isGathering = true;
+    game.adventure.cooldownLeft = game.adventure.cooldownMax;
+
+    const btn = document.getElementById('btn-gather');
+    const barContainer = document.getElementById('gather-progress-bar');
+    const bar = document.getElementById('gather-progress');
+    const status = document.getElementById('gather-status');
+
+    if (btn) { btn.disabled = true; btn.style.background = '#21262d'; }
+    if (barContainer) barContainer.style.display = 'block';
+    if (bar) bar.style.width = '0%';
+
+    let elapsed = 0;
+    const intervalTime = 100; 
+    const totalSteps = (game.adventure.cooldownMax * 1000) / intervalTime;
+
+    let gatherTimer = setInterval(() => {
+        elapsed++;
+        let progressPercent = (elapsed / totalSteps) * 100;
+        if (bar) bar.style.width = `${progressPercent}%`;
+        if (status) status.innerText = `採集物資中... 剩餘 ${(game.adventure.cooldownMax - (elapsed * intervalTime / 1000)).toFixed(1)} 秒`;
+
+        if (elapsed >= totalSteps) {
+            clearInterval(gatherTimer);
+            finishGathering();
+        }
+    }, intervalTime);
+}
+
+/**
+ * 🎁 採集完成：結算隨機掉落資源
+ */
+/**
+ * 🎁 採集完成結算函數
+ * 說明：當野外採集進度條讀秒完結後觸發，負責隨機發放資源、同步變數、更新 UI 同埋自動存檔。
+ */
+function finishGathering() {
+    // 1. 安全防禦：確保背包物件存在（若 let game 內已有，這行可留作雙重保險）
+    if (!game.inv) game.inv = {};
+    
+    // 2. 直接讀取統一後的「草藥」與「原礦」庫存（乾淨、單一數據源）
+    let curHerb = game.inv.herbs || 0;
+    // 3. 
+    let curOre = game.inv.ore || 0;
+	
+    // 4. 計算隨機掉落數量：
+    // Math.random() * 3 產生 0~2.999 的隨機數，Math.floor 捨去小數變成 0~2，再 +1 變成【1~3 個草藥】
+    let herbDropped = Math.floor(Math.random() * 3) + 1;
+    // 同理，產生【1~2 個原礦】
+    let oreDropped = Math.floor(Math.random() * 2) + 1;
+    
+    // 5. 將採集到的隨機數量累加進目前的庫存數值入面
+    curHerb += herbDropped;
+    curOre += oreDropped;
+
+    // 6. 🔥【發放鎖】最高安全防禦：將最新計算好的資源數量，同時灌滿所有新舊分身變數，切斷所有回彈或洗掉數據的路徑
+    //  新代碼：直接存入統一的複數變數（herbs, ore）
+    game.inv.herbs = curHerb;
+    game.inv.ore = curOre;
+
+    // 7. 📜 輸出採集成功的訊息到遊戲日誌系統（如果日誌函數存在的話）
+    if (typeof addLog === 'function') {
+        addLog(`🌲 採集完畢！成功獲得 🌿 草藥 x${herbDropped} 與 🪨 原礦 x${oreDropped}！`, "#52c41a");
+    }
+
+    // 8. 🔄 重置採集狀態：將「正在採集」的布林值鎖解除，允許玩家下一次點擊
+    if (game.adventure) game.adventure.isGathering = false;
+    
+    // 9. 📊 隱藏進度條並將採集狀態文字改回「準備就緒」
+    const barContainer = document.getElementById('gather-progress-bar');
+    const status = document.getElementById('gather-status');
+    if (barContainer) barContainer.style.display = 'none'; // 隱藏進度條外框
+    if (status) status.innerText = `準備就緒`;             // 更改狀態提示文字
+
+    // 10. 🔓 解鎖採集按鈕：將按鈕重新啟用，並變回亮綠色、鼠標指針變回手型
+    const btn = document.getElementById('btn-gather');
+    if (btn) {
+        btn.disabled = false;                // 啟用按鈕
+        btn.style.background = '#238636';    // 恢復亮綠色背景
+        btn.style.cursor = 'pointer';         // 鼠標移上去變手型
+    }
+
+    // 11. ⭐ 全局畫面同步與強制存檔：
+    updateAdventureUI();                    // 0微秒硬寫死冒險/煉金界面的資源數字
+    if (typeof updateUI === 'function') updateUI(); // 刷新全遊戲通用 UI 面板
+    if (typeof saveGame === 'function') saveGame(); // 強行觸發本地自動存檔，徹底鎖死數值防止刷新重置
+}
+
+/**
+ * ⚗️ 1. 觸發煉金術：啟動平滑讀秒進度條 (完美對接 HTML onclick="startCraftingPotion()")
+ */
+function startCraftingPotion() {
+    if (!game.alchemy) {
+        game.alchemy = { isCrafting: false, cooldownLeft: 0, cooldownMax: 5 }; // 設定 5 秒提煉時間
+    }
+
+    if (game.alchemy.isCrafting) return;
+    if (!game.inv) game.inv = {};
+
+    // 📥 【單一數據源】直接讀取統一後的「草藥」與「原礦」庫存
+    const herbAmt = game.inv.herbs || 0;
+    const oreAmt = game.inv.ore || 0;
+	
+    // 事前驗證資源是否足夠 (安全防禦) - 煉金需要 2 個草藥與 1 個原礦
+    if (herbAmt < 2 || oreAmt < 1) {
+        if (typeof addLog === 'function') addLog("🚫 煉金失敗：材料不足！無法開始提煉。", "#ff4d4d");
+        return;
+    }
+
+    // 啟動煉金提煉狀態
+    game.alchemy.isCrafting = true;
+    
+    // 獲取煉金 UI 元素 (若沒有專用進度條，會自動安全相容借用採集進度條)
+    const btn = document.getElementById('btn-craft-potion') || document.getElementById('btn-make-potion');
+    const barContainer = document.getElementById('alchemy-progress-bar') || document.getElementById('gather-progress-bar');
+    const bar = document.getElementById('alchemy-progress') || document.getElementById('gather-progress');
+    const status = document.getElementById('alchemy-status') || document.getElementById('gather-status');
+
+    if (btn) {
+        btn.disabled = true;
+        btn.style.background = '#21262d';
+        btn.style.cursor = 'not-allowed';
+    }
+    if (barContainer) barContainer.style.display = 'block';
+    if (bar) bar.style.width = '0%';
+
+    if (typeof addLog === 'function') addLog("🧪 煉金術開爐！正在小心翼翼調配生命藥水...", "#1f6feb");
+
+    // 煉金倒數計時器
+    let elapsed = 0;
+    const intervalTime = 100;
+    const totalSteps = (game.alchemy.cooldownMax * 1000) / intervalTime;
+
+    let alchemyTimer = setInterval(() => {
+        elapsed++;
+        let progressPercent = (elapsed / totalSteps) * 100;
+        if (bar) bar.style.width = `${progressPercent}%`;
+        if (status) status.innerText = `提煉中... 剩餘 ${(game.alchemy.cooldownMax - (elapsed * intervalTime / 1000)).toFixed(1)} 秒`;
+
+        if (elapsed >= totalSteps) {
+            clearInterval(alchemyTimer);
+            // 倒數完畢，進入安全結算扣料
+            finishCraftingPotion(barContainer, status);
+        }
+    }, intervalTime);
+}
+
+/**
+ * 🧪 2. 煉金完成：結算成品藥水並地毯式精準扣料 (全分身安全連鎖鎖死)
+ */
+function finishCraftingPotion(barContainer, status) {
+    if (!game.inv) game.inv = {};
+
+    // 📥 【單一數據源】直接讀取統一後的材料與藥水庫存
+    let herbAmt = game.inv.herbs || 0;
+    let oreAmt = game.inv.ore || 0;
+    let potionAmt = game.inv.potion || 0;
+	
+    const NEED_HERB = 2;
+    const NEED_ORE = 1;
+
+    // 再次安全校驗，防止極端情況
+    if (herbAmt < NEED_HERB || oreAmt < NEED_ORE) {
+        if (typeof addLog === 'function') addLog("🚫 提煉結束時發現材料突然不足！", "#ff4d4d");
+        game.alchemy.isCrafting = false;
+        updateAdventureUI();
+        return;
+    }
+
+    // 3. 正式執行扣除材料與獲得藥水
+    herbAmt -= NEED_HERB;
+    oreAmt -= NEED_ORE;
+    potionAmt += 1;
+
+    // 4. 🚀【單一數據源】直接更新背包，徹底砍掉所有分身變數與回彈路徑
+    game.inv.herbs = herbAmt;
+    game.inv.ore = oreAmt;
+    game.inv.potion = potionAmt;
+	
+    // 重置提煉狀態
+    if (game.alchemy) game.alchemy.isCrafting = false;
+    if (barContainer) barContainer.style.display = 'none';
+    if (status) status.innerText = "準備就緒";
+
+    // 5. 輸出到日誌系統
+    if (typeof addLog === 'function') {
+        addLog(`🧪 提煉成功！消耗了 草藥x${NEED_HERB}、原礦x${NEED_ORE}，成功製作出 【🧪 生命藥水 x1】！`, "#52c41a");
+    }
+
+    // 6. ⚡ 0微秒硬寫死 HTML 畫面，杜絕定時器時差造成的閃爍
+    if (document.getElementById('res-herbs')) document.getElementById('res-herbs').innerText = herbAmt;
+    if (document.getElementById('res-ore')) document.getElementById('res-ore').innerText = oreAmt;
+    if (document.getElementById('res-potion')) document.getElementById('res-potion').innerText = potionAmt;
+
+    // 7. ⭐ 呼叫全域重新整理與強制存檔，徹底鎖定數值
+    updateAdventureUI();
+    if (typeof updateUI === 'function') updateUI();
+    if (typeof updateBattleUI === 'function') updateBattleUI();
+    if (typeof updateForgeUI === 'function') updateForgeUI();
+    if (typeof saveGame === 'function') saveGame();
+}
+
+/**
+ * 🔗 名稱相容代理：如果其他系統呼叫舊的 craftPotion()，會自動導向去跑進度條
+ */
+function craftPotion() {
+    startCraftingPotion();
+}
+
+// ==========================================
+// 🌲 [功能核心層] 野外探索與煉金合成系統邏輯結尾
+// ==========================================
+
+// ==========================================
+// ⚔️ [功能核心層] 自動打怪、傷害扣減與升級系統邏輯開首 (防回彈終極加固版)
+// ==========================================
+
+/**
+ * 🛠️ 擴充輔助功能：讓新材料和按鈕狀態也加入 UI 刷新
+ */
+function updateBattleUI() {
+    if (!game.inv) game.inv = {};
+    
+    // 📥 【單一數據源】直接認準乾淨、唯一的背包核心變數
+    const slimeAmt = game.inv.slime || 0;
+    const goblinAmt = game.inv.goblinEar || 0;
+
+    // 1. 🔥【核心修正】同步更新頂部儀表板新資源畫面，徹底消除閃爍回彈
+    if (document.getElementById('res-slime')) document.getElementById('res-slime').innerText = slimeAmt;
+    if (document.getElementById('res-slimeGlow')) document.getElementById('res-slimeGlow').innerText = slimeAmt;
+    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = goblinAmt;
+
+    // 2. 檢查如果正在戰鬥或血量歸 0，鎖定打怪按鈕
+    const btnBattle = document.getElementById('btn-battle');
+    if (btnBattle && (!game.battle || !game.battle.isFighting)) {
+        if ((game.player?.hp || 0) <= 0) {
+            btnBattle.disabled = true;
+            btnBattle.style.background = '#21262d';
+            btnBattle.style.cursor = 'not-allowed';
+            btnBattle.innerText = "❌ 傷勢過重，請先飲藥水！";
+        } else {
+            btnBattle.disabled = false;
+            btnBattle.style.background = '#da3637';
+            btnBattle.style.cursor = 'pointer';
+            btnBattle.innerText = "⚔️ 派遣出征打怪";
+        }
+    }
+}
+
+/**
+ * ⚔️ 開始進入戰鬥倒數
+ */
+function startBattle() {
+    if (!game.battle) game.battle = { isFighting: false, cooldownMax: 4 };
+    if (game.battle.isFighting) return;
+
+    // 驗證血量是否大於 0 (防禦讀取)
+    const currentHp = game.player?.hp !== undefined ? game.player.hp : 0;
+    if (currentHp <= 0) {
+        if (typeof addLog === 'function') addLog("🚫 你已經奄奄一息，快喝生命藥水回復！", "#ff4d4d");
+        return;
+    }
+
+    game.battle.isFighting = true;
+    
+    const monsterType = document.getElementById('monster-select').value;
+    const btn = document.getElementById('btn-battle');
+    const barContainer = document.getElementById('battle-progress-bar');
+    const bar = document.getElementById('battle-progress');
+    const status = document.getElementById('battle-status');
+
+    if (btn) { btn.disabled = true; btn.style.background = '#21262d'; }
+    if (barContainer) barContainer.style.display = 'block';
+    if (bar) bar.style.width = '0%';
+
+    let elapsed = 0;
+    const intervalTime = 100;
+    const totalSteps = (game.battle.cooldownMax * 1000) / intervalTime;
+
+    let battleTimer = setInterval(() => {
+        elapsed++;
+        let progressPercent = (elapsed / totalSteps) * 100;
+        if (bar) bar.style.width = `${progressPercent}%`;
+        
+        let targetName = monsterType === 'slime' ? "🟢 史萊姆" : "👺 哥布林";
+        if (status) status.innerText = `正在與 ${targetName} 激烈交戰中...`;
+
+        if (elapsed >= totalSteps) {
+            clearInterval(battleTimer);
+            finishBattle(monsterType);
+        }
+    }, intervalTime);
+}
+
+/**
+ * 🎁 戰鬥完結：扣減 HP、隨機掉落、發放經驗值與升級機制 (全管道安全鎖死版)
+ */
+function finishBattle(monsterType) {
+    // 1. 安全防禦初始化（確保核心物件存在）
+    if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5 };
+    if (!game.inv) game.inv = {};
+
+    // 📥 【單一數據源】直接提取最新核心數值
+    let curExp = game.player.exp || 0;
+    let curLv = game.player.lv || 1;
+    let maxExp = game.player.maxExp || 100;
+    let curHp = game.player.hp || 100;
+    let maxHp = game.player.maxHp || 100;
+    let curAtk = game.player.atk || 10;
+
+    let dmg = 0;
+    let expGained = 0;
+    let logMsg = "";
+
+    // 2. 根據怪物類型計算傷害、經驗值與掉落物資
+    if (monsterType === 'slime') {
+        dmg = 12; 
+        expGained = 20;
+        
+        // 直接操作唯一背包變數
+        let curSlime = game.inv.slime || 0;
+        
+        if (Math.random() < 0.7) {
+            curSlime += 1;
+            logMsg = `🟢 擊敗史萊姆！獲得 經驗值 +20，並成功搜刮到 【🧪 史萊姆黏液 x1】！`;
+        } else {
+            logMsg = `🟢 擊敗史萊姆！獲得 經驗值 +20，可惜這次什麼都沒掉落。`;
+        }
+        
+        game.inv.slime = curSlime;
+
+    } else if (monsterType === 'goblin') {
+        dmg = 25; 
+        expGained = 45;
+        
+        // 直接操作唯一背包變數
+        let curGoblin = game.inv.goblinEar || 0;
+        
+        if (Math.random() < 0.6) {
+            curGoblin += 1;
+            logMsg = `👺 擊敗哥布林！獲得 經驗值 +45，並割下 【👺 哥布林耳 x1】！`;
+        } else {
+            logMsg = `👺 擊敗哥布林！獲得 經驗值 +45，空手而歸。`;
+        }
+        
+        game.inv.goblinEar = curGoblin;
+    }
+
+    // 3. 扣減角色血量
+    curHp = Math.max(0, curHp - dmg);
+    if (typeof addLog === 'function') {
+        addLog(`⚔️ 戰鬥結束：受到傷害 -${dmg}點。`, "#ff4d4d");
+        addLog(logMsg, "#52c41a");
+    }
+
+    // 4. 計算經驗增長與升級邏輯
+    curExp += expGained;
+    if (typeof addLog === 'function') addLog(`✨ 獲得經驗值 +${expGained}點。`, "#1f6feb");
+
+    if (curExp >= maxExp) {
+        curExp -= maxExp;
+        curLv += 1;
+        maxExp = Math.floor(maxExp * 1.3);
+        maxHp += 15;
+        curAtk += 3;
+        curHp = maxHp; // 升級回滿血
+        if (typeof addLog === 'function') {
+            addLog(`🎉 恭喜你升級了！目前等級：Lv.${curLv}！屬性獲得全面提升！`, "#f2cc60");
+        }
+    }
+
+    // 5. 🚀【鎖定核心變數】只更新唯一的 game.player 核心物件
+    game.player.exp = curExp;
+    game.player.lv = curLv;
+    game.player.maxExp = maxExp;
+    game.player.hp = curHp;
+    game.player.maxHp = maxHp;
+    game.player.atk = curAtk;
+
+    // 6. 重置戰鬥 UI 按鈕與狀態
+    if (game.battle) game.battle.isFighting = false;
+    const barContainer = document.getElementById('battle-progress-bar');
+    const status = document.getElementById('battle-status');
+    if (barContainer) barContainer.style.display = 'none';
+    if (status) status.innerText = "整備中";
+
+    const btnBattle = document.getElementById('btn-battle');
+    if (btnBattle) {
+        btnBattle.disabled = false;
+        btnBattle.style.background = '#1f6feb';
+        btnBattle.style.cursor = 'pointer';
+    }
+
+    // 7. ⚡【UI 精準渲染】0微秒強制將核心數據推送到網頁畫面上
+    if (document.getElementById('res-slime')) document.getElementById('res-slime').innerText = game.inv.slime || 0;
+    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar || 0;
+
+    // 渲染角色屬性面版
+    if (document.getElementById('char-atk')) document.getElementById('char-atk').innerText = curAtk;
+    if (document.getElementById('char-lv')) document.getElementById('char-lv').innerText = curLv;
+    
+    // 渲染血條
+    const hpPercent = Math.min(100, Math.max(0, (curHp / maxHp) * 100));
+    if (document.getElementById('char-hp-bar')) document.getElementById('char-hp-bar').style.width = `${hpPercent}%`;
+    if (document.getElementById('char-hp-text')) document.getElementById('char-hp-text').innerText = `${Math.floor(curHp)} / ${maxHp}`;
+
+    // 渲染經驗條
+    const expPercent = Math.min(100, Math.max(0, (curExp / maxExp) * 100));
+    if (document.getElementById('char-exp-bar')) document.getElementById('char-exp-bar').style.width = `${expPercent}%`;
+    if (document.getElementById('char-exp-text')) document.getElementById('char-exp-text').innerText = `${curExp} / ${maxExp}`;
+
+    // 8. ⭐【強制存檔鎖定】
+    if (typeof updateUI === 'function') updateUI();
+    if (typeof updateBattleUI === 'function') updateBattleUI();
+    if (typeof updateAdventureUI === 'function') updateAdventureUI();
+    if (typeof saveGame === 'function') saveGame();
+}
+
+// ==========================================
+// ⚔️ [功能核心層] 自動打怪、傷害扣減與升級系統邏輯結尾
+// ==========================================
+
+// ==========================================
+// 🧪 [功能核心層] 冒險者使用藥水回血系統邏輯開首 (防回彈終極加固版)
+// ==========================================
+/**
+ * 🧪 冒險者使用生命藥水補血
+ */
+window.useHealthPotion = function() {
+    // 1. 安全防禦：確保角色數據與背包數據存在
+    if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5 };
+    if (!game.inv) game.inv = {};
+
+    // 2. 獲取網頁上精準的藥水數量顯示標籤
+    const potionEl = document.getElementById('res-potion');
+    if (!potionEl) {
+        console.error("🚫 錯誤：找不到 id='res-potion' 的 HTML 元素！");
+        return;
+    }
+
+    // 3. 🚀【單一數據源】直接撈取背包中最真實的藥水庫存
+    let potionAmt = game.inv.potion || 0;
+	
+    // 4. 判定藥水數量是否足夠
+    if (potionAmt <= 0) {
+        if (typeof addLog === 'function') addLog("🚫 補血失敗：你包包裡面已經冇晒【生命藥水】喇！快啲去提煉啦。", "#ff4d4d");
+        return;
+    }
+
+    // 5. 判定角色血量是否已經滿了
+    let curHp = game.player.hp || 100;
+    let maxHp = game.player.maxHp || 100;
+
+    if (curHp >= maxHp) {
+        if (typeof addLog === 'function') addLog("💚 你的生命值已經是滿的，不需要浪費藥水喔！", "#3fb950");
+        return;
+    }
+
+    // 6. 🛠️【地毯式扣數】庫存減 1，統一維護單一變數
+    potionAmt--;
+    game.inv.potion = potionAmt;
+	
+    // 即時將扣除後的數字寫回 HTML 畫面
+    potionEl.innerText = potionAmt;
+
+    // 7. 💚 執行回血邏輯 (每瓶固定回復 50 點 HP)
+    const healAmount = 50;
+    const oldHp = curHp;
+    curHp = Math.min(maxHp, curHp + healAmount);
+    const actualHeal = Math.floor(curHp - oldHp);
+
+    // 同步把最新血量寫回核心變數
+    game.player.hp = curHp;
+
+    if (typeof addLog === 'function') {
+        addLog(`🧪 咕嚕咕嚕...你喝下了一瓶初級生命藥水！生命值回復了 ${actualHeal} 點！(剩餘: ${potionAmt} 瓶)`, "#3fb950");
+    }
+
+    // 8. 📊 強制即時刷新頂部角色狀態欄的紅色血條與文字
+    const hpPercent = Math.min(100, Math.max(0, (curHp / maxHp) * 100));
+    const elHpBar = document.getElementById('char-hp-bar');
+    const elHpText = document.getElementById('char-hp-text');
+    
+    if (elHpBar) elHpBar.style.width = `${hpPercent}%`;
+    if (elHpText) elHpText.innerText = `${Math.floor(curHp)} / ${maxHp}`;
+
+    // 9. 💾 全局同步更新所有 UI 與自動存檔
+    if (typeof updateAdventureUI === 'function') updateAdventureUI();
+    if (typeof updateUI === 'function') updateUI();
+    if (typeof updateBattleUI === 'function') updateBattleUI();
+    if (typeof saveGame === 'function') saveGame();
+};
+// ==========================================
+// 🧪 [功能核心層] 冒險者使用藥水回血系統邏輯結尾
+// ==========================================
+
+// ==========================================
+// ⚙️ [功能核心層] 鎔爐原礦加工系統邏輯開首 (強制全域安全版)
+// ==========================================
+
+window.isMeltingIron = false; 
+
+/**
+ * 🪨 開始熔煉鐵錠
+ */
+window.startMeltingIron = function() {
+    if (window.isMeltingIron) return;
+    if (!game.inv) game.inv = {};
+
+    // 1. 【數據源對齊】改為讀取統一的 ore 變數
+    let oreAmt = game.inv.ore || 0;
+
+    // 2. 判定原礦是否足夠
+    if (oreAmt < 3) {
+        if (typeof addLog === 'function') addLog("🚫 原礦不足！熔煉一塊鐵錠需要 3 個原礦。", "#ff4d4d");
+        return;
+    }
+
+    window.isMeltingIron = true;
+
+    // 3. 扣除原礦並同步至唯一核心變數
+    oreAmt -= 3;
+    game.inv.ore = oreAmt;
+	
+    // 4. 獲取進度條與按鈕元素
+    const btn = document.getElementById('btn-melt-iron');
+    const barContainer = document.getElementById('iron-progress-bar');
+    const bar = document.getElementById('iron-progress');
+    const status = document.getElementById('iron-melt-status');
+
+    // 5. 啟動熔煉期間的 UI 狀態
+    if (btn) { btn.disabled = true; btn.style.opacity = "0.5"; }
+    if (barContainer) barContainer.style.display = 'block';
+    if (bar) bar.style.width = '0%';
+
+    let elapsed = 0;
+    const cooldownMax = 2; // 2秒熔煉完成
+    const intervalTime = 100;
+    const totalSteps = (cooldownMax * 1000) / intervalTime;
+
+    // 6. 啟動計時器跑進度條
+    let meltTimer = setInterval(() => {
+        elapsed++;
+        let progressPercent = (elapsed / totalSteps) * 100;
+        if (bar) bar.style.width = `${progressPercent}%`;
+        if (status) status.innerText = `🔥 鼓風爐加熱中... (${(cooldownMax - (elapsed*0.1)).toFixed(1)}s)`;
+
+        // 7. 倒數結束，熔煉成功
+        if (elapsed >= totalSteps) {
+            clearInterval(meltTimer);
+            
+            // 🔥【關鍵修正：與鐵匠鋪對齊，直接發放到統一的 iron_bar 變數】
+            let curIron = game.inv.iron_bar || 0;
+            curIron += 1;
+            game.inv.iron_bar = curIron;
+			
+            // 重置熔煉爐狀態
+            window.isMeltingIron = false;
+            if (barContainer) barContainer.style.display = 'none';
+            if (status) status.innerText = "設備空閒";
+            if (btn) { btn.disabled = false; btn.style.opacity = "1"; }
+
+            if (typeof addLog === 'function') addLog("🔥 熔煉成功！消耗 原礦 x3 獲得 【⚙️ 鐵錠 x1】！", "#f2cc60");
+
+            // ⭐【強行點對點刷新新庫存】
+            if (document.getElementById('res-iron')) {
+                document.getElementById('res-iron').innerText = game.inv.iron_bar;
+            }
+			
+            // 全局同步更新 UI 與存檔
+            if (typeof updateUI === 'function') updateUI();
+            if (typeof updateForgeUI === 'function') updateForgeUI();
+            if (typeof saveGame === 'function') saveGame();
+        }
+    }, intervalTime);
+};
+// ==========================================
+// ⚙️ [功能核心層] 鎔爐原礦加工系統邏輯結尾
+// ==========================================
+
+// ==========================================
+// 🔨 [功能核心層] 鐵匠鍛造系統與裝備加成邏輯 (終極精簡單一真實源版)
+// ==========================================
+
+/**
+ * 👁️ 選擇不同裝備時，即時更新下方所需的材料文字提示
+ */
+function updateForgePreview() {
+    const type = document.getElementById('craft-eq-select').value;
+    const reqEl = document.getElementById('forge-req-text');
+    if (!reqEl) return;
+
+    if (type === 'ironSword') {
+        reqEl.innerHTML = `需求：<span style="color:#ff7b72;">⚙️ 鐵錠 x10</span> + <span style="color:#a5d6ff;">🧪 黏液 x3</span>`;
+    } else if (type === 'slimeArmor') {
+        reqEl.innerHTML = `需求：<span style="color:#ff7b72;">⚙️ 鐵錠 x8</span> + <span style="color:#ff7b72;">👺 哥布林耳 x4</span>`;
+    }
+}
+
+/**
+ * 🔨 同步更新鐵匠鋪按鈕與已穿戴裝備狀態
+ */
+function updateForgeUI() {
+    // 安全防禦
+    if (!game.equipment) game.equipment = { weapon: "無", armor: "無", atkBonus: 0, hpBonus: 0 };
+    if (!game.inv) game.inv = {};
+
+    // 1. 更新當前已穿戴的裝備名稱與加成數值
+    if (document.getElementById('eq-weapon')) document.getElementById('eq-weapon').innerText = game.equipment.weapon;
+    if (document.getElementById('eq-armor')) document.getElementById('eq-armor').innerText = game.equipment.armor;
+    
+    if (document.getElementById('eq-atk-bonus')) {
+        document.getElementById('eq-atk-bonus').innerText = game.equipment.atkBonus > 0 ? `(+${game.equipment.atkBonus})` : "";
+    }
+    if (document.getElementById('eq-hp-bonus')) {
+        document.getElementById('eq-hp-bonus').innerText = game.equipment.hpBonus > 0 ? `(+${game.equipment.hpBonus})` : "";
+    }
+
+    // 2. 打造成本即時判定與按鈕亮滅控制
+    const type = document.getElementById('craft-eq-select')?.value;
+    const btn = document.getElementById('btn-forge-eq');
+    if (!btn) return;
+
+    // 📥 【單一數據源】直接認準乾淨的背包變數
+    const ironAmt = game.inv.iron_bar || 0; 
+    const slimeAmt = game.inv.slime || 0;
+    const goblinAmt = game.inv.goblinEar || 0;
+
+    let canCraft = false;
+    if (type === 'ironSword') {
+        canCraft = (ironAmt >= 10 && slimeAmt >= 3);
+    } else if (type === 'slimeArmor') {
+        canCraft = (ironAmt >= 8 && goblinAmt >= 4);
+    }
+
+    // 3. 動態修正文字顏色
+    const reqTextEl = document.getElementById('forge-req-text');
+    if (reqTextEl) {
+        if (type === 'ironSword') {
+            const ironColor = ironAmt >= 10 ? "#3fb950" : "#ff7b72";
+            const slimeColor = slimeAmt >= 3 ? "#3fb950" : "#ff7b72";
+            reqTextEl.innerHTML = `需求：<span style="color:${ironColor};">⚙️ 鐵錠 x10</span> + <span style="color:${slimeColor};">🧪 黏液 x3</span> (當前鐵錠: ${ironAmt}, 黏液: ${slimeAmt})`;
+        } else if (type === 'slimeArmor') {
+            const ironColor = ironAmt >= 8 ? "#3fb950" : "#ff7b72";
+            const goblinColor = goblinAmt >= 4 ? "#3fb950" : "#ff7b72";
+            reqTextEl.innerHTML = `需求：<span style="color:${ironColor};">⚙️ 鐵錠 x8</span> + <span style="color:${goblinColor};">👺 哥布林耳 x4</span> (當前鐵錠: ${ironAmt}, 耳朵: ${goblinAmt})`;
+        }
+    }
+
+    // 4. 按鈕外觀與狀態控制
+    btn.disabled = !canCraft;
+    btn.style.opacity = canCraft ? "1" : "0.5";
+    btn.style.cursor = canCraft ? "pointer" : "not-allowed";
+    btn.style.background = canCraft ? "#ff9b30" : "#21262d";
+}
+
+/**
+ * 🔨 執行裝備鍛造與穿戴
+ */
+function craftEquipment() {
+    const type = document.getElementById('craft-eq-select').value;
+    
+    if (!game.equipment) game.equipment = { weapon: "無", armor: "無", atkBonus: 0, hpBonus: 0 };
+    if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10 };
+
+    // 讀取當前最真實的背包核心數值
+    const ironAmt = game.inv.iron_bar || 0;
+    const slimeAmt = game.inv.slime || 0;
+    const goblinAmt = game.inv.goblinEar || 0;
+
+    if (type === 'ironSword') {
+        if (ironAmt < 10 || slimeAmt < 3) return;
+        
+        // 🚀【純淨扣數】直接加減唯一核心變數
+        game.inv.iron_bar -= 10;
+        game.inv.slime -= 3;
+
+        // 換武器邏輯 (扣除舊加成，換上新加成)
+        game.player.atk = (game.player.atk || 10) - (game.equipment.atkBonus || 0); 
+        game.equipment.weapon = "鋼鐵大劍";
+        game.equipment.atkBonus = 15;
+        game.player.atk += 15;
+
+        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x10、黏液 x3 打造了【⚔️ 鋼鐵大劍】！攻擊力大幅提升 15 點！", "#ff9b30");
+
+    } else if (type === 'slimeArmor') {
+        if (ironAmt < 8 || goblinAmt < 4) return;
+        
+        // 🚀【純淨扣數】直接加減唯一核心變數
+        game.inv.iron_bar -= 8;
+        game.inv.goblinEar -= 4;
+
+        // 換防具邏輯 (扣除舊加成，換上新加成)
+        game.player.maxHp = (game.player.maxHp || 100) - (game.equipment.hpBonus || 0);
+        game.equipment.armor = "史萊姆輕甲";
+        game.equipment.hpBonus = 50;
+        game.player.maxHp += 50;
+        game.player.hp = Math.min(game.player.maxHp, (game.player.hp || 100) + 50);
+
+        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x8、哥布林耳 x4 打造了【🛡️ 史萊姆輕甲】！最大生命值上限提升 50 點！", "#ff9b30");
+    }
+
+    // ⚡【精準 UI 點對點更新】同步推送到網頁 HTML 畫面上
+    if (document.getElementById('res-iron'))      document.getElementById('res-iron').innerText = game.inv.iron_bar;
+    if (document.getElementById('res-slime'))     document.getElementById('res-slime').innerText = game.inv.slime;
+    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar;
+
+    // 同步刷新角色狀態欄數據
+    if (document.getElementById('char-atk')) document.getElementById('char-atk').innerText = game.player.atk;
+    
+    const hpPercent = Math.min(100, Math.max(0, (game.player.hp / game.player.maxHp) * 100));
+    if (document.getElementById('char-hp-bar'))  document.getElementById('char-hp-bar').style.width = `${hpPercent}%`;
+    if (document.getElementById('char-hp-text')) document.getElementById('char-hp-text').innerText = `${Math.floor(game.player.hp)} / ${game.player.maxHp}`;
+
+    // 💾【全域同步並安全存檔】
+    if (typeof updateUI === 'function') updateUI();
+    if (typeof updateBattleUI === 'function') updateBattleUI();
+    updateForgeUI();
+    if (typeof saveGame === 'function') saveGame();
+}
+
+// ==========================================
+// 🔨 [功能核心層] 鐵匠鍛造系統邏輯結尾
+// ==========================================
+
+// ==========================================
+// 🛠️ [功能核心層] 後台開發者六大材料修改邏輯開首 (強制注入加固版)
+// ==========================================
+window.modifyMaterialDebug = function(type, amount) {
+    if (!game.inv) game.inv = {};
+
+    // 🚀【修正後台工具數據源】直接對齊單一真實背包變數，徹底刪除所有舊分身
+    if (type === 'herb') {
+        let cur = game.inv.herbs || 0;
+        game.inv.herbs = Math.max(0, cur + amount);
+        if (document.getElementById('res-herbs')) document.getElementById('res-herbs').innerText = game.inv.herbs;
+
+    } else if (type === 'ore') {
+        let cur = game.inv.ore || 0;
+        game.inv.ore = Math.max(0, cur + amount);
+        if (document.getElementById('res-ore')) document.getElementById('res-ore').innerText = game.inv.ore;
+
+    } else if (type === 'iron_bar') {
+        let cur = game.inv.iron_bar || 0;
+        game.inv.iron_bar = Math.max(0, cur + amount);
+        if (document.getElementById('res-iron')) document.getElementById('res-iron').innerText = game.inv.iron_bar;
+
+    } else if (type === 'potion') {
+        let cur = game.inv.potion || 0;
+        game.inv.potion = Math.max(0, cur + amount);
+        if (document.getElementById('res-potion')) document.getElementById('res-potion').innerText = game.inv.potion;
+
+    } else if (type === 'slime') {
+        let cur = game.inv.slime || 0;
+        game.inv.slime = Math.max(0, cur + amount);
+        if (document.getElementById('res-slime')) document.getElementById('res-slime').innerText = game.inv.slime;
+
+    } else if (type === 'goblinEar') {
+        let cur = game.inv.goblinEar || 0;
+        game.inv.goblinEar = Math.max(0, cur + amount);
+        if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar;
+    }
+
+    // 呼叫修復好的大腦進行同步，並強制進行安全存檔
+    if (typeof updateUI === 'function') updateUI();
+    if (typeof updateBattleUI === 'function') updateBattleUI();
+    if (typeof updateForgeUI === 'function') updateForgeUI();
+    if (typeof updateAdventureUI === 'function') updateAdventureUI();
+    if (typeof saveGame === 'function') saveGame();
+};
+// ==========================================
+// 🛠️ [功能核心層] 後台開發者六大材料修改邏輯結尾
+// ==========================================
+
 // ==========================================
 // [系統啟動層] window.onload 全域初始化
-// 🛠️ 說明：當瀏覽器完全載入 HTML 與資源後，執行此區塊
-// 放置位置：建議放在 JavaScript 檔案的最底部
 // ==========================================
 window.onload = function() {
-    console.log("🚀 遊戲初始化啟動...");
+    console.log("step 6: 🚀 遊戲初始化啟動...");
 
     // 1. 執行介面初次渲染
-    // 這會根據 renderDashboard() 內的模板畫出稱號、資金與資源格子
     if (typeof renderDashboard === 'function') {
         renderDashboard();
     } else {
@@ -1700,21 +2897,21 @@ window.onload = function() {
     }
 
     // 2. 執行數據初次同步
-    // 確保一開機就看到正確的稱號進度與數值
-    if (typeof updateUI === 'function') {
-        updateUI();
-    }
+    if (typeof updateUI === 'function') updateUI();
+    if (typeof updateBattleUI === 'function') updateBattleUI();
+    if (typeof updateForgeUI === 'function') updateForgeUI();
+    if (typeof updateAdventureUI === 'function') updateAdventureUI();
 
     // 3. 啟動全域定時器 (每 100 毫秒刷新一次 UI)
-    // 這樣你的金錢跳動、進度條增長才會平滑
     setInterval(() => {
-        if (typeof updateUI === 'function') {
-            updateUI();
-        }
+        if (typeof updateUI === 'function') updateUI();
     }, 100);
 
-    console.log("✅ 介面渲染與循環系統已就緒。");
+    console.log("step 7: ✅ 介面渲染與循環系統已就緒。");
 };
+// ==========================================
+// [系統啟動層] 初始化結束
+// ==========================================
 // ==========================================
 // [系統啟動層] 初始化結束
 // ==========================================											 
