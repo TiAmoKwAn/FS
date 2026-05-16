@@ -505,7 +505,14 @@
             </div>
         </div>
 		<!-- 🔨 鐵匠鍛造舖 完給 -->
-
+		<!-- 🔨 系統日誌 -->
+		<div style="background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; display: flex; flex-direction: column;">
+        <div style="font-weight: bold; margin-bottom: 8px; color: #3fb950; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+            📋 系統日誌 (鐵匠旁)
+        </div>
+        <div id="log" class="log-container" style="min-height: 250px; flex-grow: 1;height: 100%; margin: 0; box-sizing: border-box;"></div>
+    </div>
+		<!-- 🔨 系統日誌 完結 -->
     </div>
 
 </div>
@@ -532,19 +539,16 @@
     </div>
 </div>
 
+<!-- 底部 UI 面板 不能刪,只能隱藏 -->
+<div class="bottom-ui" style="display: none !important;">
 <!-- 📱 底部 UI 面板：採用三欄式佈局，包含採購、自動化與日誌 -->
-<div class="bottom-ui">
-    
+<div class="bottom-ui">  
     <!-- 🛒 物資採購面板：提供玩家手動購買原材料的按鈕 -->
-
-	
 	<div class="panel-box">
 		<b style="color:#58a6ff;">🛒 物資採購</b>
 		<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;">
 			</div>
     </div>
-
-
     <!-- 🤖 自動化部署面板：由 JavaScript 根據遊戲進度動態生成自動化控制按鈕 -->
     <div class="panel-box">
         <b style="color:#bc8cff;">🤖 自動化部署</b>
@@ -557,6 +561,35 @@
         <div id="log" class="log-container"></div>
     </div>
 </div>
+</div>
+<!-- 底部 UI 面板 不能刪,只能隱藏 -->
+
+<!-- 旅行商人 -->
+<div id="title-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; justify-content: center; align-items: center;">
+    
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 440px; max-width: 95%; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; max-height: 80vh;">
+        
+        <button onclick="closeTitleModal()" style="position: absolute; top: 12px; right: 15px; background: none; border: none; color: #8b949e; font-size: 18px; cursor: pointer;">✕</button>
+        
+        <h3 style="color: #f2cc60; margin-top: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+            🛒 旅行商人物資採購商店
+        </h3>
+        
+        <p style="font-size: 11px; color: #8b949e; margin-top: -5px; margin-bottom: 12px; flex-shrink: 0;">
+			貨物出門，恕不退換！
+        </p>
+        
+		<hr style="border: 0; border-top: 1px solid #30363d; margin: 10px 0; flex-shrink: 0;">
+        
+        <div id="modal-market-container" style="display: flex; flex-wrap: wrap; gap: 6px; overflow-y: auto; flex-grow: 1; padding-right: 5px; width: 100%; box-sizing: border-box;">
+            </div>
+        
+        <button onclick="closeTitleModal()" class="action-btn btn-blue" style="width: 100%; margin-top: 20px; height: 35px; font-size: 12px; flex-shrink: 0;">
+            關閉商店
+        </button>
+    </div>
+</div>
+<!-- 旅行商人 -->
 
 <script>
     // 🏆 稱號與多重加成定義：控制遊戲不同階段的利潤、速度及檢測加成
@@ -632,13 +665,13 @@ for(let i=1; i<=LINE_COUNT; i++) {
 // ==========================================
 let cfg = { 
     // n:名稱, i:圖標, c:CSS類, r:售價, buy:買價, range:產線範圍
-    wood:    { n: '木材', i: '🪵', c: 'part-wood',    r: 15,  buy: 5,   range: [1, 100] },
-    stone:   { n: '石頭', i: '🪨', c: 'part-stone',   r: 30,  buy: 10,  range: [1, 100] }, 
-    iron:    { n: '鋼鐵', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [1, 100] },
-    core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 50,  range: [3, 100] },
-    diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 200, range: [8, 10] },
-	water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [8, 10] },
-    gold:    { n: '黃金', i: '🟡', c: 'part-gold',    r: 1000, buy: 300, range: [8, 10] }
+    wood:    { n: '木材', i: '🪵', c: 'part-wood',    r: 15,  buy: 30,   range: [1, 100] },
+    stone:   { n: '石頭', i: '🪨', c: 'part-stone',   r: 30,  buy: 60,  range: [1, 100] }, 
+    iron:    { n: '鋼鐵', i: '⛓️', c: 'part-iron',    r: 55,  buy: 110,  range: [1, 100] },
+    core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 300,  range: [3, 100] },
+    diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 1000, range: [8, 10] },
+	water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 1600, range: [8, 10] },
+    gold:    { n: '黃金', i: '🟡', c: 'part-gold',    r: 1000, buy: 2000, range: [8, 10] }
 };
 // ==========================================
 // [Script] cfg 資源屬性配置表 - 完結
@@ -1070,8 +1103,9 @@ container.innerHTML += `
                     </div>
 
                     <div class="station" style="left: 245px; width: 280px;">
-                        <div class="status-header">⚙️ 生產 Agent <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></div>
-                        
+                        <div class="status-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 5px;"><span>⚙️ 生產 Agent <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></span>
+                        <button id="auto-btn-${i}" style="color:#000000; onclick="toggleAuto(${i})">自動化 ($500)</button>
+						</div>
                         <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">設備健康度</span><span id="dur-text-${i}" style="font-size:10px; font-family:'Share Tech Mono';">100%</span></div>
                         <div class="durability-box"><div id="dur-fill-${i}" class="dur-fill"></div></div>
                         
@@ -1103,7 +1137,7 @@ container.innerHTML += `
             `;
 
             // 4. 在頂部自動化面板添加該產線的控制按鈕
-            autoControls.innerHTML += `<button id="auto-btn-${i}" class="action-btn" style="background:#30363d" onclick="toggleAuto(${i})">部署 Line ${i} 自動化 ($500)</button>`;
+            autoControls.innerHTML += `<button id="auto-btn-${i}" class="action-btn" style="background:#30363d" onclick="toggleAuto(${i})"> Line ${i} 自動化 ($500)</button>`;
         }
     }
 // ==========================================
@@ -1236,7 +1270,7 @@ function updateUI() {
                     ab.innerText = l.isAuto ? `🤖 L${i}: 智能運行` : `🤖 L${i}: 停止`; 
                     ab.style.background = l.isAuto ? "#238636" : "#d29922"; 
                 } else { 
-                    ab.innerText = `部署 Line ${i} 自動化 ($500)`; 
+                    ab.innerText = `自動化 $500`; 
                     ab.disabled = game.money < 500; 
                 }
             }
@@ -1338,7 +1372,7 @@ function renderDashboard() {
     `;
 
     // --- 2. 構建：資金與研究點顯示區 ---
-let htmlCombined = `
+	let htmlCombined = `
         <div style="display:flex; flex-direction:column; flex-grow:1; gap:10px; padding-left:10px; margin-left:10px; border-left: 1px solid rgba(255,255,255,0.1); overflow:hidden;">
 
             <div style="display:flex; gap:10px; align-items: center;">
@@ -1353,6 +1387,13 @@ let htmlCombined = `
                     <span class="stat-label" style="font-size:15px;">🧪 研究點數</span>
                     <div id="rp-val" class="stat-value" style="color:#a371f7; font-size:18px;">0</div>
                 </div>
+				
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+
+<span onclick="openTitleModal()" style="background: #f2cc60; color: #0d1117; font-weight: bold; font-size: 17px; padding: 8px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap;">
+    旅行商人
+</span>
+
             </div>
 
             <div id="inventory-grid" style="display:flex; flex-wrap:wrap; gap:15px;">
@@ -2099,91 +2140,121 @@ function updateAdventureUI() {
     }
 }
 
-/**
- * 🌲 觸發野外採集行為 (帶有平滑進度條動畫)
- */
+// ==========================================
+// 🌲 [功能核心層] 觸發野外採集行為 (帶有平滑進度條動畫)
+// ==========================================
 function startGathering() {
+    // 1. 安全防禦：確保冒險(adventure)的核心變數結構存在，並設定基礎冷卻為 5 秒
     if (!game.adventure) {
         game.adventure = { isGathering: false, cooldownLeft: 0, cooldownMax: 5 };
     }
 
+    // 2. 狀態檢查：如果目前正在採集，直接攔截，防止玩家重複點擊導致計時器重疊
     if (game.adventure.isGathering) return;
 
+    // 3. 鎖定狀態：將採集狀態標記為 true，並同步冷卻時間
     game.adventure.isGathering = true;
     game.adventure.cooldownLeft = game.adventure.cooldownMax;
 
-    const btn = document.getElementById('btn-gather');
-    const barContainer = document.getElementById('gather-progress-bar');
-    const bar = document.getElementById('gather-progress');
-    const status = document.getElementById('gather-status');
+    // 4. 獲取網頁 HTML 的對應 UI 元素
+    const btn = document.getElementById('btn-gather');                // 採集按鈕
+    const barContainer = document.getElementById('gather-progress-bar'); // 進度條外框
+    const bar = document.getElementById('gather-progress');            // 進度條顏色填滿區
+    const status = document.getElementById('gather-status');            // 狀態文字提示標籤
 
-    if (btn) { btn.disabled = true; btn.style.background = '#21262d'; }
-    if (barContainer) barContainer.style.display = 'block';
-    if (bar) bar.style.width = '0%';
+    // 5. 變更 UI 狀態：禁用按鈕、改變外觀，並將進度條顯示且歸零
+    if (btn) { 
+        btn.disabled = true; 
+        btn.style.background = '#21262d'; // 變更為深灰色，表示鎖定中
+    }
+    if (barContainer) barContainer.style.display = 'block'; // 顯示隱藏的進度條
+    if (bar) bar.style.width = '0%';                       // 重置進度條寬度
 
-    let elapsed = 0;
-    const intervalTime = 100; 
-    const totalSteps = (game.adventure.cooldownMax * 1000) / intervalTime;
+    // 6. 計算計時器的每步步長（每 100 毫秒跑一格）
+    let elapsed = 0;                                                   // 已經過的步數
+    const intervalTime = 100;                                         // 每次更新的間隔時間 (毫秒)
+    const totalSteps = (game.adventure.cooldownMax * 1000) / intervalTime; // 到達 100% 總共需要跑的步數
 
+    // 7. 啟動計時器循環
     let gatherTimer = setInterval(() => {
-        elapsed++;
+        elapsed++; // 累加已跑步數
+        
+        // 計算當前的進度百分比並即時渲染到進度條畫面上
         let progressPercent = (elapsed / totalSteps) * 100;
         if (bar) bar.style.width = `${progressPercent}%`;
-        if (status) status.innerText = `採集物資中... 剩餘 ${(game.adventure.cooldownMax - (elapsed * intervalTime / 1000)).toFixed(1)} 秒`;
+        
+        // 動態計算並顯示剩餘秒數（保留一位小數）
+        if (status) {
+            let timeLeft = game.adventure.cooldownMax - (elapsed * intervalTime / 1000);
+            status.innerText = `🌲 正在森林深處採集物資中... 剩餘 ${timeLeft.toFixed(1)} 秒`;
+        }
 
+        // 8. 倒數結束：到達總步數時關閉計時器，並呼叫結算函數
         if (elapsed >= totalSteps) {
-            clearInterval(gatherTimer);
-            finishGathering();
+            clearInterval(gatherTimer); // 銷毀計時器，釋放記憶體
+            finishGathering();         // 呼叫完結函數（此處會發放木材、石頭、草藥、原礦等）
         }
     }, intervalTime);
 }
+// ==========================================
+// 🌲 [功能核心層] 觸發野外採集行為 (帶有平滑進度條動畫) - 完結
+// ==========================================
 
 /**
  * 🎁 採集完成：結算隨機掉落資源
  */
-/**
- * 🎁 採集完成結算函數
- * 說明：當野外採集進度條讀秒完結後觸發，負責隨機發放資源、同步變數、更新 UI 同埋自動存檔。
- */
+ 
+// ==========================================
+// 🌲 [功能核心層] 🎁 採集完成：結算隨機掉落資源
+// 說明：當野外採集進度條讀秒完結後觸發，負責隨機發放資源、同步變數、更新 UI 同埋自動存檔。
+// ==========================================
 function finishGathering() {
     // 1. 安全防禦：確保背包物件存在（若 let game 內已有，這行可留作雙重保險）
     if (!game.inv) game.inv = {};
     
     // 2. 直接讀取統一後的「草藥」與「原礦」庫存（乾淨、單一數據源）
-    let curHerb = game.inv.herbs || 0;
-    // 3. 
-    let curOre = game.inv.ore || 0;
+    let curHerb = game.inv.herbs || 0;	// 草藥
+    let curOre = game.inv.ore || 0;		// 原礦
+	let curWood = game.inv.wood || 0;   // 🆕 新增：木材當前庫存
+    let curStone = game.inv.stone || 0; // 🆕 新增：石頭當前庫存
 	
-    // 4. 計算隨機掉落數量：
+	// 3. 計算隨機掉落數量：
     // Math.random() * 3 產生 0~2.999 的隨機數，Math.floor 捨去小數變成 0~2，再 +1 變成【1~3 個草藥】
-    let herbDropped = Math.floor(Math.random() * 3) + 1;
-    // 同理，產生【1~2 個原礦】
-    let oreDropped = Math.floor(Math.random() * 2) + 1;
+    let herbDropped = Math.floor(Math.random() * 3) + 0;
+    // 產生【1~2 個原礦】
+    let oreDropped = Math.floor(Math.random() * 2) + 0;
+    // 🆕 新增：產生【2~4 個木材】 (Math.floor(0~2.999) 變成 0~2，再 +2 變成 2~4)
+    let woodDropped = Math.floor(Math.random() * 3) + 0;
+    // 🆕 新增：產生【2~4 個石頭】
+    let stoneDropped = Math.floor(Math.random() * 3) + 0;
     
-    // 5. 將採集到的隨機數量累加進目前的庫存數值入面
-    curHerb += herbDropped;
-    curOre += oreDropped;
+	// 4. 將採集到的隨機數量累加進目前的庫存數值入面
+    curHerb += herbDropped;		// 累加草藥
+    curOre += oreDropped;		// 黑加原礦
+    curWood += woodDropped;		// 🆕 新增：累加木材
+    curStone += stoneDropped;	// 🆕 新增：累加石頭
 
-    // 6. 🔥【發放鎖】最高安全防禦：將最新計算好的資源數量，同時灌滿所有新舊分身變數，切斷所有回彈或洗掉數據的路徑
-    //  新代碼：直接存入統一的複數變數（herbs, ore）
-    game.inv.herbs = curHerb;
-    game.inv.ore = curOre;
+	// 5. 🔥【發放鎖】最高安全防禦：將最新計算好的資源數量，同時灌滿核心變數，切斷所有回彈或洗掉數據的路徑
+    game.inv.herbs = curHerb;	// 鎖死草藥值
+    game.inv.ore = curOre		// 鎖死原礦值
+	game.inv.wood = curWood;	// 🆕 新增：鎖死木材數值
+    game.inv.stone = curStone;	// 🆕 新增：鎖死石頭數值
 
-    // 7. 📜 輸出採集成功的訊息到遊戲日誌系統（如果日誌函數存在的話）
+	// 6. 📜 輸出採集成功的訊息到遊戲日誌系統（如果日誌函數存在的話）
     if (typeof addLog === 'function') {
-        addLog(`🌲 採集完畢！成功獲得 🌿 草藥 x${herbDropped} 與 🪨 原礦 x${oreDropped}！`, "#52c41a");
+        addLog(`🌲 採集完畢！成功獲得：🪵 木材 x${woodDropped}、🪨 石頭 x${stoneDropped}、🌿 草藥 x${herbDropped} 與 🪨 原礦 x${oreDropped}！`, "#52c41a");
     }
 
-    // 8. 🔄 重置採集狀態：將「正在採集」的布林值鎖解除，允許玩家下一次點擊
+    // 7. 🔄 重置採集狀態：將「正在採集」的布林值鎖解除，允許玩家下一次點擊
     if (game.adventure) game.adventure.isGathering = false;
     
-    // 9. 📊 隱藏進度條並將採集狀態文字改回「準備就緒」
+    // 8. 📊 隱藏進度條並將採集狀態文字改回「準備就緒」
     const barContainer = document.getElementById('gather-progress-bar');
     const status = document.getElementById('gather-status');
     if (barContainer) barContainer.style.display = 'none'; // 隱藏進度條外框
     if (status) status.innerText = `準備就緒`;             // 更改狀態提示文字
 
-    // 10. 🔓 解鎖採集按鈕：將按鈕重新啟用，並變回亮綠色、鼠標指針變回手型
+    // 9. 🔓 解鎖採集按鈕：將按鈕重新啟用，並變回亮綠色、鼠標指針變回手型
     const btn = document.getElementById('btn-gather');
     if (btn) {
         btn.disabled = false;                // 啟用按鈕
@@ -2191,12 +2262,14 @@ function finishGathering() {
         btn.style.cursor = 'pointer';         // 鼠標移上去變手型
     }
 
-    // 11. ⭐ 全局畫面同步與強制存檔：
-    updateAdventureUI();                    // 0微秒硬寫死冒險/煉金界面的資源數字
-    if (typeof updateUI === 'function') updateUI(); // 刷新全遊戲通用 UI 面板
-    if (typeof saveGame === 'function') saveGame(); // 強行觸發本地自動存檔，徹底鎖死數值防止刷新重置
+    // 10. ⭐ 全局畫面同步與強制存檔： 0微秒硬寫死冒險界面、工廠頂部儀表板，並進行安全自動存檔
+	if (typeof updateAdventureUI === 'function') updateAdventureUI();	// 0微秒硬寫死冒險/煉金界面的資源數字
+    if (typeof updateUI === 'function') updateUI();						// 刷新全遊戲通用 UI 面板
+    if (typeof saveGame === 'function') saveGame();						// 強行觸發本地自動存檔，徹底鎖死數值防止刷新重置
 }
-
+// ==========================================
+// 🌲 [功能核心層] 🎁 採集完成：結算隨機掉落資源 - 完結
+// ==========================================
 /**
  * ⚗️ 1. 觸發煉金術：啟動平滑讀秒進度條 (完美對接 HTML onclick="startCraftingPotion()")
  */
@@ -2883,6 +2956,103 @@ window.modifyMaterialDebug = function(type, amount) {
 // 🛠️ [功能核心層] 後台開發者六大材料修改邏輯結尾
 // ==========================================
 
+// =================================================================
+// 💸 新視窗專用：萬用採購扣錢與增加庫存邏輯
+// =================================================================
+function modalBuyMaterial(type, cost) {
+    // 1. 檢查玩家金幣是否足夠 (對接你代碼中的 game.money)
+    if (game.money < cost) {
+        // 調用你的日誌系統（如果有名為 customLog 的函數，沒有的話可以刪除這句或改用 alert）
+        if (typeof customLog === 'function') {
+            customLog("❌ 採購失敗：資金不足！", "error");
+        } else {
+            alert("❌ 資金不足！");
+        }
+        return;
+    }
+    
+    // 2. 扣除金幣
+    game.money -= cost;
+    
+    // 3. 增加對應材料的庫存數量！(對接你最底部的自動倉庫：game.inv[type])
+    // 比如買 wood，就會自動執行 game.inv['wood'] += 1;
+    if (game.inv[type] !== undefined) {
+        game.inv[type] += 1; // 預設每次購買增加 1 個，你可以自由改成 +5 或 +10
+    }
+
+    // 4. 通知系統跳出日誌（對接你的 cfg 中文名稱）
+    if (typeof customLog === 'function') {
+        customLog(`🛒 成功花費 $${cost} 採購了 1 個 ${cfg[type].i} ${cfg[type].n}！`, "success");
+    }
+    
+    // 5. ⚡ 核心：立刻刷新遊戲 UI 介面，讓金錢、倉庫即時跳動
+    if (typeof updateUI === 'function') updateUI();
+}
+
+// ==========================================
+// 🏆 旅行商人系統
+// ==========================================
+/**
+ * 🟢 打開視窗函數
+ * 繁體注釋：在視窗打開的萬分之一秒內，立即通知自動印刷機跑一次迴圈，把最新材料按鈕畫進去！
+ */
+function openTitleModal() {
+    const modal = document.getElementById('title-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        renderModalMarketButtons(); // ⚡ 啟動新視窗的自動印刷按鈕功能！
+    }
+}
+
+/**
+ * 🔴 關閉視窗函數
+ */
+function closeTitleModal() {
+    const modal = document.getElementById('title-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+// =================================================================
+// 🛒 新彈出視窗：根據 cfg 配置表「全自動印刷」物資採購按鈕 🔄 新視窗專用：全自動按鈕印刷機
+// =================================================================
+// =================================================================
+// 🛒 新彈出視窗：零背景格仔！完美複製原生「物資採購」膠囊按鈕印刷機
+// =================================================================
+function renderModalMarketButtons() {
+    const container = document.getElementById('modal-market-container');
+    if (!container) return;
+    
+    container.innerHTML = ''; // 清空舊版面
+
+    if (typeof cfg === 'undefined') {
+        container.innerHTML = `<div style="color:#ff7b72; font-size:12px; padding:10px;">⚠️ 錯誤：找不到 cfg 配置表</div>`;
+        return;
+    }
+
+    // 🔄 掃描你的 cfg 數據庫
+    for (let type in cfg) {
+        const item = cfg[type];
+        
+        // 🏗️ 扒光所有背景框！直接生成 100% 寬度對齊的萬用 action-btn。
+        // 1. width: calc(50% - 3px) -> 完美複製左下角左右並排兩列的網格感。
+        // 2. 裡面直接顯示：圖標 + 名稱 + ( $買價 )
+        const buttonHtml = `
+            <button class="action-btn btn-green" 
+                    onclick="modalBuyMaterial('${type}', ${item.buy})" 
+                    style="width: calc(50% - 3px); height: 40px; font-size: 12px; margin: 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; box-sizing: border-box;">
+                <span>${item.i || '📦'} ${item.n}</span>
+                <span style="color: #f2cc60; font-family: 'Share Tech Mono'; font-weight: bold; margin-left: 2px;">( $${item.buy} )</span>
+            </button>
+        `;
+        
+        container.innerHTML += buttonHtml;
+    }
+}
+// ==========================================
+// 🏆 旅行商人系統 - 完結
+// ==========================================
+
 // ==========================================
 // [系統啟動層] window.onload 全域初始化
 // ==========================================
@@ -2911,10 +3081,7 @@ window.onload = function() {
 };
 // ==========================================
 // [系統啟動層] 初始化結束
-// ==========================================
-// ==========================================
-// [系統啟動層] 初始化結束
-// ==========================================											 
+// ==========================================										 
 </script>
 </body>
 </html>
