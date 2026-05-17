@@ -2318,7 +2318,13 @@ function startCraftingPotion() {
         if (typeof addLog === 'function') addLog("🚫 煉金失敗：材料不足！無法開始提煉。", "#ff4d4d");
         return;
     }
-
+	
+	// =================================================================
+    // 💥 🚀 【重點修改：先下手為強】一撳按鈕，立刻扣除包包素材！
+    // =================================================================
+    game.inv.herbs = herbAmt - 2; // 扣除 2 個草藥
+    game.inv.ore = oreAmt - 1;    // 扣除 1 個原礦
+	
     // 啟動煉金提煉狀態
     game.alchemy.isCrafting = true;
     
@@ -2358,54 +2364,39 @@ function startCraftingPotion() {
 }
 
 /**
- * 🧪 2. 煉金完成：結算成品藥水並地毯式精準扣料 (全分身安全連鎖鎖死)
+ * 🧪 2. 煉金完成：只負責結算成品藥水並刷新畫面 (配合一撳即扣素材版)
  */
 function finishCraftingPotion(barContainer, status) {
     if (!game.inv) game.inv = {};
 
-    // 📥 【單一數據源】直接讀取統一後的材料與藥水庫存
-    let herbAmt = game.inv.herbs || 0;
-    let oreAmt = game.inv.ore || 0;
+    // 📥 【單一數據源】直接讀取目前最新的藥水庫存
     let potionAmt = game.inv.potion || 0;
-	
-    const NEED_HERB = 2;
-    const NEED_ORE = 1;
+    
+    // =================================================================
+    // 💡 【重點修改】因為開爐時已經扣咗草藥同原礦，呢度絕對唔可以再扣！
+    // =================================================================
+    potionAmt += 1; // 🚀 只純粹增加 1 支藥水成品
 
-    // 再次安全校驗，防止極端情況
-    if (herbAmt < NEED_HERB || oreAmt < NEED_ORE) {
-        if (typeof addLog === 'function') addLog("🚫 提煉結束時發現材料突然不足！", "#ff4d4d");
-        game.alchemy.isCrafting = false;
-        updateAdventureUI();
-        return;
-    }
-
-    // 3. 正式執行扣除材料與獲得藥水
-    herbAmt -= NEED_HERB;
-    oreAmt -= NEED_ORE;
-    potionAmt += 1;
-
-    // 4. 🚀【單一數據源】直接更新背包，徹底砍掉所有分身變數與回彈路徑
-    game.inv.herbs = herbAmt;
-    game.inv.ore = oreAmt;
+    // 4. 更新背包藥水數據，徹底鎖死
     game.inv.potion = potionAmt;
-	
+    
     // 重置提煉狀態
     if (game.alchemy) game.alchemy.isCrafting = false;
     if (barContainer) barContainer.style.display = 'none';
     if (status) status.innerText = "準備就緒";
 
-    // 5. 輸出到日誌系統
+    // 5. 輸出到日誌系統 (修改文字，因為開爐時已經消耗了材料)
     if (typeof addLog === 'function') {
-        addLog(`🧪 提煉成功！消耗了 草藥x${NEED_HERB}、原礦x${NEED_ORE}，成功製作出 【🧪 生命藥水 x1】！`, "#52c41a");
+        addLog(`✨ 煉金成功！【🧪 生命藥水 x1】提煉完畢，已安全放入背包！`, "#52c41a");
     }
 
-    // 6. ⚡ 0微秒硬寫死 HTML 畫面，杜絕定時器時差造成的閃爍
-    if (document.getElementById('res-herbs')) document.getElementById('res-herbs').innerText = herbAmt;
-    if (document.getElementById('res-ore')) document.getElementById('res-ore').innerText = oreAmt;
-    if (document.getElementById('res-potion')) document.getElementById('res-potion').innerText = potionAmt;
+    // 6. ⚡ 0微秒硬寫死 HTML 藥水畫面，杜絕延遲閃爍
+    if (document.getElementById('res-potion')) {
+        document.getElementById('res-potion').innerText = potionAmt;
+    }
 
     // 7. ⭐ 呼叫全域重新整理與強制存檔，徹底鎖定數值
-    updateAdventureUI();
+    if (typeof updateAdventureUI === 'function') updateAdventureUI();
     if (typeof updateUI === 'function') updateUI();
     if (typeof updateBattleUI === 'function') updateBattleUI();
     if (typeof updateForgeUI === 'function') updateForgeUI();
@@ -2907,7 +2898,11 @@ function craftEquipment() {
         game.equipment.armor = "史萊姆輕甲";
         game.equipment.hpBonus = 50;
         game.player.maxHp += 50;
-        game.player.hp = Math.min(game.player.maxHp, (game.player.hp || 100) + 50);
+
+		// 4. 【安全加固】確保因為脫裝備導致 maxHp 變小時，目前血量不會超過上限即可
+		if (game.player.hp > game.player.maxHp) {
+		game.player.hp = game.player.maxHp;
+		}
 
         if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x8、哥布林耳 x4 打造了【🛡️ 史萊姆輕甲】！最大生命值上限提升 50 點！", "#ff9b30");
     }
