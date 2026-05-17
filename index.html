@@ -406,6 +406,7 @@
                 <select id="monster-select" style="background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 4px 8px; font-size: 12px; width: 100%; cursor: pointer;">
                     <option value="slime">🟢 綠色史萊姆 (LV.1 | 傷害: 12 HP | 掉落: 黏液/EXP)</option>
                     <option value="goblin">👺 森林哥布林 (LV.3 | 傷害: 28 HP | 掉落: 哥布林耳/EXP)</option>
+					<option value="orc">🧌 獸人狂戰士 (Lv.15+ 建議)</option>
                 </select>
             </div>
 
@@ -670,8 +671,20 @@ let cfg = {
     iron:    { n: '鋼鐵', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [1, 100] },
     core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 50,  range: [3, 100] },
     diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 200, range: [8, 10] },
-	water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [8, 10] },
+    water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [8, 10] },
     gold:    { n: '黃金', i: '🟡', c: 'part-gold',    r: 1000, buy: 300, range: [8, 10]},
+
+    // 🌿 [冒險板塊] 補回野外採集與煉金資源，讓動態 UI 自動排版
+    herbs:   { n: '草藥', i: '🌿', c: 'part-herbs',   r: 0,   buy: 300,   range: [0, 0] },
+    ore:     { n: '原礦', i: '🪨', c: 'part-ore',     r: 0,   buy: 400,   range: [0, 0] },
+    potion:  { n: '生命藥水', i: '🧪', c: 'part-potion', r: 0,   buy: 2000,   range: [0, 0] },
+
+    // ⚔️ [打怪素材] 完美對接原本與全新的怪物素材
+    slimeGlow: { n: '史萊姆黏液', i: '🧪', c: 'part-slime', r: 0, buy: 500,   range: [0, 0] },
+    goblinEar: { n: '哥布林耳',   i: '👺', c: 'part-goblin',r: 0, buy: 1000,   range: [0, 0] },
+    
+    // 🩸 🚀 【全新添加】獸人之血「身份證」，頂部 UI 從此全自動生成它！
+    orcBlood:  { n: '獸人之血',   i: '🩸', c: 'part-orc',   r: 0, buy: 2000,   range: [0, 0] }
 };
 // ==========================================
 // [Script] cfg 資源屬性配置表 - 完結
@@ -693,7 +706,9 @@ let cfg = {
 			potion: 0,			// 初級生命藥水數量
 			// ⚔️ [冒險怪物素材] (徹底刪除舊的 monsterMaterials 重疊物件)
             slimeGlow: 0,		// 🧪 史萊姆黏液 數量
-            goblinEar: 0		// 👂 哥布林耳朵 數量
+            goblinEar: 0,		// 👂 哥布林耳朵 數量
+			// 🩸 【全新添加的新怪物材料欄位】
+			orcBlood: 0          // 🩸 獸人之血 數量 (新怪物掉落物)
 		},	
         unlocked: {},			// 4. unlocked: 紀錄哪些生產線已被玩家支付費用解鎖。
 		lines: {},				// 5. lines: 每條生產線的詳細運行狀態（如進度、當前項目、耐久度、自動化開關）。
@@ -753,6 +768,46 @@ let cfg = {
 
 	// 新增這段：自動根據 cfg 建立所有材料庫存
 	Object.keys(cfg).forEach(type => { game.inv[type] = 0; });
+	
+// ==========================================
+// 👾 統一怪物與掉落物設定資料庫 (修正時差 Bug ＋ 新增獸人狂戰士)
+// ==========================================
+var MONSTERS_DATABASE = {
+    slime: {
+        id: 'slime',
+        name: "🟢 史萊姆",
+        dmg: 12,
+        exp: 20,
+        dropKey: 'slimeGlow',     // 💥 修正：完美對接你存檔入面的 game.inv.slimeGlow
+        dropName: "【🧪 史萊姆黏液 x1】",
+        dropRate: 0.7,
+        elementId: 'res-slimeGlow'    // 對應 HTML 顯示數值的標籤 id
+    },
+    goblin: {
+        id: 'goblin',
+        name: "👺 哥布林斥候",
+        dmg: 25,
+        exp: 45,
+        dropKey: 'goblinEar',     // 完美對接 game.inv.goblinEar
+        dropName: "【👺 哥布林耳 x1】",
+        dropRate: 0.6,
+        elementId: 'res-goblinEar'
+    },
+    // 🩸 🚀 【全新添加的怪物：獸人狂戰士】
+    orc: {
+        id: 'orc',
+        name: "🧌 獸人狂戰士",
+        dmg: 45,                  // 打人更痛，考驗防具！
+        exp: 90,                  // 經驗值超高！
+        dropKey: 'orcBlood',      // 完美對接 game.inv.orcBlood
+        dropName: "【🩸 獸人之血 x1】",
+        dropRate: 0.5,            // 50% 掉落率
+        elementId: 'res-orcBlood' // 記住在 HTML 介面要預留一個 id="res-orcBlood" 嘅標籤喔！
+    }
+};
+// ==========================================
+// 👾 統一怪物與掉落物設定資料庫 (修正時差 Bug ＋ 新增獸人狂戰士) - 完結
+// ==========================================
 	
 // ==========================================
 // [Script] 遊戲數據初始化 - 生產線狀態循環生成
@@ -1416,46 +1471,15 @@ function renderDashboard() {
         htmlCombined += `
             <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
                 <span style="font-size:15px; color:#adb5bd;">${icon}${item.n}</span>
-                <span id="${key}-val" style="color:#ffffff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
+                <span id="res-${key}" style="color:#ffffff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
             </div>
         `;
     });
 
 	// 🌿 【核心追加點】在 cfg 循環結束後，安全塞入我們獨立的野外與煉金新資源格子
-    htmlCombined += `
-        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
-            <span style="font-size:15px; color:#adb5bd;">🌿草藥</span>
-            <span id="res-herbs" style="color:#58a6ff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
-        </div>
-        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
-            <span style="font-size:15px; color:#adb5bd;">🪨原礦</span>
-            <span id="res-ore" style="color:#ff7b72; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
-        </div>
-		<div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
-            <span style="font-size:15px; color:#adb5bd;">⚙️ 鐵錠</span>
-            <span id="res-iron" style="color:#f2cc60; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
-        </div>
-        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
-            <span style="font-size:15px; color:#adb5bd;">🧪生命藥水</span>
-            <span id="res-potion" style="color:#bc8cff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
-        </div>
-		<div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
-            <span style="font-size:15px; color:#adb5bd;">🧪黏液</span>
-            <span id="res-slimeGlow" style="color:#a5d6ff; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
-        </div>
-        <div class="resource-item" style="display:flex; align-items:center; gap:5px; min-width:50px;">
-            <span style="font-size:15px; color:#adb5bd;">👂哥布林耳</span>
-            <span id="res-goblinEar" style="color:#ff7b72; font-family:'Share Tech Mono'; font-weight:bold;">0</span>
-        </div>
-    `;
+    htmlCombined += `<div></div>`;
 
-    // 關閉中間的區塊標籤
-    htmlCombined += `																									  
-            </div>
-        </div>
-    `;
-
-    // --- 3. 右邊：設定按鈕 ---
+    // --- 例子 3. 右邊：設定按鈕 --- 例子
     //let htmlRight = `
     //    <div style="margin-left:auto;">
     //        <button class="action-btn btn-green" onclick="toggleAdmin()">⚙️ 設定</button>
@@ -1463,8 +1487,8 @@ function renderDashboard() {
     //`;
 
     // 合併並寫入主面板
-    dash.innerHTML = htmlLeft + htmlCombined ;
-    updateUI(); // 渲染後同步數據 + htmlRight
+    dash.innerHTML = htmlLeft + htmlCombined;
+    updateUI(); // 渲染後同步數據  + htmlCombined + htmlRight
 }
 // ==========================================
 // [Script] renderDashboard 動態儀表板渲染 - 完結
@@ -1558,9 +1582,8 @@ function renderInventoryUI() {
 		// ==========================================
         // ✨ 新增：客戶回饋邏輯 (加入在 setTimeout 此處)
         // ==========================================
-		// 25% 機率觸發回饋
-		let feedbackHTML = ""; // 用來存放顯示在方格內的文字
-        if (Math.random() < 1.0) {
+		let feedbackHTML = "";			// 用來存放顯示在方格內的文字
+        if (Math.random() < 0.25) {				// 25% 機率觸發回饋 , 1.0 = 100%
 			const feedbackList = [
 				{ msg: "「品質優良，下次再買！」", bonus: 0.2, color: "#3fb950" },
 				{ msg: "「交貨準時，效率極高。」", bonus: 0.1, color: "#58a6ff" },
@@ -2252,17 +2275,38 @@ function finishGathering() {
 	game.inv.wood = curWood;	// 🆕 新增：鎖死木材數值
     game.inv.stone = curStone;	// 🆕 新增：鎖死石頭數值
 
+	// ====================================================================
+    // 📦【核心校正：提早宣告 drops】放在最頂層，確保全函數所有地方都讀得到！
+    // ====================================================================
+    const drops = {
+        wood: woodDropped,
+        stone: stoneDropped,
+        herbs: herbDropped,
+        ore: oreDropped
+    };
+    // ===================================================================
+
 	// 6. 📜 輸出採集成功的訊息到遊戲日誌系統（過濾掉數量為 0 的物品）
     if (typeof addLog === 'function') {
         // 📦 建立一個空籃子，專門用來裝「數量大於 0」的採集成果提示文字
         let rewardsLog = [];
         
-        // 🔄 逐一檢查每種材料，大於 0 才塞入籃子
+        /* 🔄 逐一檢查每種材料，大於 0 才塞入籃子
         if (woodDropped > 0)  rewardsLog.push(`🪵 木材 x${woodDropped}`);
         if (stoneDropped > 0) rewardsLog.push(`🪨 石頭 x${stoneDropped}`);
         if (herbDropped > 0)  rewardsLog.push(`🌿 草藥 x${herbDropped}`);
-        if (oreDropped > 0)   rewardsLog.push(`🪨 原礦 x${oreDropped}`);
+        if (oreDropped > 0)   rewardsLog.push(`🪨 原礦 x${oreDropped}`);*/
         
+		// 🔄 全自動巡查：自動拿它的圖標同名稱
+		Object.keys(drops).forEach(key => {
+            const amount = drops[key];
+            if (amount > 0 && cfg[key]) {
+                const icon = cfg[key].i || "📦";
+                const name = cfg[key].n || key;
+                rewardsLog.push(`${icon} ${name} x${amount}`);
+            }
+        });
+		
         // 🧠 智能判斷：如果 4 種材料好不幸通通都是 0 (非酋降臨)
         if (rewardsLog.length === 0) {
             addLog(`🌲 採集完畢！這次運氣不好，什麼都沒有採集到...`, "#8b949e");
@@ -2272,6 +2316,14 @@ function finishGathering() {
             addLog(`🌲 採集完畢！成功獲得：${rewardText}！`, "#52c41a");
         }
     }
+	
+	// ⚡【全自動 UI 強制同步鎖】自動遍歷所有材料，更新畫面
+    Object.keys(cfg).forEach(key => {
+        const el = document.getElementById(`res-${key}`);
+        if (el && game.inv && game.inv[key] !== undefined) {
+            el.innerText = game.inv[key];
+        }
+    });
 
     // 7. 🔄 重置採集狀態：將「正在採集」的布林值鎖解除，允許玩家下一次點擊
     if (game.adventure) game.adventure.isGathering = false;
@@ -2415,7 +2467,7 @@ function craftPotion() {
 // ==========================================
 
 // ==========================================
-// ⚔️ [功能核心層] 自動打怪、傷害扣減與升級系統邏輯開首 (防回彈終極加固版)
+// ⚔️ [功能核心層] 自動打怪、傷害扣減與升級系統邏輯開首 (資料統一配置版)
 // ==========================================
 
 /**
@@ -2424,14 +2476,13 @@ function craftPotion() {
 function updateBattleUI() {
     if (!game.inv) game.inv = {};
     
-    // 📥 【單一數據源】直接認準乾淨、唯一的背包核心變數
-    const slimeAmt = game.inv.slime || 0;
-    const goblinAmt = game.inv.goblinEar || 0;
-
-    // 1. 🔥【核心修正】同步更新頂部儀表板新資源畫面，徹底消除閃爍回彈
-    if (document.getElementById('res-slime')) document.getElementById('res-slime').innerText = slimeAmt;
-    if (document.getElementById('res-slimeGlow')) document.getElementById('res-slimeGlow').innerText = slimeAmt;
-    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = goblinAmt;
+    // 📥 【動態讀取】遍歷怪物資料庫，自動刷新所有怪物的材料數字
+    for (const key in MONSTERS_DATABASE) {
+        const monster = MONSTERS_DATABASE[key];
+        const amt = game.inv[monster.dropKey] || 0;
+        const el = document.getElementById(monster.elementId);
+        if (el) el.innerText = amt;
+    }
 
     // 2. 檢查如果正在戰鬥或血量歸 0，鎖定打怪按鈕
     const btnBattle = document.getElementById('btn-battle');
@@ -2464,9 +2515,18 @@ function startBattle() {
         return;
     }
 
+    // 獲取當前選取的怪物資料
+    const monsterType = document.getElementById('monster-select').value;
+    const monster = MONSTERS_DATABASE[monsterType];
+    
+    // 安全防禦：如果選到了資料庫裡沒有的怪，直接踢走
+    if (!monster) {
+        console.error("🚫 錯誤：找不到該怪物的設定資料！");
+        return;
+    }
+
     game.battle.isFighting = true;
     
-    const monsterType = document.getElementById('monster-select').value;
     const btn = document.getElementById('btn-battle');
     const barContainer = document.getElementById('battle-progress-bar');
     const bar = document.getElementById('battle-progress');
@@ -2485,8 +2545,8 @@ function startBattle() {
         let progressPercent = (elapsed / totalSteps) * 100;
         if (bar) bar.style.width = `${progressPercent}%`;
         
-        let targetName = monsterType === 'slime' ? "🟢 史萊姆" : "👺 哥布林";
-        if (status) status.innerText = `正在與 ${targetName} 激烈交戰中...`;
+        // 📥 【動態取名】直接從資料庫拿名字
+        if (status) status.innerText = `正在與 ${monster.name} 激烈交戰中...`;
 
         if (elapsed >= totalSteps) {
             clearInterval(battleTimer);
@@ -2496,12 +2556,16 @@ function startBattle() {
 }
 
 /**
- * 🎁 戰鬥完結：扣減 HP、隨機掉落、發放經驗值與升級機制 (全管道安全鎖死版)
+ * 🎁 戰鬥完結：扣減 HP、隨機掉落、發放經驗值與升級機制 (資料驅動加固版)
  */
 function finishBattle(monsterType) {
-    // 1. 安全防禦初始化（確保核心物件存在）
+    // 1. 安全防禦初始化
     if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5 };
     if (!game.inv) game.inv = {};
+
+    // 📥 讀取怪物統一配置
+    const monster = MONSTERS_DATABASE[monsterType];
+    if (!monster) return;
 
     // 📥 【單一數據源】直接提取最新核心數值
     let curExp = game.player.exp || 0;
@@ -2511,54 +2575,31 @@ function finishBattle(monsterType) {
     let maxHp = game.player.maxHp || 100;
     let curAtk = game.player.atk || 10;
 
-    let dmg = 0;
-    let expGained = 0;
+    // 2. 🚀【核心修改】直接從配置讀取數據，徹底砍掉所有 if-else
+    let dmg = monster.dmg; 
+    let expGained = monster.exp;
     let logMsg = "";
 
-    // 2. 根據怪物類型計算傷害、經驗值與掉落物資
-    if (monsterType === 'slime') {
-        dmg = 12; 
-        expGained = 20;
-        
-        // 直接操作唯一背包變數
-        let curSlime = game.inv.slime || 0;
-        
-        if (Math.random() < 0.7) {
-            curSlime += 1;
-            logMsg = `🟢 擊敗史萊姆！獲得 經驗值 +20，並成功搜刮到 【🧪 史萊姆黏液 x1】！`;
-        } else {
-            logMsg = `🟢 擊敗史萊姆！獲得 經驗值 +20，可惜這次什麼都沒掉落。`;
-        }
-        
-        game.inv.slime = curSlime;
-
-    } else if (monsterType === 'goblin') {
-        dmg = 25; 
-        expGained = 45;
-        
-        // 直接操作唯一背包變數
-        let curGoblin = game.inv.goblinEar || 0;
-        
-        if (Math.random() < 0.6) {
-            curGoblin += 1;
-            logMsg = `👺 擊敗哥布林！獲得 經驗值 +45，並割下 【👺 哥布林耳 x1】！`;
-        } else {
-            logMsg = `👺 擊敗哥布林！獲得 經驗值 +45，空手而歸。`;
-        }
-        
-        game.inv.goblinEar = curGoblin;
+    // 計算隨機掉落
+    let currentDropAmt = game.inv[monster.dropKey] || 0;
+    if (Math.random() < monster.dropRate) {
+        currentDropAmt += 1;
+        logMsg = `${monster.name} 被擊敗了！獲得 經驗值 +${expGained}，並幸運搜刮到 ${monster.dropName}！`;
+    } else {
+        logMsg = `${monster.name} 被擊敗了！獲得 經驗值 +${expGained}，可惜這次甚麼都沒掉落。`;
     }
+    game.inv[monster.dropKey] = currentDropAmt;
 
     // 3. 扣減角色血量
     curHp = Math.max(0, curHp - dmg);
     if (typeof addLog === 'function') {
-        addLog(`⚔️ 戰鬥結束：受到傷害 -${dmg}點。`, "#ff4d4d");
+        addLog(`⚔️ 戰鬥結束：受到傷害 -${dmg} 點。`, "#ff4d4d");
         addLog(logMsg, "#52c41a");
     }
 
     // 4. 計算經驗增長與升級邏輯
     curExp += expGained;
-    if (typeof addLog === 'function') addLog(`✨ 獲得經驗值 +${expGained}點。`, "#1f6feb");
+    if (typeof addLog === 'function') addLog(`✨ 獲得經驗值 +${expGained} 點。`, "#1f6feb");
 
     if (curExp >= maxExp) {
         curExp -= maxExp;
@@ -2572,7 +2613,7 @@ function finishBattle(monsterType) {
         }
     }
 
-    // 5. 🚀【鎖定核心變數】只更新唯一的 game.player 核心物件
+    // 5. 🚀【鎖定核心變數】寫回全域物件
     game.player.exp = curExp;
     game.player.lv = curLv;
     game.player.maxExp = maxExp;
@@ -2594,9 +2635,9 @@ function finishBattle(monsterType) {
         btnBattle.style.cursor = 'pointer';
     }
 
-    // 7. ⚡【UI 精準渲染】0微秒強制將核心數據推送到網頁畫面上
-    if (document.getElementById('res-slime')) document.getElementById('res-slime').innerText = game.inv.slime || 0;
-    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar || 0;
+    // 7. ⚡【UI 精準動態渲染】根據資料庫自動同步 HTML 數字面版
+    const itemEl = document.getElementById(monster.elementId);
+    if (itemEl) itemEl.innerText = game.inv[monster.dropKey] || 0;
 
     // 渲染角色屬性面版
     if (document.getElementById('char-atk')) document.getElementById('char-atk').innerText = curAtk;
@@ -2612,7 +2653,7 @@ function finishBattle(monsterType) {
     if (document.getElementById('char-exp-bar')) document.getElementById('char-exp-bar').style.width = `${expPercent}%`;
     if (document.getElementById('char-exp-text')) document.getElementById('char-exp-text').innerText = `${curExp} / ${maxExp}`;
 
-    // 8. ⭐【強制存檔鎖定】
+    // 8. ⭐【全域同步與自動存檔】
     if (typeof updateUI === 'function') updateUI();
     if (typeof updateBattleUI === 'function') updateBattleUI();
     if (typeof updateAdventureUI === 'function') updateAdventureUI();
