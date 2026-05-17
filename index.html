@@ -1396,6 +1396,10 @@ function renderDashboard() {
     旅行商人
 </span>
 
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+
+    <button class="action-btn btn-green" style="width:100px; height:42px; font-weight: bold; font-size: 15px;" onclick="toggleAdmin()">⚙️ 全局設定</button>
+
             </div>
 
             <div id="inventory-grid" style="display:flex; flex-wrap:wrap; gap:15px;">
@@ -1452,14 +1456,14 @@ function renderDashboard() {
     `;
 
     // --- 3. 右邊：設定按鈕 ---
-    let htmlRight = `
-        <div style="margin-left:auto;">
-            <button class="action-btn btn-green" onclick="toggleAdmin()">⚙️ 設定</button>
-        </div>
-    `;
+    //let htmlRight = `
+    //    <div style="margin-left:auto;">
+    //        <button class="action-btn btn-green" onclick="toggleAdmin()">⚙️ 設定</button>
+    //    </div>
+    //`;
 
     // 合併並寫入主面板
-    dash.innerHTML = htmlLeft + htmlCombined + htmlRight ;
+    dash.innerHTML = htmlLeft + htmlCombined ;
     updateUI(); // 渲染後同步數據 + htmlRight
 }
 // ==========================================
