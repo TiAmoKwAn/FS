@@ -255,8 +255,8 @@
 
         <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
             <span style="font-size: 11px; color: #adbac7;">🟢 黏液:</span>
-            <button onclick="window.modifyMaterialDebug('slime', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-            <button onclick="window.modifyMaterialDebug('slime', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
+            <button onclick="window.modifyMaterialDebug('slimeGlow', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+            <button onclick="window.modifyMaterialDebug('slimeGlow', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
         </div>
 
         <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
@@ -678,7 +678,9 @@ let cfg = {
     herbs:   { n: '草藥', i: '🌿', c: 'part-herbs',   r: 0,   buy: 300,   range: [0, 0] },
     ore:     { n: '原礦', i: '🪨', c: 'part-ore',     r: 0,   buy: 400,   range: [0, 0] },
     potion:  { n: '生命藥水', i: '🧪', c: 'part-potion', r: 0,   buy: 2000,   range: [0, 0] },
-
+	
+	// 🔨 【全新加入】熔煉爐專用鐵錠，等最頂 UI 自動幫佢開個新格子！
+    iron_bar: { n: '鐵錠', i: '🧱', c: 'part-ironbar', r: 0,   buy: 2000,   range: [0, 0] },   // ⚔️ 製作裝備用	
     // ⚔️ [打怪素材] 完美對接原本與全新的怪物素材
     slimeGlow: { n: '史萊姆黏液', i: '🧪', c: 'part-slime', r: 0, buy: 500,   range: [0, 0] },
     goblinEar: { n: '哥布林耳',   i: '👺', c: 'part-goblin',r: 0, buy: 1000,   range: [0, 0] },
@@ -704,6 +706,7 @@ let cfg = {
 			herbs: 0,			// 草藥數量
 			ore: 0,				// 原礦數量
 			potion: 0,			// 初級生命藥水數量
+			iron_bar: 0,		// 鐵錠
 			// ⚔️ [冒險怪物素材] (徹底刪除舊的 monsterMaterials 重疊物件)
             slimeGlow: 0,		// 🧪 史萊姆黏液 數量
             goblinEar: 0,		// 👂 哥布林耳朵 數量
@@ -2807,8 +2810,8 @@ window.startMeltingIron = function() {
             if (typeof addLog === 'function') addLog("🔥 熔煉成功！消耗 原礦 x3 獲得 【⚙️ 鐵錠 x1】！", "#f2cc60");
 
             // ⭐【強行點對點刷新新庫存】
-            if (document.getElementById('res-iron')) {
-                document.getElementById('res-iron').innerText = game.inv.iron_bar;
+            if (document.getElementById('res-iron_bar')) {
+                document.getElementById('res-iron_bar').innerText = game.inv.iron_bar;
             }
 			
             // 全局同步更新 UI 與存檔
@@ -2867,7 +2870,7 @@ function updateForgeUI() {
 
     // 📥 【單一數據源】直接認準乾淨的背包變數
     const ironAmt = game.inv.iron_bar || 0; 
-    const slimeAmt = game.inv.slime || 0;
+    const slimeAmt = game.inv.slimeGlow || 0;
     const goblinAmt = game.inv.goblinEar || 0;
 
     let canCraft = false;
@@ -2909,15 +2912,18 @@ function craftEquipment() {
 
     // 讀取當前最真實的背包核心數值
     const ironAmt = game.inv.iron_bar || 0;
-    const slimeAmt = game.inv.slime || 0;
+    const slimeAmt = game.inv.slimeGlow || 0;
     const goblinAmt = game.inv.goblinEar || 0;
 
     if (type === 'ironSword') {
-        if (ironAmt < 10 || slimeAmt < 3) return;
+        if (ironAmt < 10 || slimeAmt < 3){
+            if (typeof addLog === 'function') addLog("🚫 材料不足！打造鋼鐵大劍需要 鐵錠 x10、史萊姆黏液 x3。", "#ff4d4d");
+            return;
+        }
         
         // 🚀【純淨扣數】直接加減唯一核心變數
         game.inv.iron_bar -= 10;
-        game.inv.slime -= 3;
+        game.inv.slimeGlow -= 3;
 
         // 換武器邏輯 (扣除舊加成，換上新加成)
         game.player.atk = (game.player.atk || 10) - (game.equipment.atkBonus || 0); 
@@ -2928,8 +2934,11 @@ function craftEquipment() {
         if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x10、黏液 x3 打造了【⚔️ 鋼鐵大劍】！攻擊力大幅提升 15 點！", "#ff9b30");
 
     } else if (type === 'slimeArmor') {
-        if (ironAmt < 8 || goblinAmt < 4) return;
-        
+        if (ironAmt < 8 || goblinAmt < 4) {
+            if (typeof addLog === 'function') addLog("🚫 材料不足！打造史萊姆輕甲需要 鐵錠 x8、哥布林耳 x4。", "#ff4d4d");
+            return;
+        }
+		
         // 🚀【純淨扣數】直接加減唯一核心變數
         game.inv.iron_bar -= 8;
         game.inv.goblinEar -= 4;
@@ -2948,11 +2957,17 @@ function craftEquipment() {
         if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x8、哥布林耳 x4 打造了【🛡️ 史萊姆輕甲】！最大生命值上限提升 50 點！", "#ff9b30");
     }
 
-    // ⚡【精準 UI 點對點更新】同步推送到網頁 HTML 畫面上
-    if (document.getElementById('res-iron'))      document.getElementById('res-iron').innerText = game.inv.iron_bar;
-    if (document.getElementById('res-slime'))     document.getElementById('res-slime').innerText = game.inv.slime;
-    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar;
-
+	// ====================================================================
+    // ⚡【全自動 UI 強制同步鎖】直接取代原本錯誤的手動 ID 點名更新！
+    // ====================================================================
+    Object.keys(cfg).forEach(key => {
+        const el = document.getElementById(`res-${key}`);
+        if (el && game.inv && game.inv[key] !== undefined) {
+            el.innerText = game.inv[key];
+        }
+    });
+    // ====================================================================
+	
     // 同步刷新角色狀態欄數據
     if (document.getElementById('char-atk')) document.getElementById('char-atk').innerText = game.player.atk;
     
@@ -2977,37 +2992,30 @@ function craftEquipment() {
 window.modifyMaterialDebug = function(type, amount) {
     if (!game.inv) game.inv = {};
 
-    // 🚀【修正後台工具數據源】直接對齊單一真實背包變數，徹底刪除所有舊分身
-    if (type === 'herb') {
-        let cur = game.inv.herbs || 0;
-        game.inv.herbs = Math.max(0, cur + amount);
-        if (document.getElementById('res-herbs')) document.getElementById('res-herbs').innerText = game.inv.herbs;
+    // 🎯【核心大對齊：校正 HTML 傳錯名字的 Bug】
+    // 如果從 HTML 傳進來的是舊名字 'slime'，我們在後台悄悄幫它自動扶正為核心認可的 'slimeGlow'
+    let realKey = type;
+    if (type === 'slime') realKey = 'slimeGlow';
+    if (type === 'herb')  realKey = 'herbs'; // 順便幫草藥安全對齊 herbs
 
-    } else if (type === 'ore') {
-        let cur = game.inv.ore || 0;
-        game.inv.ore = Math.max(0, cur + amount);
-        if (document.getElementById('res-ore')) document.getElementById('res-ore').innerText = game.inv.ore;
+    // ⚡【無敵全自動動態鍵值】
+    // 無論你以後加咩新材料，2行代碼直接搞定加減，一粒字都唔使再手動補 if / else！
+    let cur = game.inv[realKey] || 0;
+    game.inv[realKey] = Math.max(0, cur + amount);
 
-    } else if (type === 'iron_bar') {
-        let cur = game.inv.iron_bar || 0;
-        game.inv.iron_bar = Math.max(0, cur + amount);
-        if (document.getElementById('res-iron')) document.getElementById('res-iron').innerText = game.inv.iron_bar;
-
-    } else if (type === 'potion') {
-        let cur = game.inv.potion || 0;
-        game.inv.potion = Math.max(0, cur + amount);
-        if (document.getElementById('res-potion')) document.getElementById('res-potion').innerText = game.inv.potion;
-
-    } else if (type === 'slime') {
-        let cur = game.inv.slime || 0;
-        game.inv.slime = Math.max(0, cur + amount);
-        if (document.getElementById('res-slime')) document.getElementById('res-slime').innerText = game.inv.slime;
-
-    } else if (type === 'goblinEar') {
-        let cur = game.inv.goblinEar || 0;
-        game.inv.goblinEar = Math.max(0, cur + amount);
-        if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar;
+    // ====================================================================
+    // 🔒【全自動 UI 強制同步鎖】
+    // 自動遍歷所有 cfg 材料！不管它是 res-iron_bar 定 res-slimeGlow，通通即時刷新！
+    // ====================================================================
+    if (typeof cfg !== 'undefined') {
+        Object.keys(cfg).forEach(key => {
+            const el = document.getElementById(`res-${key}`);
+            if (el && game.inv && game.inv[key] !== undefined) {
+                el.innerText = game.inv[key];
+            }
+        });
     }
+    // ====================================================================
 
     // 呼叫修復好的大腦進行同步，並強制進行安全存檔
     if (typeof updateUI === 'function') updateUI();
