@@ -524,17 +524,17 @@
         <div class="shop-item" style="flex:1; min-width:200px;">
             <div style="font-weight:bold; color:#a371f7;">🛠️ 全自動維修</div>
             <div style="font-size:12px; color:#8b949e; margin:5px 0;">設備健康度 < 20% 時自動消耗 $30 修復</div>
-            <button id="tech-repair-btn" class="action-btn" style="width:100%;" onclick="buyTech('autoRepair', 50)">解鎖 (50 RP)</button>
+            <button id="tech-repair-btn" class="action-btn" style="width:100%; color:#000000;" onclick="buyTech('autoRepair', 50)">解鎖 (50 RP)</button>
         </div>
         <div class="shop-item" style="flex:1; min-width:200px;">
             <div style="font-weight:bold; color:#a371f7;">⚡ 加班模式</div>
             <div style="font-size:12px; color:#8b949e; margin:5px 0;">生產速度 +50%，但健康度損耗速度加倍</div>
-            <button id="tech-overtime-btn" class="action-btn" style="width:100%;" onclick="buyTech('overtime', 150)">解鎖 (150 RP)</button>
+            <button id="tech-overtime-btn" class="action-btn" style="width:100%; color:#000000;" onclick="buyTech('overtime', 150)">解鎖 (150 RP)</button>
         </div>
         <div class="shop-item" style="flex:1; min-width:200px;">
             <div style="font-weight:bold; color:#a371f7;">📦 高階訂單</div>
             <div style="font-size:12px; color:#8b949e; margin:5px 0;">訂單將有機率出現 3 種複合材料，利潤更高</div>
-            <button id="tech-order-btn" class="action-btn" style="width:100%;" onclick="buyTech('highOrder', 300)">解鎖 (300 RP)</button>
+            <button id="tech-order-btn" class="action-btn" style="width:100%; color:#000000;" onclick="buyTech('highOrder', 300)">解鎖 (300 RP)</button>
         </div>
     </div>
 </div>
@@ -1267,7 +1267,7 @@ function updateUI() {
             const ab = document.getElementById(`auto-btn-${i}`);
             if(ab) {
                 if(l.hasAuto) { 
-                    ab.innerText = l.isAuto ? `🤖 L${i}: 智能運行` : `🤖 L${i}: 停止`; 
+                    ab.innerText = l.isAuto ? `🤖 L${i}: 運作中` : `🤖 L${i}: 停止`; 
                     ab.style.background = l.isAuto ? "#238636" : "#d29922"; 
                 } else { 
                     ab.innerText = `自動化 $500`; 
@@ -2240,9 +2240,25 @@ function finishGathering() {
 	game.inv.wood = curWood;	// 🆕 新增：鎖死木材數值
     game.inv.stone = curStone;	// 🆕 新增：鎖死石頭數值
 
-	// 6. 📜 輸出採集成功的訊息到遊戲日誌系統（如果日誌函數存在的話）
+	// 6. 📜 輸出採集成功的訊息到遊戲日誌系統（過濾掉數量為 0 的物品）
     if (typeof addLog === 'function') {
-        addLog(`🌲 採集完畢！成功獲得：🪵 木材 x${woodDropped}、🪨 石頭 x${stoneDropped}、🌿 草藥 x${herbDropped} 與 🪨 原礦 x${oreDropped}！`, "#52c41a");
+        // 📦 建立一個空籃子，專門用來裝「數量大於 0」的採集成果提示文字
+        let rewardsLog = [];
+        
+        // 🔄 逐一檢查每種材料，大於 0 才塞入籃子
+        if (woodDropped > 0)  rewardsLog.push(`🪵 木材 x${woodDropped}`);
+        if (stoneDropped > 0) rewardsLog.push(`🪨 石頭 x${stoneDropped}`);
+        if (herbDropped > 0)  rewardsLog.push(`🌿 草藥 x${herbDropped}`);
+        if (oreDropped > 0)   rewardsLog.push(`🪨 原礦 x${oreDropped}`);
+        
+        // 🧠 智能判斷：如果 4 種材料好不幸通通都是 0 (非酋降臨)
+        if (rewardsLog.length === 0) {
+            addLog(`🌲 採集完畢！這次運氣不好，什麼都沒有採集到...`, "#8b949e");
+        } else {
+            // ⚡ 核心魔法：用「、」將大於 0 的材料字串完美串聯在一起！
+            let rewardText = rewardsLog.join('、');
+            addLog(`🌲 採集完畢！成功獲得：${rewardText}！`, "#52c41a");
+        }
     }
 
     // 7. 🔄 重置採集狀態：將「正在採集」的布林值鎖解除，允許玩家下一次點擊
