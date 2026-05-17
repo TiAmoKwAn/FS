@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.0</title>
+    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.6</title>
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
@@ -744,6 +744,8 @@ let cfg = {
             cooldownMax: 4      // 基礎戰鬥時間（4秒）
         },
         // ==========================================
+		
+		lastSaveTime: Date.now()	// 🕒 🆕 新增：紀錄最後存檔的時間戳（毫秒），預設為當前時間
     };
 // ==========================================
 // [Script] game 遊戲主狀態對象 - 完結
@@ -1926,6 +1928,9 @@ function renderOrders(id) {
         game.prices = JSON.parse(JSON.stringify(cfg));
         game.customPrestige = JSON.parse(JSON.stringify(PRESTIGE_LEVELS));
         
+		// 🕒 存檔核心防禦：先把目前最新時間鎖進 game 物件，這就是玩家離線的起點
+		game.lastSaveTime = Date.now();
+		
         // 使用你原本的 Key 值，確保不影響舊工廠數據
         localStorage.setItem('factory_v12_3_save', JSON.stringify(game)); 
         
@@ -1996,6 +2001,9 @@ function loadGame() {
             console.error("存檔損壞:", e); 
         }
         
+		// 🎯 [就是這裡！讀檔完畢、UI更新前，立刻結算離線掛機收益]
+		calculateOfflineProgress();
+		
         // 執行全域刷新
         updateUI(); 
         if (typeof updateBattleUI === 'function') updateBattleUI();
@@ -3068,6 +3076,91 @@ function renderModalMarketButtons() {
 // ==========================================
 // 🏆 旅行商人系統 - 完結
 // ==========================================
+
+// =================================================================
+// 💤 離線掛機收益結算核心系統 (完美對接版)
+// =================================================================
+function calculateOfflineProgress() {
+    // 1. 安全防禦：如果沒有上次存檔時間，代表是首次遊玩或新玩家，直接結束
+    if (!game.lastSaveTime) return;
+
+    // 2. 計算玩家離線了多少秒
+    let now = Date.now();
+    let timeDiff = now - game.lastSaveTime; 
+    let offlineSeconds = Math.floor(timeDiff / 1000); 
+
+    // 3. 離線掛機門檻防禦鎖
+    if (offlineSeconds < 30) return; // 離線小於 30 秒不觸發掛機，防止頻繁刷新刷錢
+    if (offlineSeconds > 28800) offlineSeconds = 28800; // 🛑 最高上限 8 小時，防止數據溢出暴走
+
+    let totalEarnings = 0;
+    let materialsProduced = {}; // 局部變數：用來統計這次離線共生產了什麼
+
+    // 4. 🔄 核心自動掃描：掃描所有工廠生產線
+    for (let i in game.lines) {
+        let line = game.lines[i];
+        
+        // 🤖 檢查這條產線是否存在，並且是否開啟了「自動化」
+        if (line && line.automated) { 
+            let itemType = line.currentItem; // 當前生產線鎖定的物品代碼 (例如 'iron_bar', 'potion')
+            
+            // 確保這個物品在你的配置表 cfg 內有定義
+            if (itemType && typeof cfg !== 'undefined' && cfg[itemType]) {
+                let speed = line.speed || 5; // 如果產線沒有 speed 變數，預設為 5 秒生產一次
+                let productions = Math.floor(offlineSeconds / speed); // 計算離線期間這條線能運作幾次
+                
+                if (productions > 0) {
+                    // 💰 收益公式：(售價 - 買價) * 生產次數
+                    let profit = (cfg[itemType].r - (cfg[itemType].buy || 0)) * productions;
+                    totalEarnings += profit;
+
+                    // 📦 累加材料到掛機清單與玩家實際背包
+                    if (!materialsProduced[itemType]) materialsProduced[itemType] = 0;
+                    materialsProduced[itemType] += productions;
+
+                    if (!game.inv[itemType]) game.inv[itemType] = 0;
+                    game.inv[itemType] += productions;
+                }
+            }
+        }
+    }
+
+    // 5. 💰 將計算好的總掛機利潤發放給玩家核心錢包
+    game.money += totalEarnings;
+
+    // 6. 📜 智能日誌輸出：將離線結算單漂亮地印到你的日誌系統
+    if (totalEarnings > 0 && typeof addLog === 'function') {
+        let hours = Math.floor(offlineSeconds / 3600);
+        let minutes = Math.floor((offlineSeconds % 3600) / 60);
+        let seconds = offlineSeconds % 60;
+        let timeStr = `${hours > 0 ? hours + '小時' : ''}${minutes > 0 ? minutes + '分鐘' : ''}${seconds}秒`;
+        
+        // 拼裝產出材料的乾淨文字
+        let matTexts = [];
+        for (let mat in materialsProduced) {
+            if (cfg[mat]) {
+                matTexts.push(`${cfg[mat].i || '📦'} ${cfg[mat].n} x${materialsProduced[mat]}`);
+            }
+        }
+
+        // 送出漂亮色彩的終端機日誌
+        addLog(`💤 歡迎回來！你剛才離線掛機了 ${timeStr}！`, "#bc8cff");
+        addLog(`💰 自動化產線努力運作，為你帶來了 $${totalEarnings.toFixed(0)} 淨利潤！`, "#f2cc60");
+        if (matTexts.length > 0) {
+            addLog(`📦 倉庫新增掛機物資：${matTexts.join('、')}！`, "#58a6ff");
+        }
+    }
+
+    // 7. 🔄 時間重置鎖：重置時間戳，防止玩家利用重新對話或重整網頁重複無限刷錢
+    game.lastSaveTime = Date.now();
+    
+    // 📊 同步所有 UI 畫面，讓剛剛增加的金錢和材料數字立刻亮出來
+    if (typeof updateUI === 'function') updateUI();
+    if (typeof updateAdventureUI === 'function') updateAdventureUI();
+}
+// =================================================================
+// 💤 離線掛機收益結算核心系統 (完美對接版) - 完結
+// =================================================================
 
 // ==========================================
 // [系統啟動層] window.onload 全域初始化
