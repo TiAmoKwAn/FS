@@ -665,13 +665,13 @@ for(let i=1; i<=LINE_COUNT; i++) {
 // ==========================================
 let cfg = { 
     // n:名稱, i:圖標, c:CSS類, r:售價, buy:買價, range:產線範圍
-    wood:    { n: '木材', i: '🪵', c: 'part-wood',    r: 15,  buy: 30,   range: [1, 100] },
-    stone:   { n: '石頭', i: '🪨', c: 'part-stone',   r: 30,  buy: 60,  range: [1, 100] }, 
-    iron:    { n: '鋼鐵', i: '⛓️', c: 'part-iron',    r: 55,  buy: 110,  range: [1, 100] },
-    core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 300,  range: [3, 100] },
-    diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 1000, range: [8, 10] },
-	water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 1600, range: [8, 10] },
-    gold:    { n: '黃金', i: '🟡', c: 'part-gold',    r: 1000, buy: 2000, range: [8, 10] }
+    wood:    { n: '木材', i: '🪵', c: 'part-wood',    r: 15,  buy: 5,   range: [1, 100] },
+    stone:   { n: '石頭', i: '🪨', c: 'part-stone',   r: 30,  buy: 10,  range: [1, 100] }, 
+    iron:    { n: '鋼鐵', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [1, 100] },
+    core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 50,  range: [3, 100] },
+    diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 200, range: [8, 10] },
+	water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [8, 10] },
+    gold:    { n: '黃金', i: '🟡', c: 'part-gold',    r: 1000, buy: 300, range: [8, 10]},
 };
 // ==========================================
 // [Script] cfg 資源屬性配置表 - 完結
@@ -1104,7 +1104,7 @@ container.innerHTML += `
 
                     <div class="station" style="left: 245px; width: 280px;">
                         <div class="status-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 5px;"><span>⚙️ 生產 Agent <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></span>
-                        <button id="auto-btn-${i}" style="color:#000000; onclick="toggleAuto(${i})">自動化 ($500)</button>
+                        <button id="auto-btn-${i}" style="color:#000000;" onclick="toggleAuto(${i})">自動化 ($500)</button>
 						</div>
                         <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">設備健康度</span><span id="dur-text-${i}" style="font-size:10px; font-family:'Share Tech Mono';">100%</span></div>
                         <div class="durability-box"><div id="dur-fill-${i}" class="dur-fill"></div></div>
@@ -2220,7 +2220,7 @@ function finishGathering() {
 	
 	// 3. 計算隨機掉落數量：
     // Math.random() * 3 產生 0~2.999 的隨機數，Math.floor 捨去小數變成 0~2，再 +1 變成【1~3 個草藥】
-    let herbDropped = Math.floor(Math.random() * 3) + 0;
+    let herbDropped = Math.floor(Math.random() * 2) + 0;
     // 產生【1~2 個原礦】
     let oreDropped = Math.floor(Math.random() * 2) + 0;
     // 🆕 新增：產生【2~4 個木材】 (Math.floor(0~2.999) 變成 0~2，再 +2 變成 2~4)
