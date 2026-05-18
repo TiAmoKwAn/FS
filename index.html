@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.6</title>
+    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.8</title>
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
@@ -243,8 +243,8 @@
 
         <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
             <span style="font-size: 11px; color: #adbac7;">⚙️ 鐵錠:</span>
-            <button onclick="window.modifyMaterialDebug('iron_bar', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-            <button onclick="window.modifyMaterialDebug('iron_bar', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
+            <button onclick="window.modifyMaterialDebug('ironbar', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
+            <button onclick="window.modifyMaterialDebug('ironbar', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
         </div>
 
         <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
@@ -328,67 +328,165 @@
     <button class="action-btn btn-green" style="width:100px; height:42px;" onclick="toggleAdmin()">⚙️ 全局設定</button>
 </div>
 
-<!-- 🏭 工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
-<div class="factory-floor" id="floor">
-    <div id="lines-container"></div>
+<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
+
+<!-- 角色介面 開始 -->
+<div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-sizing: border-box; width: 100%;">
+    
+    <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 20px; width: 100%; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 15px;">
+        
+        <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0; width: 340px; background: #0d1117; padding: 12px; border-radius: 8px; border: 1px solid #21262d; box-sizing: border-box;">
+            <div style="font-size: 38px; background: #161b22; padding: 10px 12px; border-radius: 10px; border: 1px solid #30363d; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">🤠</div>
+            
+            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong style="font-size: 16px; color: #c9d1d9; white-space: nowrap;">冒險者核心</strong>
+                    <span id="char-lv" style="background: #f2cc60; color: #0d1117; font-weight: bold; font-size: 12px; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">Lv.1</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                    <span style="font-size: 12px; color: #8b949e; font-weight: bold; width: 30px; flex-shrink: 0;">EXP</span>
+                    <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
+                        <div id="char-exp-bar" style="width: 0%; height: 100%; background: #3fb950; transition: width 0.3s;"></div>
+                    </div>
+                    <span id="char-exp-text" style="font-size: 12px; color: #8b949e; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">0 / 100</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                    <span style="font-size: 12px; color: #ff7b72; font-weight: bold; width: 30px; flex-shrink: 0;">HP</span>
+                    <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
+                        <div id="char-hp-bar" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ff7b72, #f2594b); transition: width 0.2s;"></div>
+                    </div>
+                    <span id="char-hp-text" style="font-size: 12px; color: #ff7b72; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">100 / 100</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 12px; background: #0d1117; padding: 14px 18px; border-radius: 8px; border: 1px solid #21262d; flex-grow: 1; align-items: center; text-align: center; box-sizing: border-box;">
+            
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span style="color: #f2cc60; font-size: 12px; font-weight: bold; white-space: nowrap;">⚔️ 攻擊力</span>
+                <span id="char-atk" style="font-family: 'Share Tech Mono'; font-size: 16px; color: #ffffff; font-weight: bold; margin-top: 2px;">10</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span style="color: #79c0ff; font-size: 12px; font-weight: bold; white-space: nowrap;">🛡️ 防禦力</span>
+                <span id="char-def" style="font-family: 'Share Tech Mono'; font-size: 16px; color: #ffffff; font-weight: bold; margin-top: 2px;">5</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span style="color: #56d364; font-size: 12px; font-weight: bold; white-space: nowrap;">⚡ 敏捷度</span>
+                <span id="char-agi" style="font-family: 'Share Tech Mono'; font-size: 16px; color: #ffffff; font-weight: bold; margin-top: 2px;">5</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span style="color: #d4bbff; font-size: 12px; font-weight: bold; white-space: nowrap;">🍀 幸運值</span>
+                <span id="char-luk" style="font-family: 'Share Tech Mono'; font-size: 16px; color: #ffffff; font-weight: bold; margin-top: 2px;">1</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-top: 1px dashed #21262d; padding-top: 6px;">
+                <span style="color: #f2cc60; font-size: 12px; font-weight: bold; white-space: nowrap;">💥 爆擊率</span>
+                <span style="font-family: 'Share Tech Mono'; font-size: 15px; color: #ffffff; font-weight: bold; margin-top: 2px;"><span id="stat-crit">5</span>%</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-top: 1px dashed #21262d; padding-top: 6px;">
+                <span style="color: #56d364; font-size: 12px; font-weight: bold; white-space: nowrap;">🌀 閃避率</span>
+                <span style="font-family: 'Share Tech Mono'; font-size: 15px; color: #ffffff; font-weight: bold; margin-top: 2px;"><span id="stat-dodge">3</span>%</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-top: 1px dashed #21262d; padding-top: 6px;">
+                <span style="color: #79c0ff; font-size: 12px; font-weight: bold; white-space: nowrap;">🎯 命中率</span>
+                <span style="font-family: 'Share Tech Mono'; font-size: 15px; color: #ffffff; font-weight: bold; margin-top: 2px;"><span id="stat-hit">95</span>%</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-top: 1px dashed #21262d; padding-top: 6px;">
+                <span style="color: #ff4d4d; font-size: 12px; font-weight: bold; white-space: nowrap;">🩸 攻吸血</span>
+                <span style="font-family: 'Share Tech Mono'; font-size: 15px; color: #ffffff; font-weight: bold; margin-top: 2px;"><span id="stat-lifesteal">0</span>%</span>
+            </div>
+
+        </div>
+
+        <div style="display: flex; flex-direction: column; justify-content: center; text-align: right; flex-shrink: 0; width: 130px; box-sizing: border-box;">
+            <button onclick="window.useHealthPotion()" class="action-btn btn-blue" style="padding: 8px 12px; font-size: 12px; cursor: pointer; width: 100%;">
+                🧪 使用藥水
+            </button>
+            <div style="font-size: 10px; color: #8b949e; margin-top: 5px; text-align: center; white-space: nowrap;">每瓶回復 50 點 HP</div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px; width: 100%;">
+
+	<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; box-sizing: border-box;">
+    <div style="color: #f2cc60; font-size: 12px; font-weight: bold; margin-bottom: 10px;">🛡️ 當前全身穿戴裝備</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        
+        <div id="slot-weapon" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            ⚔️ 武器: <span id="curr-eq-weapon" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+        
+        <div id="slot-helmet" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            🪖 頭盔: <span id="curr-eq-helmet" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+        
+        <div id="slot-armor" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            👕 胸甲: <span id="curr-eq-armor" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+        
+        <div id="slot-gloves" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            🧤 手套: <span id="curr-eq-gloves" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+        
+        <div id="slot-leggings" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            👖 護腿: <span id="curr-eq-leggings" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+        
+        <div id="slot-boots" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            🥾 鞋子: <span id="curr-eq-boots" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+        
+        <div id="slot-cloak" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            🧥 披風: <span id="curr-eq-cloak" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+        
+        <div id="slot-ring" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+            💍 飾品: <span id="curr-eq-ring" style="color:#57606a; font-weight: bold;">無</span>
+        </div>
+
+		</div>
+		</div>
+
+        <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; display: flex; flex-direction: column;">
+            <div style="color: #58a6ff; font-size: 12px; font-weight: bold; margin-bottom: 10px;">📦 裝備儲存背包 (<span id="eq-inv-count">0</span>)</div>
+            <div id="eq-inv-container" style="max-height: 180px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>
+            </div>
+        </div>
+    </div>
 </div>
+<!-- 角色介面 完結 -->
+
+<!-- 🏭 工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
+<div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 1040px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
+    <h2 style="color: #58a6ff; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+        ⚙️ 工廠生產線控制台
+    </h2>
+    <span class="fold-indicator" style="font-size: 12px; color: #8b949e; font-weight: normal; background: #21262d; padding: 3px 8px; border-radius: 6px; border: 1px solid #30363d;">[➖ 點擊收起]</span>
+</div>
+
+<div id="lines-container" style="border: 1px solid #30363d; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; background: #0d1117; transition: height 0.2s ease-out; position: relative; max-width: 1040px; margin: 0 auto; box-sizing: border-box;"></div>
 <!-- 生成野外區域（採集）& 煉金術工坊（合成） -->
 <div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
 
-    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; gap: 20px; box-sizing: border-box; width: 100%;">
+
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; box-sizing: border-box;">
         
-        <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
-            <div style="font-size: 32px; background: #21262d; padding: 8px 12px; border-radius: 10px; border: 1px solid #30363d;">🤠</div>
-            <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <strong style="font-size: 15px; color: #c9d1d9; white-space: nowrap;">冒險者核心</strong>
-                    <span id="char-lv" style="background: #f2cc60; color: #0d1117; font-weight: bold; font-size: 11px; padding: 1px 6px; border-radius: 4px; white-space: nowrap;">Lv.1</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
-                    <span style="font-size: 11px; color: #8b949e; min-width: 25px;">EXP</span>
-                    <div style="width: 140px; background: #0d1117; height: 6px; border-radius: 3px; overflow: hidden; border: 1px solid #30363d;">
-                        <div id="char-exp-bar" style="width: 0%; height: 100%; background: #3fb950; transition: width 0.3s;"></div>
-                    </div>
-                    <span id="char-exp-text" style="font-size: 11px; color: #8b949e; font-family: 'Share Tech Mono'; white-space: nowrap;">0/100</span>
-                </div>
-            </div>
-        </div>
-
-        <div style="display: flex; gap: 30px; background: #0d1117; padding: 10px 20px; border-radius: 8px; border: 1px solid #21262d; flex-grow: 1; margin: 0 20px; justify-content: space-around;">
-            <div style="flex-grow: 1; max-width: 300px;">
-                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-                    <span style="color: #ff7b72; font-weight: bold; white-space: nowrap;">❤️ 生命值 (HP)</span>
-                    <span id="char-hp-text" style="font-family: 'Share Tech Mono'; color: #ff7b72; white-space: nowrap;">100 / 100</span>
-                </div>
-                <div style="width: 100%; background: #21262d; height: 8px; border-radius: 4px; overflow: hidden;">
-                    <div id="char-hp-bar" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ff7b72, #f2594b); transition: width 0.2s;"></div>
-                </div>
-            </div>
-            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 80px;">
-                <span style="color: #f2cc60; font-size: 11px; font-weight: bold; white-space: nowrap;">⚔️ 攻擊力 (ATK)</span>
-                <span id="char-atk" style="font-family: 'Share Tech Mono'; font-size: 16px; color: #ffffff; font-weight: bold; margin-top: 2px;">10</span>
-            </div>
-        </div>
-
-        <div style="text-align: right; flex-shrink: 0; min-width: 160px;">
-			<button onclick="window.useHealthPotion()" class="action-btn btn-blue" style="...">
-				🧪 使用藥水
-			</button>
-            <div style="font-size: 10px; color: #8b949e; margin-top: 5px; white-space: nowrap; text-align: center;">每瓶回復 50 點 HP</div>
-        </div>
-
-    </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; box-sizing: border-box;">
-        
-		<!-- 🌲 野外區域 開始 -->
-        <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px;">
-            <h3 style="color: #58a6ff; margin-top: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px;">
+        <div onclick="window.toggleGameWindow('field-content-wrapper', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 5px;">
+            <h3 style="color: #58a6ff; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
                 🌲 野外區域 (微風森林)
             </h3>
+            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[— 收起]</span>
+        </div>
+
+        <div id="field-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
             <p style="font-size: 11px; color: #8b949e; margin: 5px 0 15px 0; line-height: 1.4;">
                 手動派遣探索，隨機收集基礎物資（木/石）或進階煉金材料（草藥/原礦）。
             </p>
-			<!-- 採集 -->
             <div style="text-align: center;">
                 <button id="btn-gather" onclick="startGathering()" class="action-btn btn-green" style="width: 100%; height: 38px; font-size: 13px;">
                     🪵 開始野外採集
@@ -398,15 +496,14 @@
                 </div>
                 <div id="gather-status" style="font-size: 11px; color: #8b949e; margin-top: 6px; min-height: 15px;">準備就緒</div>
             </div>
-			<!-- 打怪 -->
-			<hr style="border: 0; border-top: 1px dashed #30363d; margin: 15px 0;">
+            <hr style="border: 0; border-top: 1px dashed #30363d; margin: 15px 0;">
             
             <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
                 <label style="font-size: 12px; color: #8b949e; white-space: nowrap;">選擇對手：</label>
                 <select id="monster-select" style="background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 4px 8px; font-size: 12px; width: 100%; cursor: pointer;">
                     <option value="slime">🟢 綠色史萊姆 (LV.1 | 傷害: 12 HP | 掉落: 黏液/EXP)</option>
                     <option value="goblin">👺 森林哥布林 (LV.3 | 傷害: 28 HP | 掉落: 哥布林耳/EXP)</option>
-					<option value="orc">🧌 獸人狂戰士 (Lv.15+ 建議)</option>
+                    <option value="orc">🧌 獸人狂戰士 (Lv.15+ 建議)</option>
                 </select>
             </div>
 
@@ -419,17 +516,19 @@
             </div>
             <div id="battle-status" style="font-size: 11px; color: #ff7b72; margin-top: 6px; min-height: 15px; text-align: center;"></div>
         </div>
-		<!-- 🌲 野外區域 完結 -->
-		
-		<!-- ⚗️ 煉金術工坊 開始 -->
-        <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px;">
-            <h3 style="color: #a371f7; margin-top: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+    </div>
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px;">
+        <div onclick="window.toggleGameWindow('alchemy-content-wrapper', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 5px;">
+            <h3 style="color: #a371f7; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
                 ⚗️ 煉金術工坊
             </h3>
+            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[— 收起]</span>
+        </div>
+
+        <div id="alchemy-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
             <p style="font-size: 11px; color: #8b949e; margin: 5px 0 15px 0; line-height: 1.4;">
                 利用採集獲得的稀有材料，提煉初級生命藥水。
             </p>
-			<!-- 提煉 -->
             <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
@@ -438,21 +537,19 @@
                             需求：🌿 草藥 x2 + 🪨 原礦 x1
                         </div>
                     </div>
-					<button id="btn-craft-potion" onclick="craftPotion()" class="action-btn btn-blue" style="width: 70px; height: 30px; font-size: 11px;">
-						提煉
-					</button>
+                    <button id="btn-craft-potion" onclick="craftPotion()" class="action-btn btn-blue" style="width: 70px; height: 30px; font-size: 11px;">
+                        提煉
+                    </button>
                 </div>
                 <div id="alchemy-progress-bar" style="width: 100%; background: #0d1117; border: 1px solid #30363d; height: 6px; border-radius: 3px; margin-top: 10px; overflow: hidden; display: none;">
                     <div id="alchemy-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #bc8cff, #8957e5); transition: width 0.1s linear;"></div>
                 </div>
                 <div id="alchemy-status" style="font-size: 10px; color: #8b949e; margin-top: 6px; min-height: 15px; text-align: center;">設備空閒</div>
             </div>
-			<!-- 提煉 -->
-			<!-- 熔煉 -->
-			<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-top: 10px;">
+            <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-top: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <strong style="color: #c9d1d9; font-size: 12px;">⚙️ 熔煉鋼鐵錠</strong>
+                        <strong style="color: #c9d1d9; font-size: 12px;">⚙️ 熔煉鐵礦錠</strong>
                         <div style="font-size: 10px; color: #8b949e; margin-top: 3px;">
                             需求：🪨 原礦 x3 🔥 ⚙️ 鐵錠 x1
                         </div>
@@ -466,57 +563,191 @@
                 </div>
                 <div id="iron-melt-status" style="font-size: 10px; color: #8b949e; margin-top: 6px; min-height: 15px; text-align: center;">設備空閒</div>
             </div>
-			<!-- 熔煉 -->
         </div>
-		<!-- ⚗️ 煉金術工坊 完結 -->
-		
-		<!-- 🔨 鐵匠鍛造舖 開始 -->
-		<div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-top: 15px;">
-            <h3 style="color: #ff9b30; margin-top: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+    </div>
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px;">
+        <div onclick="window.toggleGameWindow('forge-content-wrapper', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 5px;">
+            <h3 style="color: #ff9b30; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
                 🔨 鐵匠鍛造舖
             </h3>
+            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[— 收起]</span>
+        </div>
+
+        <div id="forge-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
             <p style="font-size: 11px; color: #8b949e; margin: 5px 0 15px 0; line-height: 1.4;">
-                使用打怪獲得的特殊材料與工廠的鐵錠，鍛造強力裝備提升角色實力。
+                調整目標等級滑桿（Lv.1 ~ Lv.10），消耗工廠的鐵錠與資金，精準打造皇家神裝並即時穿戴上身！
             </p>
 
-            <div style="display: flex; gap: 10px; margin-bottom: 12px; font-size: 11px;">
-                <div style="flex: 1; background: #0d1117; padding: 6px 10px; border-radius: 6px; border: 1px solid #21262d;">
-                    ⚔️ 武器：<span id="eq-weapon" style="color: #58a6ff; font-weight: bold;">無</span> <span id="eq-atk-bonus" style="color:#58a6ff;"></span>
-                </div>
-                <div style="flex: 1; background: #0d1117; padding: 6px 10px; border-radius: 6px; border: 1px solid #21262d;">
-                    🛡️ 防具：<span id="eq-armor" style="color: #3fb950; font-weight: bold;">無</span> <span id="eq-hp-bonus" style="color:#3fb950;"></span>
-                </div>
-            </div>
-
-            <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <select id="craft-eq-select" onchange="updateForgePreview()" style="background: #161b22; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 4px 6px; font-size: 12px; cursor: pointer;">
-                            <option value="ironSword">⚔️ 鋼鐵大劍 (+15 攻擊力)</option>
-                            <option value="slimeArmor">🛡️ 史萊姆輕甲 (+50 生命上限)</option>
-                        </select>
-                        <div id="forge-req-text" style="font-size: 10px; color: #8b949e; margin-top: 5px;">
-                            需求：⚙️ 鐵錠 x10 + 🧪 黏液 x3
-                        </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">⚔️ 武器鍛造</span>
+                        <span id="forge-name-weapon" style="font-size: 11px; color: #58a6ff; font-weight: bold;">木製短劍</span>
                     </div>
-                    <button id="btn-forge-eq" onclick="craftEquipment()" class="action-btn btn-blue" style="width: 70px; height: 30px; font-size: 11px; background: #ff9b30; border-color: #d29922;">
-                        打造
-                    </button>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-weapon" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-weapon" min="1" max="10" value="1" oninput="window.onForgeSliderChange('weapon')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-weapon" style="color:#56d364; font-weight:bold;">5</span> 錠 | 💰 <span id="cost-gold-weapon" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('weapon')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
+                </div>
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🪖 頭盔鍛造</span>
+                        <span id="forge-name-helmet" style="font-size: 11px; color: #58a6ff; font-weight: bold;">布質便帽</span>
+                    </div>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-helmet" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-helmet" min="1" max="10" value="1" oninput="window.onForgeSliderChange('helmet')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-helmet" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-helmet" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('helmet')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
+                </div>
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">👕 胸甲鍛造</span>
+                        <span id="forge-name-armor" style="font-size: 11px; color: #58a6ff; font-weight: bold;">破舊粗布衣</span>
+                    </div>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-armor" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-armor" min="1" max="10" value="1" oninput="window.onForgeSliderChange('armor')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-armor" style="color:#56d364; font-weight:bold;">8</span> 錠 | 💰 <span id="cost-gold-armor" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('armor')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
+                </div>
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🧤 手套鍛造</span>
+                        <span id="forge-name-gloves" style="font-size: 11px; color: #58a6ff; font-weight: bold;">粗麻手套</span>
+                    </div>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-gloves" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-gloves" min="1" max="10" value="1" oninput="window.onForgeSliderChange('gloves')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-gloves" style="color:#56d364; font-weight:bold;">3</span> 錠 | 💰 <span id="cost-gold-gloves" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('gloves')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
+                </div>
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">👖 護腿鍛造</span>
+                        <span id="forge-name-leggings" style="font-size: 11px; color: #58a6ff; font-weight: bold;">亞麻長褲</span>
+                    </div>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-leggings" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-leggings" min="1" max="10" value="1" oninput="window.onForgeSliderChange('leggings')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-leggings" style="color:#56d364; font-weight:bold;">5</span> 錠 | 💰 <span id="cost-gold-leggings" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('leggings')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
+                </div>
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🥾 鞋子鍛造</span>
+                        <span id="forge-name-boots" style="font-size: 11px; color: #58a6ff; font-weight: bold;">破爛草鞋</span>
+                    </div>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-boots" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-boots" min="1" max="10" value="1" oninput="window.onForgeSliderChange('boots')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-boots" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-boots" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('boots')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
+                </div>
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🧥 披風鍛造</span>
+                        <span id="forge-name-cloak" style="font-size: 11px; color: #58a6ff; font-weight: bold;">擋風碎布</span>
+                    </div>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-cloak" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-cloak" min="1" max="10" value="1" oninput="window.onForgeSliderChange('cloak')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-cloak" style="color:#56d364; font-weight:bold;">6</span> 錠 | 💰 <span id="cost-gold-cloak" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('cloak')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
+                </div>
+                <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">💍 飾品鍛造</span>
+                        <span id="forge-name-ring" style="font-size: 11px; color: #58a6ff; font-weight: bold;">銅製指環</span>
+                    </div>
+                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
+                        目標等級: <span id="forge-lv-val-ring" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
+                        <input type="range" id="forge-range-ring" min="1" max="10" value="1" oninput="window.onForgeSliderChange('ring')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-ring" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-ring" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <button onclick="window.executeForgeCraft('ring')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
+                    </div>
                 </div>
             </div>
         </div>
-		<!-- 🔨 鐵匠鍛造舖 完給 -->
-		<!-- 🔨 系統日誌 -->
-		<div style="background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; display: flex; flex-direction: column;">
-        <div style="font-weight: bold; margin-bottom: 8px; color: #3fb950; font-size: 13px; display: flex; align-items: center; gap: 6px;">
-            📋 系統日誌 (鐵匠旁)
-        </div>
-        <div id="log" class="log-container" style="min-height: 250px; flex-grow: 1;height: 100%; margin: 0; box-sizing: border-box;"></div>
     </div>
-		<!-- 🔨 系統日誌 完結 -->
+    <div style="background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; display: flex; flex-direction: column;">
+        <div onclick="window.toggleGameWindow('log-content-wrapper', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 5px; width: 100%;">
+            <div style="font-weight: bold; color: #3fb950; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                📋 系統日誌 (鐵匠旁)
+            </div>
+            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d; font-weight: normal;">[— 收起]</span>
+        </div>
+
+        <div id="log-content-wrapper" style="transition: height 0.2s ease-out; position: relative; width: 100%; display: flex; flex-direction: column; flex-grow: 1;">
+            <div id="log" class="log-container" style="min-height: 250px; flex-grow: 1; height: 100%; margin: 5px 0 0 0; box-sizing: border-box;"></div>
+        </div>
+    </div>
+    </div>
+<!-- 無限爬塔 -->
+<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 1040px; box-sizing: border-box;">
+    
+    <div onclick="window.toggleTowerWindow(this)" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; user-select: none;">
+        <h3 style="color: #f2cc60; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+            🗼 皇家無盡天梯 <span id="tower-layer-badge" style="background: #ff9b30; color: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">目前: 第 21 層</span>
+        </h3>
+        
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="tower-status" style="font-size: 11px; color: #ff9b30; font-weight: bold;">激戰中...</span>
+            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[➖ 點擊收起]</span>
+        </div>
     </div>
 
+    <div id="tower-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
+        
+        <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #c9d1d9;">
+                <span>👹 當前守層怪: <span id="tower-monster-name" style="color: #ff7b72; font-weight: bold;">Lv.21 異變的地獄雙頭犬</span></span>
+                <span>❤️ HP: <span id="tower-monster-hp" style="color: #ff7b72;">8091 / 8673</span></span>
+            </div>
+            <div style="background: #21262d; width: 100%; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden;">
+                <div id="tower-monster-bar" style="background: #ff7b72; width: 93.3%; height: 100%; transition: width 0.1s;"></div>
+            </div>
+        </div>
+
+        <div id="tower-combat-log" style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 8px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #8b949e; line-height: 1.5; margin-bottom: 12px;">
+            </div>
+
+		<div style="display: flex; gap: 10px;">
+			<button id="btn-tower-start" onclick="window.toggleTowerMode()" style="flex: 1; height: 32px; font-size: 12px; background: #ff9b30; border: 1px solid #d29922; color: #0d1117; border-radius: 6px; cursor: pointer; font-weight: bold;">
+				⏸️ 暫停爬塔
+			</button>
+			<button id="btn-tower-retreat" onclick="window.retreatFromTower()" style="width: 70px; height: 32px; font-size: 12px; background: #da3637; border: 1px solid #f85149; color: white; border-radius: 6px; cursor: pointer;">
+				撤退
+			</button>
+		</div>
+        
+    </div>
 </div>
+<!-- 無限爬塔 完結 -->
 
     <!-- 👨‍🔧 研發實驗室面板面板 -->
 <div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 1040px; margin-left: auto; margin-right: auto;">
@@ -668,7 +899,7 @@ let cfg = {
     // n:名稱, i:圖標, c:CSS類, r:售價, buy:買價, range:產線範圍
     wood:    { n: '木材', i: '🪵', c: 'part-wood',    r: 15,  buy: 5,   range: [1, 100] },
     stone:   { n: '石頭', i: '🪨', c: 'part-stone',   r: 30,  buy: 10,  range: [1, 100] }, 
-    iron:    { n: '鋼鐵', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [1, 100] },
+    iron:    { n: '鐵礦', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [1, 100] },
     core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 50,  range: [3, 100] },
     diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 200, range: [8, 10] },
     water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [8, 10] },
@@ -680,7 +911,8 @@ let cfg = {
     potion:  { n: '生命藥水', i: '🧪', c: 'part-potion', r: 0,   buy: 2000,   range: [0, 0] },
 	
 	// 🔨 【全新加入】熔煉爐專用鐵錠，等最頂 UI 自動幫佢開個新格子！
-    iron_bar: { n: '鐵錠', i: '🧱', c: 'part-ironbar', r: 0,   buy: 2000,   range: [0, 0] },   // ⚔️ 製作裝備用	
+    ironbar: { n: '鐵錠', i: '🧱', c: 'part-ironbar', r: 0,   buy: 2000,   range: [0, 0] },   // ⚔️ 製作裝備用	
+
     // ⚔️ [打怪素材] 完美對接原本與全新的怪物素材
     slimeGlow: { n: '史萊姆黏液', i: '🧪', c: 'part-slime', r: 0, buy: 500,   range: [0, 0] },
     goblinEar: { n: '哥布林耳',   i: '👺', c: 'part-goblin',r: 0, buy: 1000,   range: [0, 0] },
@@ -706,7 +938,7 @@ let cfg = {
 			herbs: 0,			// 草藥數量
 			ore: 0,				// 原礦數量
 			potion: 0,			// 初級生命藥水數量
-			iron_bar: 0,		// 鐵錠
+			ironbar: 0,		// 鐵錠
 			// ⚔️ [冒險怪物素材] (徹底刪除舊的 monsterMaterials 重疊物件)
             slimeGlow: 0,		// 🧪 史萊姆黏液 數量
             goblinEar: 0,		// 👂 哥布林耳朵 數量
@@ -748,13 +980,25 @@ let cfg = {
             hp: 100,            // 當前生命值
             maxHp: 100,         // 最大生命值上限
             atk: 10,            // 基礎攻擊力
-            def: 5              // 基礎防禦力
+            def: 5,              // 基礎防禦力
+			// 🎯 新增動態戰鬥屬性
+            speed: 10,          // 敏捷度 (影響戰鬥節奏/微幅修正)
+            crit: 5,            // 爆擊率 (%)
+            dodge: 5,           // 閃避率 (%)
+            hit: 100,           // 命中率 (%)
+            lifesteal: 0,       // 攻吸血 (%) [將由裝備加成拉高至60.8%!]
+            luck: 10            // 幸運值 (影響天梯材料掉落率)
         },
 		equipment: {
             weapon: "無",      // 當前武器名稱
             armor: "無",       // 當前防具名稱
             atkBonus: 0,       // 裝備加成的攻擊力
             hpBonus: 0         // 裝備加成的生命值上限
+        },
+		// 🗼 天梯專用存檔欄位 (新增)
+        tower: {
+            currentLayer: 1,    // 玩家歷史最高/當前挑戰層數
+            highestLayer: 1     // 歷史最高紀錄
         },
 
         battle: {
@@ -768,6 +1012,244 @@ let cfg = {
 // ==========================================
 // [Script] game 遊戲主狀態對象 - 完結
 // ==========================================
+
+// ====================================================================
+// 🚀 【全新 RPG 8部位裝備與屬性大腦（完美支援：雙行佈局與吸血詞條）】
+// ====================================================================
+
+if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5 };
+if (game.player.agi === undefined) game.player.agi = 5;
+if (game.player.luk === undefined) game.player.luk = 1;
+if (game.player.lifesteal === undefined) game.player.lifesteal = 0; // 原設定 0%
+
+if (!game.eqInv) game.eqInv = []; 
+if (!game.equippedSlots) {
+    game.equippedSlots = { weapon: null, helmet: null, armor: null, gloves: null, leggings: null, boots: null, cloak: null, ring: null };
+}
+
+// 🪐 2. 數據庫：已為【武器、手套、披風、飾品】增加副屬性吸血（lifesteal）加成！
+const EQ_DB = {
+    weapon:   { name: "武器", icon: "⚔️", mainStat: "atk",   subStat: "lifesteal", base: 5,   scale: 18,  colorTier: ["木製短劍", "青銅長劍", "精鋼大劍", "附魔斬魔劍", "破空刃", "龍牙巨劍", "碎星太刀", "熾天使之翼", "滅世星芒神劍", "☄️ 終焉裁決聖劍"] },
+    helmet:   { name: "頭盔", icon: "🪖", mainStat: "def",   subStat: "maxHp",     base: 2,   scale: 7,   colorTier: ["布質便帽", "皮質頭盔", "青銅戰盔", "精鐵重盔", "夜行面罩", "聖殿騎士盔", "龍鱗頭盔", "幻影法帽", "全知天眼魔冠", "👑 眾神主宰神冕"] },
+    armor:    { name: "胸甲", icon: "👕", mainStat: "def",   subStat: "maxHp",     base: 4,   scale: 12,  colorTier: ["破舊粗布衣", "旅行皮革甲", "青銅鎖子甲", "精鋼全身鎧", "暗影夜行衣", "聖殿守衛甲", "龍鱗庇護鎧", "不滅泰坦重甲", "冥王神界鎧", "🛡️ 宇宙始源聖衣"] },
+    gloves:   { name: "手套", icon: "🧤", mainStat: "hit",   subStat: "lifesteal", base: 2,   scale: 2.5, colorTier: ["粗麻手套", "工作皮手套", "加厚護手", "精鐵護腕", "刺客皮套", "附魔重型護手", "龍爪護腕", "神匠御用聖手", "因果律之手", "💥 創世湮滅神手"] },
+    leggings: { name: "護腿", icon: "👖", mainStat: "def",   subStat: "dodge",     base: 1,   scale: 5,   colorTier: ["亞麻長褲", "硬皮護腿", "青銅護脛", "精鋼腿甲", "疾風下裝", "聖殿騎士腿", "龍鱗護腿", "虛空幻影護腿", "時空秩序護褲", "🌀 萬象輪迴神褲"] },
+    boots:    { name: "鞋子", icon: "🥾", mainStat: "agi",   subStat: "dodge",     base: 2,   scale: 6,   colorTier: ["破爛草鞋", "耐磨皮靴", "鐵行戰靴", "附魔輕盈靴", "遊俠短靴", "影流之靴", "巨龍踩踏靴", "赫爾墨斯飛鞋", "光速星塵靴", "🚀 因果逆轉神靴"] },
+    cloak:    { name: "披風", icon: "🧥", mainStat: "maxHp", subStat: "lifesteal", base: 10,  scale: 38,  colorTier: ["擋風碎布", "行者披風", "守衛披肩", "精靈斗篷", "吸血鬼夜披", "聖靈禦篷", "星河主宰披", "命運編織斗篷", "秩序守護神氅", "🌌 九幽吞天神篷"] },
+    ring:     { name: "飾品", icon: "💍", mainStat: "luk",   subStat: "lifesteal", base: 1,   scale: 3,   colorTier: ["銅製指環", "銀製戒指", "白金徽章", "紅寶石之戒", "黑曜石眼眸", "幸運四葉草", "聚寶盆之環", "永恆主宰神戒", "維度崩裂之戒", "🔮 萬物起源神璽"] }
+};
+
+const TIER_COLORS = ["#ffffff", "#e2e2e2", "#3fb950", "#238636", "#58a6ff", "#1f6feb", "#bc8cff", "#8957e5", "#f2cc60", "#ff3333"];
+
+// 🎲 3. 裝備隨機生成器（引入吸血百分比轉換）
+window.generateEquipmentObject = function(slot, level) {
+    const db = EQ_DB[slot];
+    if (!db) return null;
+
+    const lv = Math.max(1, Math.min(10, level));
+    const id = "eq_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+    
+    let mainVal = Math.floor(db.base + (lv - 1) * db.scale);
+    let subVal = Math.floor((db.base * 0.5) + (lv - 1) * (db.scale * 0.4));
+    
+    // 百分比屬性（爆擊、閃避、命中、吸血）轉化為小數百分比
+    if (["crit", "dodge", "hit", "lifesteal"].includes(db.mainStat)) mainVal = parseFloat((db.base + (lv - 1) * (db.scale * 0.15)).toFixed(1));
+    if (["crit", "dodge", "hit", "lifesteal"].includes(db.subStat)) subVal = parseFloat(((db.base * 0.3) + (lv - 1) * (db.scale * 0.1)).toFixed(1));
+
+    return {
+        id: id, slot: slot, name: db.colorTier[lv - 1], lv: lv, color: TIER_COLORS[lv - 1], icon: db.icon,
+        isEquipped: false, price: lv * lv * 450 + (lv * 200), stats: { [db.mainStat]: mainVal, [db.subStat]: subVal }
+    };
+};
+
+// 🧮 4. 全域屬性計算大腦
+window.recalculatePlayerStats = function() {
+    let baseAtk = 10 + (game.player.lv - 1) * 3;
+    let baseMaxHp = 100 + (game.player.lv - 1) * 25;
+    let baseDef = 5 + (game.player.lv - 1) * 2;
+    let baseAgi = 5 + (game.player.lv - 1) * 2;
+    let baseLuk = 1 + (game.player.lv - 1) * 0.5;
+
+    let eqAtk = 0, eqMaxHp = 0, eqDef = 0, eqAgi = 0, eqLuk = 0;
+    let eqCrit = 0, eqDodge = 0, eqHit = 0, eqLifesteal = 0;
+
+    Object.keys(game.equippedSlots).forEach(s => game.equippedSlots[s] = null);
+
+    game.eqInv.forEach(eq => {
+        if (eq.isEquipped) {
+            game.equippedSlots[eq.slot] = eq;
+            if (eq.stats.atk) eqAtk += eq.stats.atk;
+            if (eq.stats.maxHp) eqMaxHp += eq.stats.maxHp;
+            if (eq.stats.def) eqDef += eq.stats.def;
+            if (eq.stats.agi) eqAgi += eq.stats.agi;
+            if (eq.stats.luk) eqLuk += eq.stats.luk;
+            if (eq.stats.crit) eqCrit += eq.stats.crit;
+            if (eq.stats.dodge) eqDodge += eq.stats.dodge;
+            if (eq.stats.hit) eqHit += eq.stats.hit;
+            if (eq.stats.lifesteal) eqLifesteal += eq.stats.lifesteal; // 累加吸血
+        }
+    });
+
+    game.equipment.weapon = game.equippedSlots.weapon ? game.equippedSlots.weapon.name : "無";
+    game.equipment.armor = game.equippedSlots.armor ? game.equippedSlots.armor.name : "無";
+    game.equipment.atkBonus = eqAtk;
+    game.equipment.hpBonus = eqMaxHp;
+
+    game.player.atk = baseAtk + eqAtk;
+    game.player.maxHp = baseMaxHp + eqMaxHp;
+    game.player.def = baseDef + eqDef;
+    game.player.agi = baseAgi + eqAgi;
+    game.player.luk = baseLuk + eqLuk;
+    
+    // 寫入特殊副屬性
+    game.player.critRate = parseFloat((5 + eqCrit).toFixed(1));   
+    game.player.dodgeRate = parseFloat((3 + eqDodge).toFixed(1)); 
+    game.player.hitRate = parseFloat((95 + eqHit).toFixed(1));    
+    game.player.lifesteal = parseFloat((0 + eqLifesteal).toFixed(1)); // 基礎0% + 裝備加成
+
+    if (game.player.hp > game.player.maxHp) game.player.hp = game.player.maxHp;
+
+    window.renderAllPlayerUI();
+};
+
+// 🎨 5. 總渲染大腦（完美刷新全新對齊的屬性與吸血面板）
+window.renderAllPlayerUI = function() {
+    if (!document.getElementById('char-lv')) return;
+
+    // 基礎五大數值
+    document.getElementById('char-lv').innerText = "Lv." + game.player.lv;
+    document.getElementById('char-atk').innerText = game.player.atk;
+    document.getElementById('char-def').innerText = game.player.def;
+    document.getElementById('char-agi').innerText = game.player.agi;
+    document.getElementById('char-luk').innerText = game.player.luk;
+
+    // 第二行大字體進階屬性
+    document.getElementById('stat-hit').innerText = game.player.hitRate;
+    document.getElementById('stat-lifesteal').innerText = game.player.lifesteal; // 吸血渲染
+    document.getElementById('stat-crit').innerText = game.player.critRate;
+    document.getElementById('stat-dodge').innerText = game.player.dodgeRate;
+
+    // 血條與 EXP 進度條
+    document.getElementById('char-hp-text').innerText = `${game.player.hp} / ${game.player.maxHp}`;
+    let hpPercent = Math.max(0, Math.min(100, (game.player.hp / game.player.maxHp) * 100));
+    document.getElementById('char-hp-bar').style.width = hpPercent + "%";
+
+    let expPercent = Math.max(0, Math.min(100, (game.player.exp / game.player.maxExp) * 100));
+    if (document.getElementById('char-exp-bar')) document.getElementById('char-exp-bar').style.width = expPercent + "%";
+    if (document.getElementById('char-exp-text')) document.getElementById('char-exp-text').innerText = `${game.player.exp} / ${game.player.maxExp}`;
+
+	// ====================================================================
+    // 🛡️【精準鎖定核心】刷 8 大穿戴槽（徹底根治 F5 閃爍變字問題）
+    // ====================================================================
+    const slots = ['weapon', 'helmet', 'armor', 'gloves', 'leggings', 'boots', 'cloak', 'ring'];
+    slots.forEach(slot => {
+        const el = document.getElementById(`slot-${slot}`);
+        const nameSpan = document.getElementById(`curr-eq-${slot}`); // 🎯 鎖定內部新 Span
+        
+        if (!el) return;
+        
+        const eq = game.equippedSlots[slot];
+        
+        // 1. 如果有穿裝備
+        if (eq) {
+            // 🛡️ 防閃爍更新：外框只改邊框顏色，不碰裡面的字
+            el.style.borderColor = eq.color + "70";
+            
+            // 🎯 精準只修改後面的文字內容與顏色，前綴（例如 ⚔️ 武器:）穩如泰山
+            if (nameSpan) {
+                nameSpan.innerHTML = `Lv.${eq.lv} ${eq.name}`;
+                nameSpan.style.color = eq.color; // 完美套用裝備品質顏色
+            }
+        } 
+        // 2. 如果沒穿裝備
+        else {
+            el.style.borderColor = "#30363d";
+            if (nameSpan) {
+                nameSpan.innerText = "無";
+                nameSpan.style.color = "#57606a"; // 質感暗灰色
+            }
+        }
+    });
+    // ====================================================================
+
+    // 刷背包
+    const container = document.getElementById('eq-inv-container');
+    document.getElementById('eq-inv-count').innerText = game.eqInv.length;
+    if (game.eqInv.length === 0) {
+        container.innerHTML = `<div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>`;
+        return;
+    }
+
+    let html = "";
+    game.eqInv.forEach(eq => {
+        let stats = [];
+        if (eq.stats.atk) stats.push(`⚔️+${eq.stats.atk}`);
+        if (eq.stats.def) stats.push(`🛡️+${eq.stats.def}`);
+        if (eq.stats.maxHp) stats.push(`🩸+${eq.stats.maxHp}`);
+        if (eq.stats.agi) stats.push(`⚡+${eq.stats.agi}`);
+        if (eq.stats.luk) stats.push(`🍀+${eq.stats.luk}`);
+        if (eq.stats.crit) stats.push(`💥+${eq.stats.crit}%`);
+        if (eq.stats.dodge) stats.push(`🌀+${eq.stats.dodge}%`);
+        if (eq.stats.hit) stats.push(`🎯+${eq.stats.hit}%`);
+        if (eq.stats.lifesteal) stats.push(`🩸吸血+${eq.stats.lifesteal}%`); // 背包顯示
+
+        html += `
+        <div style="background: #0d1117; border: 1px solid ${eq.isEquipped ? eq.color : '#30363d'}; border-radius: 4px; padding: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <div>
+                <div style="font-size: 11px; font-weight: bold; color: ${eq.color};">${eq.icon} Lv.${eq.lv} ${eq.name}</div>
+                <div style="font-size: 9px; color: #8b949e; margin-top: 2px;">${stats.join(' | ')}</div>
+            </div>
+            <div style="display: flex; gap: 4px;">
+                <button onclick="window.toggleEquip('${eq.id}')" style="background: ${eq.isEquipped ? '#30363d' : '#1f6feb'}; color: white; border: none; padding: 3px 6px; border-radius: 3px; cursor: pointer; font-size: 10px;">
+                    ${eq.isEquipped ? '卸下' : '穿戴'}
+                </button>
+                <button onclick="window.sellEquipment('${eq.id}')" style="background: #da3633; color: white; border: none; padding: 3px 6px; border-radius: 3px; cursor: pointer; font-size: 10px;" ${eq.isEquipped ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''}>
+                    賣$${eq.price}
+                </button>
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+};
+
+// 🔄 6. 穿脫控制器
+window.toggleEquip = function(eqId) {
+    const eq = game.eqInv.find(item => item.id === eqId);
+    if (!eq) return;
+    if (eq.isEquipped) {
+        eq.isEquipped = false;
+        if (typeof addLog === 'function') addLog(`📴 卸下了裝備：${eq.name}`, "#adbac7");
+    } else {
+        game.eqInv.forEach(item => { if (item.slot === eq.slot && item.isEquipped) item.isEquipped = false; });
+        eq.isEquipped = true;
+        if (typeof addLog === 'function') addLog(`🛡️ 穿上了裝備：${eq.name}`, "#58a6ff");
+    }
+    window.recalculatePlayerStats();
+    if (typeof saveGame === 'function') saveGame();
+};
+
+// 💰 7. 裝備回收
+window.sellEquipment = function(eqId) {
+    const idx = game.eqInv.findIndex(item => item.id === eqId);
+    if (idx === -1) return;
+    const eq = game.eqInv[idx];
+    if (eq.isEquipped) return;
+
+    game.money = (game.money || 0) + eq.price;
+    if (typeof addLog === 'function') addLog(`💰 賣出 ${eq.name}，獲得資金 +$${eq.price}！`, "#52c41a");
+    game.eqInv.splice(idx, 1);
+
+    if (document.getElementById('txt-money')) document.getElementById('txt-money').innerText = game.money;
+    window.recalculatePlayerStats();
+    if (typeof saveGame === 'function') saveGame();
+};
+
+// 🕒 頁面加載時自動喚醒刷新
+setTimeout(() => { window.recalculatePlayerStats(); }, 400);
+
+// ==========================================
+// 🚀 【全新 RPG 8部位裝備與屬性大腦】（直接加在原有 game 變數下方）- 完結
+// ========================================== 
 
 	// 新增這段：自動根據 cfg 建立所有材料庫存
 	Object.keys(cfg).forEach(type => { game.inv[type] = 0; });
@@ -1111,6 +1593,82 @@ function updatePrice(type) {
 // ==========================================
 
 // ==========================================
+// ⚙️ [UI 總控制] 點擊大標題：真正收起成個 生產線視窗 (下方野外區域完美頂上)
+// ==========================================
+window.toggleAllLines = function(headerElement) {
+    const container = document.getElementById('lines-container');
+    if (!container) return;
+
+    let indicator = headerElement.querySelector('.fold-indicator');
+    
+    // 🔍 自動測量流動高度：動態獲取你當前所有產線撐起來的總高度
+    // 這樣不論你開了 1 條、2 條還是 4 條產線，都能精準展開，不會卡死高度！
+    const originalHeight = container.scrollHeight + "px";
+
+    if (container.style.height === '0px') {
+        // 🔓 展開整個視窗
+        container.style.height = originalHeight; 
+        container.style.borderBottom = '1px solid #30363d'; // 補返條底邊
+        headerElement.style.borderBottomLeftRadius = '0px';  // 標題左下角變直角
+        headerElement.style.borderBottomRightRadius = '0px'; // 標題右下角變直角
+        if (indicator) indicator.innerText = "[➖ 點擊收起]";
+        
+        // 動態排版防卡死：等動畫播完 (0.2秒)，放開高度鎖定，確保未來買新產線時畫面會自動長高
+        setTimeout(() => {
+            if (container.style.height !== '0px') container.style.height = '';
+        }, 200);
+        
+        console.log("📂 整個生產線已展開");
+    } else {
+        // 🔒 收起整個視窗
+        container.style.height = container.scrollHeight + "px"; // 先定死當前高度觸發過渡動畫
+        container.offsetHeight; // 逼瀏覽器刷新渲染
+        
+        container.style.height = '0px';       // 榨乾高度變成 0
+        container.style.overflow = 'hidden';  // 裁切切走所有絕對定位的幽靈工作站
+        container.style.borderBottom = 'none'; // 隱藏底邊防露餡
+        headerElement.style.borderBottomLeftRadius = '12px';  // 整個視窗圓角收尾
+        headerElement.style.borderBottomRightRadius = '12px';
+        if (indicator) indicator.innerText = "💡 點擊展開 [➕]";
+        console.log("📁 整個生產線已完美收起");
+    }
+};
+// ==========================================
+// ⚙️ [UI 總控制] 點擊大標題：真正收起成個 生產線視窗 (下方野外區域完美頂上)
+// ==========================================
+
+// ==========================================
+// 🗼 [UI 總控制] 點擊爬塔標題：絲滑收起爬塔視窗 (絕不閃爍、下方內容完美頂上)
+// ==========================================
+window.toggleTowerWindow = function(headerElement) {
+    const container = document.getElementById('tower-content-wrapper');
+    if (!container) return;
+
+    // 精準抓取獨立出來的 fold-indicator
+    let indicator = headerElement.querySelector('.fold-indicator');
+    const originalHeight = container.scrollHeight + "px";
+
+    if (container.style.height === '0px') {
+        container.style.height = originalHeight;
+        container.style.overflow = '';
+        if (indicator) indicator.innerText = "[➖ 點擊收起]";
+        
+        setTimeout(() => {
+            if (container.style.height !== '0px') container.style.height = '';
+        }, 200);
+    } else {
+        container.style.height = container.scrollHeight + "px";
+        container.offsetHeight; // 逼瀏覽器刷新
+        container.style.height = '0px';
+        container.style.overflow = 'hidden';
+        if (indicator) indicator.innerText = "💡 點擊展開 [➕]";
+    }
+};
+// ==========================================
+// 🗼 [UI 總控制] 點擊爬塔標題：絲滑收起爬塔視窗 (絕不閃爍、下方內容完美頂上)
+// ==========================================
+
+// ==========================================
 // [Script] initFloor 工廠地面與生產線介面初始化
 // 📦 明細或用途：
 // 此函數在遊戲啟動或重置時執行，負責生成所有生產線的 HTML 結構與自動化控制按鈕。
@@ -1143,63 +1701,69 @@ function updatePrice(type) {
             const canBuy = (i === 1) || game.unlocked[i - 1];
             
             // 3. 開始拼接產線的 HTML 字符串
-container.innerHTML += `
-    <div class="line-group" id="line-group-${i}">
-        <div class="line-label">生產線 Line ${LINE_CONFIGS[i].n} (效率x${LINE_CONFIGS[i].m.toFixed(1)})</div>
-        
-        <div id="lock-${i}" class="locked-line" style="${game.unlocked[i] ? 'display:none' : 'display:flex'}">
-            <button id="buy-line-btn-${i}" class="action-btn" 
-                style="width:180px; transition: all 0.3s;"
-                onclick="unlockLine(${i})">
-                載入中...
-            </button>
-        </div>
+		container.innerHTML += `
+            <div class="line-group" id="line-group-${i}">
+                <div class="line-label">生產線 Line ${LINE_CONFIGS[i].n} (效率x${LINE_CONFIGS[i].m.toFixed(1)})</div>
 
+                <div id="lock-${i}" class="locked-line" style="${game.unlocked[i] ? 'display:none' : 'display:flex'}">
+                    <button id="buy-line-btn-${i}" class="action-btn" 
+                        style="width:180px; transition: all 0.3s;"
+                        onclick="unlockLine(${i})">
+                        載入中...
+                    </button>
+                </div>
 
-                    <div class="station" style="left: 10px; width: 220px;">
-                        <div class="status-header" style="color:#f2cc60">📦 訂單管理</div>
-                        <div id="order-list-${i}" class="order-container"></div>
-                        <button id="deliver-btn-${i}" class="action-btn btn-green" onclick="processOrder(${i})" disabled>交付訂單</button>
-                    </div>
+                <div class="station" style="left: 10px; width: 220px;">
+                    <div class="status-header" style="color:#f2cc60">📦 訂單管理</div>
+                    <div id="order-list-${i}" class="order-container"></div>
+                    <button id="deliver-btn-${i}" class="action-btn btn-green" onclick="processOrder(${i})" disabled>交付訂單</button>
+                </div>
 
-                    <div class="station" style="left: 245px; width: 280px;">
-                        <div class="status-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 5px;"><span>⚙️ 生產 Agent <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></span>
+                <div class="station" style="left: 245px; width: 280px;">
+                    <div class="status-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 5px;">
+                        <span>⚙️ 生產 Agent <span id="lv-tag-${i}" style="color:#bc8cff">Lv.0</span></span>
                         <button id="auto-btn-${i}" style="color:#000000;" onclick="toggleAuto(${i})">自動化 ($500)</button>
-						</div>
-                        <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">設備健康度</span><span id="dur-text-${i}" style="font-size:10px; font-family:'Share Tech Mono';">100%</span></div>
-                        <div class="durability-box"><div id="dur-fill-${i}" class="dur-fill"></div></div>
-                        
-                        <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">生產進度</span><span id="timer-text-${i}" style="font-size:10px; color:#bc8cff; font-family:'Share Tech Mono';">等待中</span></div>
-                        <div class="progress-container" id="prog-cont-${i}"><div class="progress-bar" id="prog-bar-${i}"></div></div>
-                        
-                        <div style="display:flex; width:100%; gap:8px; margin-top:auto;">
-                            <div style="flex:1;">
-                                <div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">速度: <span id="speed-val-${i}">0</span>s</div>
-                                <button id="up-btn-${i}" class="action-btn btn-blue" onclick="upgradeLine(${i})">升級 <span id="up-cost-${i}" class="price-tag">$0</span></button>
-                            </div>
-                            <div style="flex:1;">
-                                <div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">維護設備</div>
-                                <button id="repair-btn-${i}" class="action-btn btn-red" onclick="repair(${i})">保養 <span class="price-tag">$30</span></button>
-                            </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">設備健康度</span><span id="dur-text-${i}" style="font-size:10px; font-family:'Share Tech Mono';">100%</span></div>
+                    <div class="durability-box"><div id="dur-fill-${i}" class="dur-fill"></div></div>
+                    
+                    <div style="display:flex; justify-content:space-between; width:100%"><span class="sub-label">生產進度</span><span id="timer-text-${i}" style="font-size:10px; color:#bc8cff; font-family:'Share Tech Mono';">等待中</span></div>
+                    <div class="progress-container" id="prog-cont-${i}"><div class="progress-bar" id="prog-bar-${i}"></div></div>
+                    
+                    <div style="display:flex; width:100%; gap:8px; margin-top:auto;">
+                        <div style="flex:1;">
+                            <div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">速度: <span id="speed-val-${i}">0</span>s</div>
+                            <button id="up-btn-${i}" class="action-btn btn-blue" onclick="upgradeLine(${i})">升級 <span id="up-cost-${i}" class="price-tag">$0</span></button>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="text-align:center; font-size:9px; color:#8b949e; margin-bottom:2px;">維護設備</div>
+                            <button id="repair-btn-${i}" class="action-btn btn-red" onclick="repair(${i})">保養 <span class="price-tag">$30</span></button>
                         </div>
                     </div>
-
-                    <div class="station" style="left: 540px; width: 170px; align-items:center; justify-content:center;">
-                        <div class="status-header" style="color:#58a6ff; position:absolute; top:8px;">🔍 質量檢測</div>
-                        <div id="qa-status-${i}" style="font-size: 14px; font-weight:bold; color:#8b949e; text-align:center;">⌛ 待機中...</div>
-                    </div>
-
-                    <div class="station" style="left: 725px; width: 285px; border-style: dashed; background:none; align-items:center; justify-content:center;">
-                        <div class="status-header" style="color:#3fb950; position:absolute; top:8px;">🏁 物流接收</div>
-                        <div id="delivery-info-${i}" style="font-size: 11px; color: #8b949e; text-align:center; margin-top: 45px;">等待交付產品...</div>
-                    </div>
                 </div>
-            `;
+
+                <div class="station" style="left: 540px; width: 170px; align-items:center; justify-content:center;">
+                    <div class="status-header" style="color:#58a6ff; position:absolute; top:8px;">🔍 質量檢測</div>
+                    <div id="qa-status-${i}" style="font-size: 14px; font-weight:bold; color:#8b949e; text-align:center;">⌛ 待機中...</div>
+                </div>
+
+                <div class="station" style="left: 725px; width: 285px; border-style: dashed; background:none; align-items:center; justify-content:center;">
+                    <div class="status-header" style="color:#3fb950; position:absolute; top:8px;">🏁 物流接收</div>
+                    <div id="delivery-info-${i}" style="font-size: 11px; color: #8b949e; text-align:center; margin-top: 45px;">等待交付產品...</div>
+                </div>
+            </div>
+        `;
 
             // 4. 在頂部自動化面板添加該產線的控制按鈕
             autoControls.innerHTML += `<button id="auto-btn-${i}" class="action-btn" style="background:#30363d" onclick="toggleAuto(${i})"> Line ${i} 自動化 ($500)</button>`;
         }
+			// 🎯 【關鍵核心追加：安全防爆位】
+			// 當所有 Line 按鈕都排好隊之後，我們用強力的內聯插入，把「總開關」一巴掌拍在最前面！
+			if (autoControls && !document.getElementById('btn-toggle-all-lines')) {
+			autoControls.innerHTML = `<button id="btn-toggle-all-lines" class="action-btn" style="background:#1f6feb; color:white; font-weight:bold; margin-right:15px; border:1px solid #388bfd;" onclick="window.toggleAllLines(this)">📁 收起整個生產線</button>` + autoControls.innerHTML;
+		}
     }
+	
 // ==========================================
 // [Script] initFloor 工廠地面與產線介面初始化 - 完結
 // ==========================================
@@ -1252,13 +1816,20 @@ function updateUI() {
     const rpValEl = document.getElementById('rp-val');
     if(rpValEl) rpValEl.innerText = (game.researchPoints || 0).toLocaleString();
     
-    // 2. 更新舊工廠基本資源庫存與商店價格
+	// 2. 🚀【全新全自動單一數據源：res- 動態同步鎖與商店價格更新】
+    // 說明：徹底放棄舊的 -val 格式，以後不論 cfg 怎麼加新材料，一隻字都不用改！
+    if (!game.inv) game.inv = {};
+
     Object.keys(cfg).forEach(t => {
-        const valEl = document.getElementById(`${t}-val`);
-        if(valEl) valEl.innerText = game.inv[t] || 0;
-    
+        // 🎯 1. 核心自動更新：不管新舊材料，只要 HTML 叫 res-xxx 就會自動狂刷
+        const resEl = document.getElementById(`res-${t}`);
+        if (resEl && game.inv[t] !== undefined) {
+            resEl.innerText = game.inv[t];
+        }
+        
+        // 💰 2. 商店價格更新：保留原本的商店買價同步，確保商店功能正常
         const btnP = document.getElementById(`btn-p-${t}`);
-        if(btnP) btnP.innerText = cfg[t].buy;
+        if (btnP) btnP.innerText = cfg[t].buy;
     });
 
     // 3. 循環更新每一條生產線
@@ -1371,13 +1942,14 @@ function updateUI() {
     // ==========================================
     if (!game.inv) game.inv = {};
 
-    if (document.getElementById('res-herbs'))     document.getElementById('res-herbs').innerText     = game.inv.herbs || 0;
-    if (document.getElementById('res-ore'))       document.getElementById('res-ore').innerText       = game.inv.ore || 0;
-    if (document.getElementById('res-potion'))    document.getElementById('res-potion').innerText    = game.inv.potion || 0;
-    if (document.getElementById('res-iron'))      document.getElementById('res-iron').innerText      = game.inv.iron_bar || 0;
-    if (document.getElementById('res-slime'))     document.getElementById('res-slime').innerText     = game.inv.slime || 0;
-    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar || 0;
-
+	// 🎯 自動幫你遍歷所有新舊材料
+	Object.keys(cfg).forEach(key => {
+		const resEl = document.getElementById(`res-${key}`);
+		if (resEl && game.inv[key] !== undefined) {
+			resEl.innerText = game.inv[key];
+		}
+	});
+	
     // 🔄 執行其他子系統 UI 同步
     if (typeof updateAdventureUI === 'function') updateAdventureUI();
     if (typeof updateCharacterUI === 'function') updateCharacterUI();
@@ -1496,6 +2068,35 @@ function renderDashboard() {
 // ==========================================
 // [Script] renderDashboard 動態儀表板渲染 - 完結
 // ==========================================
+
+// ==========================================
+// 📐 [UI 互動層] 萬用遊戲視窗一鍵收起/展開引擎
+// ==========================================
+window.toggleGameWindow = function(headerElement) {
+    // 鎖定這個標題下方的「內容包裹區」
+    const content = headerElement.nextElementSibling;
+    if (!content) return;
+
+    // 切換顯示狀態
+    let isHidden = false;
+    if (content.style.display === 'none') {
+        content.style.display = '';
+        isHidden = false;
+    } else {
+        content.style.display = 'none';
+        isHidden = true;
+    }
+
+    // 刷新右邊的小符號
+    let indicator = headerElement.querySelector('.fold-indicator');
+    if (indicator) {
+        indicator.innerText = isHidden ? "[➕ 點擊展開]" : "[➖]";
+    }
+};
+// ==========================================
+// 📐 [UI 互動層] 萬用遊戲視窗一鍵收起/展開引擎 - 完結
+// ==========================================
+
 	/**
 	* ✨ 新功能：動態生成頂部庫存顯示
 	* 遍歷 cfg 對象，為每一種材料創建顯示方塊
@@ -1826,8 +2427,9 @@ function toggleAdmin() {
             Object.keys(cfg).forEach(t => {
                 const row = document.createElement('div');
                 row.className = 'admin-row';
+				
                 // 這裡加入了更清楚的 Label，方便你修改「收購價」與「基礎利潤/價格」
-                row.innerHTML = `
+				row.innerHTML = `
                     <span style="min-width:60px; font-weight:bold; color:#c9d1d9;">${cfg[t].n}</span>
                     <div style="display:flex; align-items:center; gap:5px;">
                         <span style="font-size:10px; color:#8b949e;">買入:</span>
@@ -1839,7 +2441,7 @@ function toggleAdmin() {
                             style="width:50px;" value="${cfg[t].r || 0}" onchange="updatePrice('${t}')">
                     </div>
                     <button class="action-btn btn-blue" style="width: 50px; height:28px; font-size:12px;" 
-                        onclick="inject('${t}', 100)">+100</button>
+                        onclick="if(typeof inject==='function') inject('${t}', 100); if(typeof renderAllPlayerUI==='function') renderAllPlayerUI(); if(typeof updateUI==='function') updateUI();">+100</button>
                 `;
                 resContainer.appendChild(row);
             });
@@ -2017,7 +2619,7 @@ function loadGame() {
                 const elExpBar = document.getElementById('char-exp-bar');
                 const elExpText = document.getElementById('char-exp-text');
                 if (elExpBar) elExpBar.style.width = `${expPercent}%`;
-                if (elExpText) elExpText.innerText = `${game.player.exp}/${game.player.maxExp}`;
+                if (elExpText) elExpText.innerText = `${game.player.exp} / ${game.player.maxExp}`;
 
                 // 3. 刷新 HP 進度條
                 const hpPercent = Math.min(100, Math.max(0, (game.player.hp / game.player.maxHp) * 100));
@@ -2470,7 +3072,7 @@ function craftPotion() {
 // ==========================================
 
 // ==========================================
-// ⚔️ [功能核心層] 自動打怪、傷害扣減與升級系統邏輯開首 (資料統一配置版)
+// ⚔️ [功能核心層] 自動打怪、傷害扣減、吸血與升級系統邏輯 (資料統一配置版)
 // ==========================================
 
 /**
@@ -2559,11 +3161,12 @@ function startBattle() {
 }
 
 /**
- * 🎁 戰鬥完結：扣減 HP、隨機掉落、發放經驗值與升級機制 (資料驅動加固版)
+ * 🎁 戰鬥完結：防禦減傷、吸血回血、扣減 HP、隨機掉落、發放經驗值與升級機制
  */
 function finishBattle(monsterType) {
     // 1. 安全防禦初始化
     if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5 };
+    if (game.player.lifesteal === undefined) game.player.lifesteal = 0; // 確保吸血率存在
     if (!game.inv) game.inv = {};
 
     // 📥 讀取怪物統一配置
@@ -2577,11 +3180,16 @@ function finishBattle(monsterType) {
     let curHp = game.player.hp || 100;
     let maxHp = game.player.maxHp || 100;
     let curAtk = game.player.atk || 10;
+    let curDef = game.player.def || 5;
+    let curLifesteal = game.player.lifesteal || 0;
 
-    // 2. 🚀【核心修改】直接從配置讀取數據，徹底砍掉所有 if-else
-    let dmg = monster.dmg; 
+    // 2. 戰鬥核心數據計算
+    let baseDmg = monster.dmg; 
     let expGained = monster.exp;
     let logMsg = "";
+
+    // 🛡️ 引入防禦減傷（怪物傷害 - 玩家防禦力，最少受 1 點傷害）
+    let finalDmg = Math.max(1, baseDmg - curDef);
 
     // 計算隨機掉落
     let currentDropAmt = game.inv[monster.dropKey] || 0;
@@ -2593,14 +3201,31 @@ function finishBattle(monsterType) {
     }
     game.inv[monster.dropKey] = currentDropAmt;
 
-    // 3. 扣減角色血量
-    curHp = Math.max(0, curHp - dmg);
+    // 3. 🩸 核心加入：計算攻擊吸血回血量
+    let healAmount = 0;
+    let lifestealLog = "";
+    if (curLifesteal > 0) {
+        // 吸血量 = 玩家當前總攻擊力 × 吸血百分比
+        healAmount = Math.floor(curAtk * (curLifesteal / 100));
+        if (healAmount > 0) {
+            lifestealLog = ` 🩸 觸發吸血：回復了 ${healAmount} 點生命值！`;
+        }
+    }
+
+    // 4. 結算生命值變動（先扣怪物傷害，再加上吸血回血，但不能過低或過高）
+    curHp = curHp - finalDmg; // 扣血
+    if (curHp > 0 && healAmount > 0) {
+        curHp = Math.min(maxHp, curHp + healAmount); // 沒死就吸血回血
+    }
+    curHp = Math.max(0, curHp); // 防止血量變負數
+
+    // 輸出戰鬥日誌
     if (typeof addLog === 'function') {
-        addLog(`⚔️ 戰鬥結束：受到傷害 -${dmg} 點。`, "#ff4d4d");
+        addLog(`⚔️ 戰鬥結束：受到傷害 -${finalDmg} 點（防禦減免 ${curDef} 點）。${lifestealLog}`, "#ff4d4d");
         addLog(logMsg, "#52c41a");
     }
 
-    // 4. 計算經驗增長與升級邏輯
+    // 5. 計算經驗增長與升級邏輯
     curExp += expGained;
     if (typeof addLog === 'function') addLog(`✨ 獲得經驗值 +${expGained} 點。`, "#1f6feb");
 
@@ -2610,21 +3235,23 @@ function finishBattle(monsterType) {
         maxExp = Math.floor(maxExp * 1.3);
         maxHp += 15;
         curAtk += 3;
+        curDef += 2; // 升級順便加點防禦
         curHp = maxHp; // 升級回滿血
         if (typeof addLog === 'function') {
             addLog(`🎉 恭喜你升級了！目前等級：Lv.${curLv}！屬性獲得全面提升！`, "#f2cc60");
         }
     }
 
-    // 5. 🚀【鎖定核心變數】寫回全域物件
+    // 6. 🚀【鎖定核心變數】寫回全域物件
     game.player.exp = curExp;
     game.player.lv = curLv;
     game.player.maxExp = maxExp;
     game.player.hp = curHp;
     game.player.maxHp = maxHp;
     game.player.atk = curAtk;
+    game.player.def = curDef;
 
-    // 6. 重置戰鬥 UI 按鈕與狀態
+    // 7. 重置戰鬥 UI 按鈕與狀態
     if (game.battle) game.battle.isFighting = false;
     const barContainer = document.getElementById('battle-progress-bar');
     const status = document.getElementById('battle-status');
@@ -2638,13 +3265,15 @@ function finishBattle(monsterType) {
         btnBattle.style.cursor = 'pointer';
     }
 
-    // 7. ⚡【UI 精準動態渲染】根據資料庫自動同步 HTML 數字面版
+    // 8. ⚡【UI 精準動態渲染】根據資料庫自動同步 HTML 數字面版
     const itemEl = document.getElementById(monster.elementId);
     if (itemEl) itemEl.innerText = game.inv[monster.dropKey] || 0;
 
-    // 渲染角色屬性面版
+    // 渲染角色屬性面版（包含在先前寫好的 renderAllPlayerUI() 裡會更齊全，這裡留著做雙重保障）
     if (document.getElementById('char-atk')) document.getElementById('char-atk').innerText = curAtk;
+    if (document.getElementById('char-def')) document.getElementById('char-def').innerText = curDef;
     if (document.getElementById('char-lv')) document.getElementById('char-lv').innerText = curLv;
+    if (document.getElementById('stat-lifesteal')) document.getElementById('stat-lifesteal').innerText = curLifesteal;
     
     // 渲染血條
     const hpPercent = Math.min(100, Math.max(0, (curHp / maxHp) * 100));
@@ -2656,7 +3285,8 @@ function finishBattle(monsterType) {
     if (document.getElementById('char-exp-bar')) document.getElementById('char-exp-bar').style.width = `${expPercent}%`;
     if (document.getElementById('char-exp-text')) document.getElementById('char-exp-text').innerText = `${curExp} / ${maxExp}`;
 
-    // 8. ⭐【全域同步與自動存檔】
+    // 9. ⭐【全域同步與自動存檔】
+    if (typeof renderAllPlayerUI === 'function') renderAllPlayerUI(); // 呼叫先前寫好的大渲染刷新全身裝備與吸血率
     if (typeof updateUI === 'function') updateUI();
     if (typeof updateBattleUI === 'function') updateBattleUI();
     if (typeof updateAdventureUI === 'function') updateAdventureUI();
@@ -2668,7 +3298,7 @@ function finishBattle(monsterType) {
 // ==========================================
 
 // ==========================================
-// 🧪 [功能核心層] 冒險者使用藥水回血系統邏輯開首 (防回彈終極加固版)
+// 🧪 [功能核心層] 冒險者使用藥水回血系統邏輯 (徹底根除0血+150 Bug完美修正版)
 // ==========================================
 /**
  * 🧪 冒險者使用生命藥水補血
@@ -2687,15 +3317,15 @@ window.useHealthPotion = function() {
 
     // 3. 🚀【單一數據源】直接撈取背包中最真實的藥水庫存
     let potionAmt = game.inv.potion || 0;
-	
+    
     // 4. 判定藥水數量是否足夠
     if (potionAmt <= 0) {
         if (typeof addLog === 'function') addLog("🚫 補血失敗：你包包裡面已經冇晒【生命藥水】喇！快啲去提煉啦。", "#ff4d4d");
         return;
     }
 
-    // 5. 判定角色血量是否已經滿了
-    let curHp = game.player.hp || 100;
+    // 5. 判定角色血量是否已經滿了 (🔥 修正：0血時，curHp 必須是 0，絕對不能用 || 100 預設)
+    let curHp = (game.player.hp !== undefined) ? game.player.hp : 100;
     let maxHp = game.player.maxHp || 100;
 
     if (curHp >= maxHp) {
@@ -2706,11 +3336,11 @@ window.useHealthPotion = function() {
     // 6. 🛠️【地毯式扣數】庫存減 1，統一維護單一變數
     potionAmt--;
     game.inv.potion = potionAmt;
-	
+    
     // 即時將扣除後的數字寫回 HTML 畫面
     potionEl.innerText = potionAmt;
 
-    // 7. 💚 執行回血邏輯 (每瓶固定回復 50 點 HP)
+    // 7. 💚 執行回血邏輯 (每瓶固定回復 50 點 HP，絕對不超過皇家神裝最大上限)
     const healAmount = 50;
     const oldHp = curHp;
     curHp = Math.min(maxHp, curHp + healAmount);
@@ -2718,6 +3348,11 @@ window.useHealthPotion = function() {
 
     // 同步把最新血量寫回核心變數
     game.player.hp = curHp;
+
+    // 🔥【關鍵對接】如果天梯/戰鬥狀態開啟緊，強制將戰鬥狀態血量一併同步拉回陽間！
+    if (game.stats && game.stats.hp !== undefined) {
+        game.stats.hp = Math.min(maxHp, game.stats.hp + healAmount);
+    }
 
     if (typeof addLog === 'function') {
         addLog(`🧪 咕嚕咕嚕...你喝下了一瓶初級生命藥水！生命值回復了 ${actualHeal} 點！(剩餘: ${potionAmt} 瓶)`, "#3fb950");
@@ -2732,13 +3367,17 @@ window.useHealthPotion = function() {
     if (elHpText) elHpText.innerText = `${Math.floor(curHp)} / ${maxHp}`;
 
     // 9. 💾 全局同步更新所有 UI 與自動存檔
+    // 🔥【強制喚醒總大腦】讓天梯、左邊冒險者大面板全部即時重繪
+    if (typeof window.renderAllPlayerUI === 'function') window.renderAllPlayerUI();
+    if (typeof updatePlayerMainHPUI === 'function') updatePlayerMainHPUI();
+    
     if (typeof updateAdventureUI === 'function') updateAdventureUI();
     if (typeof updateUI === 'function') updateUI();
     if (typeof updateBattleUI === 'function') updateBattleUI();
     if (typeof saveGame === 'function') saveGame();
 };
 // ==========================================
-// 🧪 [功能核心層] 冒險者使用藥水回血系統邏輯結尾
+// 🧪 [功能核心層] 冒險者使用藥水回血系統邏輯 - 完結
 // ==========================================
 
 // ==========================================
@@ -2796,10 +3435,10 @@ window.startMeltingIron = function() {
         if (elapsed >= totalSteps) {
             clearInterval(meltTimer);
             
-            // 🔥【關鍵修正：與鐵匠鋪對齊，直接發放到統一的 iron_bar 變數】
-            let curIron = game.inv.iron_bar || 0;
+            // 🔥【關鍵修正：與鐵匠鋪對齊，直接發放到統一的 ironbar 變數】
+            let curIron = game.inv.ironbar || 0;
             curIron += 1;
-            game.inv.iron_bar = curIron;
+            game.inv.ironbar = curIron;
 			
             // 重置熔煉爐狀態
             window.isMeltingIron = false;
@@ -2810,8 +3449,8 @@ window.startMeltingIron = function() {
             if (typeof addLog === 'function') addLog("🔥 熔煉成功！消耗 原礦 x3 獲得 【⚙️ 鐵錠 x1】！", "#f2cc60");
 
             // ⭐【強行點對點刷新新庫存】
-            if (document.getElementById('res-iron_bar')) {
-                document.getElementById('res-iron_bar').innerText = game.inv.iron_bar;
+            if (document.getElementById('res-ironbar')) {
+                document.getElementById('res-ironbar').innerText = game.inv.ironbar;
             }
 			
             // 全局同步更新 UI 與存檔
@@ -2832,142 +3471,85 @@ window.startMeltingIron = function() {
 /**
  * 👁️ 選擇不同裝備時，即時更新下方所需的材料文字提示
  */
-function updateForgePreview() {
-    const type = document.getElementById('craft-eq-select').value;
-    const reqEl = document.getElementById('forge-req-text');
-    if (!reqEl) return;
-
-    if (type === 'ironSword') {
-        reqEl.innerHTML = `需求：<span style="color:#ff7b72;">⚙️ 鐵錠 x10</span> + <span style="color:#a5d6ff;">🧪 黏液 x3</span>`;
-    } else if (type === 'slimeArmor') {
-        reqEl.innerHTML = `需求：<span style="color:#ff7b72;">⚙️ 鐵錠 x8</span> + <span style="color:#ff7b72;">👺 哥布林耳 x4</span>`;
-    }
-}
-
-/**
- * 🔨 同步更新鐵匠鋪按鈕與已穿戴裝備狀態
- */
-function updateForgeUI() {
-    // 安全防禦
-    if (!game.equipment) game.equipment = { weapon: "無", armor: "無", atkBonus: 0, hpBonus: 0 };
-    if (!game.inv) game.inv = {};
-
-    // 1. 更新當前已穿戴的裝備名稱與加成數值
-    if (document.getElementById('eq-weapon')) document.getElementById('eq-weapon').innerText = game.equipment.weapon;
-    if (document.getElementById('eq-armor')) document.getElementById('eq-armor').innerText = game.equipment.armor;
-    
-    if (document.getElementById('eq-atk-bonus')) {
-        document.getElementById('eq-atk-bonus').innerText = game.equipment.atkBonus > 0 ? `(+${game.equipment.atkBonus})` : "";
-    }
-    if (document.getElementById('eq-hp-bonus')) {
-        document.getElementById('eq-hp-bonus').innerText = game.equipment.hpBonus > 0 ? `(+${game.equipment.hpBonus})` : "";
-    }
-
-    // 2. 打造成本即時判定與按鈕亮滅控制
-    const type = document.getElementById('craft-eq-select')?.value;
-    const btn = document.getElementById('btn-forge-eq');
-    if (!btn) return;
-
-    // 📥 【單一數據源】直接認準乾淨的背包變數
-    const ironAmt = game.inv.iron_bar || 0; 
-    const slimeAmt = game.inv.slimeGlow || 0;
-    const goblinAmt = game.inv.goblinEar || 0;
-
-    let canCraft = false;
-    if (type === 'ironSword') {
-        canCraft = (ironAmt >= 10 && slimeAmt >= 3);
-    } else if (type === 'slimeArmor') {
-        canCraft = (ironAmt >= 8 && goblinAmt >= 4);
-    }
-
-    // 3. 動態修正文字顏色
-    const reqTextEl = document.getElementById('forge-req-text');
-    if (reqTextEl) {
-        if (type === 'ironSword') {
-            const ironColor = ironAmt >= 10 ? "#3fb950" : "#ff7b72";
-            const slimeColor = slimeAmt >= 3 ? "#3fb950" : "#ff7b72";
-            reqTextEl.innerHTML = `需求：<span style="color:${ironColor};">⚙️ 鐵錠 x10</span> + <span style="color:${slimeColor};">🧪 黏液 x3</span> (當前鐵錠: ${ironAmt}, 黏液: ${slimeAmt})`;
-        } else if (type === 'slimeArmor') {
-            const ironColor = ironAmt >= 8 ? "#3fb950" : "#ff7b72";
-            const goblinColor = goblinAmt >= 4 ? "#3fb950" : "#ff7b72";
-            reqTextEl.innerHTML = `需求：<span style="color:${ironColor};">⚙️ 鐵錠 x8</span> + <span style="color:${goblinColor};">👺 哥布林耳 x4</span> (當前鐵錠: ${ironAmt}, 耳朵: ${goblinAmt})`;
-        }
-    }
-
-    // 4. 按鈕外觀與狀態控制
-    btn.disabled = !canCraft;
-    btn.style.opacity = canCraft ? "1" : "0.5";
-    btn.style.cursor = canCraft ? "pointer" : "not-allowed";
-    btn.style.background = canCraft ? "#ff9b30" : "#21262d";
-}
-
-/**
- * 🔨 執行裝備鍛造與穿戴
- */
 function craftEquipment() {
     const type = document.getElementById('craft-eq-select').value;
     
-    if (!game.equipment) game.equipment = { weapon: "無", armor: "無", atkBonus: 0, hpBonus: 0 };
     if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10 };
+    
+    // 🔥【核心安全鎖】確保你的核心背包陣列存在，防爆
+    if (!game.eqInv) game.eqInv = [];
 
-    // 讀取當前最真實的背包核心數值
-    const ironAmt = game.inv.iron_bar || 0;
+    // 讀取材料數值
+    const ironAmt = game.inv.ironbar || 0;
     const slimeAmt = game.inv.slimeGlow || 0;
     const goblinAmt = game.inv.goblinEar || 0;
 
+    let craftedItem = null;
+
     if (type === 'ironSword') {
         if (ironAmt < 10 || slimeAmt < 3){
-            if (typeof addLog === 'function') addLog("🚫 材料不足！打造鋼鐵大劍需要 鐵錠 x10、史萊姆黏液 x3。", "#ff4d4d");
+            if (typeof addLog === 'function') addLog("🚫 材料不足！打造鐵礦大劍需要 鐵錠 x10、史萊姆黏液 x3。", "#ff4d4d");
             return;
         }
         
         // 🚀【純淨扣數】直接加減唯一核心變數
-        game.inv.iron_bar -= 10;
+        game.inv.ironbar -= 10;
         game.inv.slimeGlow -= 3;
 
-        // 換武器邏輯 (扣除舊加成，換上新加成)
-        game.player.atk = (game.player.atk || 10) - (game.equipment.atkBonus || 0); 
-        game.equipment.weapon = "鋼鐵大劍";
-        game.equipment.atkBonus = 15;
-        game.player.atk += 15;
+        // 📦 生成裝備資料包（配合你原本的裝備屬性結構）
+        craftedItem = {
+            id: "ironSword_" + Date.now(), // 唯一實例 ID 防重疊
+            templateId: "ironSword",
+            name: "鐵礦大劍",
+            type: "weapon",               // 裝備部位
+            icon: "⚔️",
+            stats: { atk: 15 },           // 自帶屬性
+            isEquipped: false             // 預設未穿戴
+        };
 
-        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x10、黏液 x3 打造了【⚔️ 鋼鐵大劍】！攻擊力大幅提升 15 點！", "#ff9b30");
+        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x10、黏液 x3 打造了【⚔️ 鐵礦大劍】！已放入儲存背包。", "#ff9b30");
 
     } else if (type === 'slimeArmor') {
         if (ironAmt < 8 || goblinAmt < 4) {
             if (typeof addLog === 'function') addLog("🚫 材料不足！打造史萊姆輕甲需要 鐵錠 x8、哥布林耳 x4。", "#ff4d4d");
             return;
         }
-		
+        
         // 🚀【純淨扣數】直接加減唯一核心變數
-        game.inv.iron_bar -= 8;
+        game.inv.ironbar -= 8;
         game.inv.goblinEar -= 4;
 
-        // 換防具邏輯 (扣除舊加成，換上新加成)
-        game.player.maxHp = (game.player.maxHp || 100) - (game.equipment.hpBonus || 0);
-        game.equipment.armor = "史萊姆輕甲";
-        game.equipment.hpBonus = 50;
-        game.player.maxHp += 50;
+        // 📦 生成裝備資料包
+        craftedItem = {
+            id: "slimeArmor_" + Date.now(),
+            templateId: "slimeArmor",
+            name: "史萊姆輕甲",
+            type: "armor",
+            icon: "🛡️",
+            stats: { hp: 50 },            // 自帶屬性
+            isEquipped: false
+        };
 
-		// 4. 【安全加固】確保因為脫裝備導致 maxHp 變小時，目前血量不會超過上限即可
-		if (game.player.hp > game.player.maxHp) {
-		game.player.hp = game.player.maxHp;
-		}
-
-        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x8、哥布林耳 x4 打造了【🛡️ 史萊姆輕甲】！最大生命值上限提升 50 點！", "#ff9b30");
+        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x8、哥布林耳 x4 打造了【🛡️ 史萊姆輕甲】！已放入儲存背包。", "#ff9b30");
     }
 
-	// ====================================================================
-    // ⚡【全自動 UI 強制同步鎖】直接取代原本錯誤的手動 ID 點名更新！
+    // 🚀【精準注入】將打造好的新裝備推進你真正用來刷背包的變數！
+    if (craftedItem) {
+        game.eqInv.push(craftedItem);
+    }
+
     // ====================================================================
-    Object.keys(cfg).forEach(key => {
-        const el = document.getElementById(`res-${key}`);
-        if (el && game.inv && game.inv[key] !== undefined) {
-            el.innerText = game.inv[key];
-        }
-    });
+    // ⚡【UI 同步鎖】直接更新材料顯示
     // ====================================================================
-	
+    if (typeof cfg !== 'undefined') {
+        Object.keys(cfg).forEach(key => {
+            const el = document.getElementById(`res-${key}`);
+            if (el && game.inv && game.inv[key] !== undefined) {
+                el.innerText = game.inv[key];
+            }
+        });
+    }
+    
     // 同步刷新角色狀態欄數據
     if (document.getElementById('char-atk')) document.getElementById('char-atk').innerText = game.player.atk;
     
@@ -2975,13 +3557,18 @@ function craftEquipment() {
     if (document.getElementById('char-hp-bar'))  document.getElementById('char-hp-bar').style.width = `${hpPercent}%`;
     if (document.getElementById('char-hp-text')) document.getElementById('char-hp-text').innerText = `${Math.floor(game.player.hp)} / ${game.player.maxHp}`;
 
+    // 🔄 呼叫刷新背包與渲染函數，讓右下角背包立刻出現新裝備
+    // （請看看包含你貼的那段「// 刷背包」的整個完整函數叫甚麼名字，下面這幾行會自動嘗試呼叫它）
+    if (typeof renderInventory === 'function') renderInventory();
+    if (typeof renderAllPlayerUI === 'function') renderAllPlayerUI();
+    if (typeof updateForgeUI === 'function') updateForgeUI();
+
     // 💾【全域同步並安全存檔】
     if (typeof updateUI === 'function') updateUI();
     if (typeof updateBattleUI === 'function') updateBattleUI();
-    updateForgeUI();
+    if (typeof updateForgePreview === 'function') updateForgePreview(); // 刷新材料剩餘
     if (typeof saveGame === 'function') saveGame();
 }
-
 // ==========================================
 // 🔨 [功能核心層] 鐵匠鍛造系統邏輯結尾
 // ==========================================
@@ -3005,7 +3592,7 @@ window.modifyMaterialDebug = function(type, amount) {
 
     // ====================================================================
     // 🔒【全自動 UI 強制同步鎖】
-    // 自動遍歷所有 cfg 材料！不管它是 res-iron_bar 定 res-slimeGlow，通通即時刷新！
+    // 自動遍歷所有 cfg 材料！不管它是 res-ironbar 定 res-slimeGlow，通通即時刷新！
     // ====================================================================
     if (typeof cfg !== 'undefined') {
         Object.keys(cfg).forEach(key => {
@@ -3150,7 +3737,7 @@ function calculateOfflineProgress() {
         
         // 🤖 檢查這條產線是否存在，並且是否開啟了「自動化」
         if (line && line.automated) { 
-            let itemType = line.currentItem; // 當前生產線鎖定的物品代碼 (例如 'iron_bar', 'potion')
+            let itemType = line.currentItem; // 當前生產線鎖定的物品代碼 (例如 'ironbar', 'potion')
             
             // 確保這個物品在你的配置表 cfg 內有定義
             if (itemType && typeof cfg !== 'undefined' && cfg[itemType]) {
@@ -3210,6 +3797,574 @@ function calculateOfflineProgress() {
 // 💤 離線掛機收益結算核心系統 (完美對接版) - 完結
 // =================================================================
 
+// ====================================================================
+// 🔨 【0依賴、純乾淨防爆版】鍛造鋪核心控制器
+// ====================================================================
+
+// 📏 1. 鐵錠消耗公式
+function getIronCostInternal(slot, lv) {
+    const baseWeight = { weapon: 5, helmet: 4, armor: 8, gloves: 3, leggings: 5, boots: 4, cloak: 6, ring: 4 };
+    let weight = baseWeight[slot] || 4;
+    return Math.floor(weight + (lv - 1) * (weight * 0.5));
+}
+
+// 🎚️ 2. 掛載滑桿變更事件 (防爆保護)
+window.onForgeSliderChange = function(slot) {
+    try {
+        const slider = document.getElementById(`forge-range-${slot}`);
+        if (!slider) return;
+        const lv = parseInt(slider.value);
+
+        // 安全讀取裝備庫與顏色，如果找不到就用預設值，絕對不崩潰
+        let nameStr = "皇家裝備";
+        let colorStr = "#58a6ff";
+        
+        if (typeof EQ_DB !== 'undefined' && EQ_DB[slot] && EQ_DB[slot].colorTier) {
+            nameStr = EQ_DB[slot].colorTier[lv - 1] || "皇家裝備";
+        }
+        if (typeof TIER_COLORS !== 'undefined' && TIER_COLORS[lv - 1]) {
+            colorStr = TIER_COLORS[lv - 1];
+        }
+
+        const ironCost = getIronCostInternal(slot, lv);
+        const goldCost = lv * lv * 450 + (lv * 200);
+
+        // 刷新 UI
+        if (document.getElementById(`forge-lv-val-${slot}`)) {
+            document.getElementById(`forge-lv-val-${slot}`).innerText = "Lv." + lv;
+        }
+        const nameEl = document.getElementById(`forge-name-${slot}`);
+        if (nameEl) {
+            nameEl.innerText = nameStr;
+            nameEl.style.color = colorStr;
+        }
+        if (document.getElementById(`cost-iron-${slot}`)) {
+            document.getElementById(`cost-iron-${slot}`).innerText = ironCost;
+        }
+        if (document.getElementById(`cost-gold-${slot}`)) {
+            document.getElementById(`cost-gold-${slot}`).innerText = "$" + goldCost;
+        }
+    } catch (err) {
+        console.error("滑桿連動出錯:", err);
+    }
+};
+
+// ⚔️ 3. 實作精準打造與扣料
+window.executeForgeCraft = function(slot) {
+    try {
+        const slider = document.getElementById(`forge-range-${slot}`);
+        if (!slider) return;
+        const lv = parseInt(slider.value);
+
+        const ironCost = getIronCostInternal(slot, lv);
+        const goldCost = lv * lv * 450 + (lv * 200);
+
+        // 🔍 自動適應你的全局變數名稱（相容 game、player 等各種寫法）
+        let targetGame = null;
+        if (typeof game !== 'undefined') targetGame = game;
+        else if (typeof player !== 'undefined') targetGame = player;
+        
+        if (!targetGame) {
+            alert("❌ 錯誤：找不到遊戲全局變數 (game 或 player)！請檢查你的主變數名稱。");
+            return;
+        }
+
+        // 確保內部容器完好
+        if (!targetGame.inv) targetGame.inv = {};
+        if (!targetGame.eqInv) targetGame.eqInv = [];
+
+        // 讀取當前資源（適應你的變數結構）
+        const currentIronbar = targetGame.inv.ironbar || 0;
+        const currentMoney = (targetGame.money !== undefined) ? targetGame.money : (targetGame.gold || 0);
+
+        // ❌ 檢查鐵錠與資金
+        if (currentIronbar < ironCost) {
+            if (typeof addLog === 'function') addLog(`❌ 鍛造失敗：鐵錠不足！需要 ${ironCost} 🧱`, "#ff3333");
+            else alert(`鐵錠不足！需要 ${ironCost} 🧱`);
+            return;
+        }
+        if (currentMoney < goldCost) {
+            if (typeof addLog === 'function') addLog(`❌ 鍛造失敗：資金不足！需要 $${goldCost} 💰`, "#ff3333");
+            else alert(`資金不足！需要 $${goldCost} 💰`);
+            return;
+        }
+
+        // 💰 扣資源
+        targetGame.inv.ironbar -= ironCost;
+        if (targetGame.money !== undefined) targetGame.money -= goldCost;
+        else if (targetGame.gold !== undefined) targetGame.gold -= goldCost;
+
+        // 🔄 刷新資源顯示（相容你原本的資源 UI id）
+        if (document.getElementById('res-ironbar')) document.getElementById('res-ironbar').innerText = targetGame.inv.ironbar;
+        if (document.getElementById('txt-money')) document.getElementById('txt-money').innerText = targetGame.money;
+        if (document.getElementById('player-money')) document.getElementById('player-money').innerText = targetGame.money;
+
+        // 🛠️ 呼叫你的隨機生成引擎
+        if (typeof window.generateEquipmentObject === 'function') {
+            const newEq = window.generateEquipmentObject(slot, lv);
+            if (newEq) {
+                // 脫下同部位的舊裝
+                targetGame.eqInv.forEach(item => {
+                    if (item.slot === slot && item.isEquipped) item.isEquipped = false;
+                });
+                // 自動穿上新裝
+                newEq.isEquipped = true;
+                targetGame.eqInv.push(newEq);
+                
+                if (typeof addLog === 'function') {
+                    addLog(`🛠️ 皇家鐵匠一聲巨響！成功打造【${newEq.icon || ''}${newEq.name}】並已穿戴！`, "#52c41a");
+                }
+            }
+        } else {
+            if (typeof addLog === 'function') addLog(`⚠️ 打造成功，但未偵測到 generateEquipmentObject 函數，請確認裝備生成器名稱。`, "#ffaa00");
+        }
+
+        // 🧮 重新計算屬性與存檔
+        if (typeof window.recalculatePlayerStats === 'function') window.recalculatePlayerStats();
+        if (typeof recalculatePlayerStats === 'function') recalculatePlayerStats();
+        if (typeof saveGame === 'function') saveGame();
+
+    } catch (err) {
+        console.error("執行打造時發生意外崩潰:", err);
+    }
+};
+
+// 🕒 4. 安全延遲初始化
+setTimeout(() => {
+    const slots = ['weapon', 'helmet', 'armor', 'gloves', 'leggings', 'boots', 'cloak', 'ring'];
+    slots.forEach(s => { if (document.getElementById(`forge-range-${s}`)) window.onForgeSliderChange(s); });
+}, 800);
+// ====================================================================
+// 🔨 【0依賴、純乾淨防爆版】鍛造鋪核心控制器 - 完結
+// ====================================================================
+
+// ====================================================================
+// 🗼 【無限爬塔（Infinite Tower）全自動對刀引擎】
+// 🗼 【極致 RPG 全屬性對刀、爆擊、閃避、升級與掉寶天梯引擎】
+// ====================================================================
+
+let towerTimer = null;
+let towerData = {
+    isFighting: false,
+    monster: {
+        name: "",
+        hp: 100,
+        maxHp: 100,
+        atk: 10,
+        def: 5,
+        crit: 5,
+        dodge: 5,
+        hit: 95
+    }
+};
+
+// 📜 爬塔日誌
+function addTowerLog(msg, color = "#8b949e") {
+    const logBox = document.getElementById("tower-combat-log");
+    if (!logBox) return;
+    logBox.innerHTML += `<div style="color: ${color}">&gt; ${msg}</div>`;
+    logBox.scrollTop = logBox.scrollHeight;
+}
+
+// 👹 依層數生成带有全屬性、越來越強的怪物
+function generateTowerMonster() {
+    if (!game.tower) game.tower = { currentLayer: 1, highestLayer: 1 };
+    const layer = game.tower.currentLayer;
+    const isBoss = (layer % 10 === 0);
+    
+    // 怪物屬性隨層數幾何成長
+    let mMaxHp = Math.floor(100 * Math.pow(1.25, layer - 1));
+    let mAtk = Math.floor(12 * Math.pow(1.16, layer - 1));
+    let mDef = Math.floor(4 * Math.pow(1.12, layer - 1));
+    
+    // 怪物戰鬥副屬性隨層數微幅提升 (封頂上限保護)
+    let mCrit = Math.min(50, 5 + Math.floor(layer * 0.8));
+    let mDodge = Math.min(45, 5 + Math.floor(layer * 0.6));
+    let mHit = Math.min(150, 90 + Math.floor(layer * 1));
+
+    if (isBoss) {
+        mMaxHp *= 2.5;
+        mAtk *= 1.6;
+        mDef *= 1.5;
+        mCrit += 10;
+        towerData.monster.name = `👑 第 ${layer} 層·天梯守護王尊`;
+    } else {
+        const pfxs = ["惡魔的", "不朽的", "殘暴的", "異變的", "嗜血的", "虛空的"];
+        const typs = ["鋼鐵傀儡", "深淵獵手", "地獄雙頭犬", "暗黑巫師", "狂暴獸兵"];
+        towerData.monster.name = `Lv.${layer} ${pfxs[layer % pfxs.length]}${typs[Math.floor(Math.random() * typs.length)]}`;
+    }
+
+    towerData.monster.maxHp = mMaxHp;
+    towerData.monster.hp = mMaxHp;
+    towerData.monster.atk = mAtk;
+    towerData.monster.def = mDef;
+    towerData.monster.crit = mCrit;
+    towerData.monster.dodge = mDodge;
+    towerData.monster.hit = mHit;
+
+    // 刷新介面
+    document.getElementById("tower-layer-badge").innerText = `目前: 第 ${layer} 層`;
+    document.getElementById("tower-monster-name").innerText = towerData.monster.name;
+    document.getElementById("tower-monster-name").style.color = isBoss ? "#ff4500" : "#ff7b72";
+    
+    updateTowerMonsterUI();
+}
+
+function updateTowerMonsterUI() {
+    const hp = Math.max(0, towerData.monster.hp);
+    const maxHp = towerData.monster.maxHp;
+    document.getElementById("tower-monster-hp").innerText = `${hp} / ${maxHp}`;
+    document.getElementById("tower-monster-bar").style.width = `${(hp / maxHp) * 100}%`;
+}
+
+// ⚔️ 開始/暫停天梯
+window.toggleTowerMode = function() {
+    // 🚨 檢查血量限制：血量不足 1 滴，或已經死亡就不能開爬！
+    let currentHp = (game.stats && game.stats.hp !== undefined) ? game.stats.hp : game.player.hp;
+    if (currentHp <= 0) {
+        alert("❌ 你已經力竭陣亡或血量不足，請先使用藥水回復生命再戰！");
+        return;
+    }
+
+    if (towerData.isFighting) {
+        window.stopTowerFight();
+        document.getElementById("tower-status").innerText = "暫停挑戰";
+    } else {
+        towerData.isFighting = true;
+        document.getElementById("btn-tower-start").innerText = "⏸️ 暫停爬塔";
+        document.getElementById("btn-tower-start").style.background = "#58a6ff";
+        document.getElementById("btn-tower-retreat").disabled = false;
+        document.getElementById("btn-tower-retreat").style.background = "#da3637";
+        document.getElementById("btn-tower-retreat").style.color = "white";
+        document.getElementById("tower-status").innerText = "激戰中...";
+        document.getElementById("tower-status").style.color = "#ff9b30";
+        
+        if (!game.tower) game.tower = { currentLayer: 1, highestLayer: 1 };
+        if (towerData.monster.hp <= 0 || !towerData.monster.name) {
+            generateTowerMonster();
+        }
+        
+        towerTimer = setInterval(executeTowerTick, 800);
+    }
+};
+
+window.stopTowerFight = function() {
+    towerData.isFighting = false;
+    clearInterval(towerTimer);
+    document.getElementById("btn-tower-start").innerText = "⚔️ 繼續爬塔";
+    document.getElementById("btn-tower-start").style.background = "#ff9b30";
+};
+
+window.retreatFromTower = function() {
+    window.stopTowerFight();
+    if (!game.tower) game.tower = { currentLayer: 1, highestLayer: 1 };
+    game.tower.currentLayer = 1;
+    towerData.monster.name = "";
+    towerData.monster.hp = 0;
+    
+    document.getElementById("btn-tower-start").innerText = "⚔️ 開始自動爬塔";
+    document.getElementById("btn-tower-retreat").disabled = true;
+    document.getElementById("btn-tower-retreat").style.background = "#21262d";
+    document.getElementById("btn-tower-retreat").style.color = "#8b949e";
+    document.getElementById("tower-status").innerText = "已撤退";
+    document.getElementById("tower-layer-badge").innerText = `目前: 第 1 層`;
+    document.getElementById("tower-combat-log").innerHTML = `<div style="color: #ff7b72;">&gt; 已安全撤離，天梯重置回第 1 層。</div>`;
+};
+
+// ⚔️ 核心全屬性對刀邏輯（絕對安全鐵閘與神裝同步版）
+function executeTowerTick() {
+    if (!towerData.isFighting) return;
+
+    // 🚨 【第一道鐵閘】一進來，檢查實時戰鬥血量，沒血立刻強制中斷踢出！
+    let currentHp = (game.stats && game.stats.hp !== undefined) ? game.stats.hp : game.player.hp;
+    if (currentHp <= 0) {
+        if (game.stats) game.stats.hp = 0;
+        game.player.hp = 0;
+        
+        // 🔥 總大腦即時刷新
+        if (typeof window.renderAllPlayerUI === 'function') window.renderAllPlayerUI();
+        if (typeof updatePlayerMainHPUI === 'function') updatePlayerMainHPUI();
+        
+        addTowerLog(`❌ 你在第 ${game.tower.currentLayer} 層傷重倒地！天梯已重置！`, "#da3637");
+        window.retreatFromTower();
+        return;
+    }
+
+    // ⚔️ 1. 玩家回合：精準提取你全身皇家神裝加成後的真實副屬性名字
+    let pAtk = game.player.atk;                     // 基礎 + 裝備攻擊力 (如 177)
+    let pDef = game.player.def;                     // 基礎 + 裝備防禦力
+    let pCrit = game.player.critRate || 5;          // 🎯 精準對接大腦爆擊率
+    let pDodge = game.player.dodgeRate || 3;         // 🎯 🔥 精準對接大腦 13.8% 閃避率！
+    let pHit = game.player.hitRate || 95;           // 🎯 精準對接大腦 100% 命中率
+    let pLifesteal = game.player.lifesteal || 0;    // 🎯 精準對接大腦 60.8% 吸血率！
+    let pLuck = game.player.luk || game.player.luck || 10; // 幸運值
+
+    let m = towerData.monster;
+
+    // 🎯 【玩家命中判定】玩家命中 (100%) - 怪物閃避
+    let pHitChance = Math.max(20, Math.min(100, pHit - m.dodge));
+    if (Math.random() * 100 > pHitChance) {
+        addTowerLog(`💨 你的猛烈攻擊被 ${m.name} 輕巧閃避了！`, "#8b949e");
+    } else {
+        // 💥 計算基礎傷害與爆擊
+        let isPCrit = (Math.random() * 100 < pCrit);
+        let dmgToM = Math.max(1, pAtk - Math.floor(m.def * 0.6));
+        if (isPCrit) dmgToM = Math.floor(dmgToM * 2.0);
+
+        m.hp -= dmgToM;
+
+        // 🩸 攻吸血發動 (精準幫雙層血量同步回血)
+        let heal = 0;
+        if (pLifesteal > 0) {
+            heal = Math.floor(dmgToM * (pLifesteal / 100));
+            let maxHp = (game.stats && game.stats.maxHp !== undefined) ? game.stats.maxHp : game.player.maxHp;
+            
+            game.player.hp = Math.min(game.player.maxHp, game.player.hp + heal);
+            if (game.stats && game.stats.hp !== undefined) {
+                game.stats.hp = Math.min(maxHp, game.stats.hp + heal);
+            }
+        }
+
+        // 印出玩家回合戰報
+        let pLog = `你對 👹 造成 ${isPCrit ? '💥 <span style="color:#f2cc60;font-weight:bold;">爆擊!</span> ' : ''}<span style="color:#56d364;font-weight:bold;">${dmgToM}</span> 點傷害。`;
+        if (heal > 0) pLog += ` 🩸吸回 <span style="color:#ff7b72;">+${heal}</span> HP！`;
+        addTowerLog(pLog, "#c9d1d9");
+
+        // 🔥 【玩家打怪成功】吸血或血量有變動，立刻全面逼動大腦與血條更新！
+        if (typeof window.renderAllPlayerUI === 'function') window.renderAllPlayerUI();
+        if (typeof updatePlayerMainHPUI === 'function') updatePlayerMainHPUI();
+
+        // 檢查怪物死咗未
+        if (m.hp <= 0) {
+            m.hp = 0;
+            updateTowerMonsterUI();
+            handleTowerVictory(pLuck); 
+            // 🔥 贏咗之後可能加了經驗值，再次通知總大腦刷新經驗條！
+            if (typeof window.renderAllPlayerUI === 'function') window.renderAllPlayerUI();
+            return;
+        }
+    }
+
+    // ==========================================
+    // 👹 2. 怪物回合：怪物反擊你 (獨立閃避骰放這裡！)
+    // ==========================================
+    // 🎲 【獨立閃避判定】直接拿你面板上的 pDodge (13.8%) 來搖骰子！
+    if (Math.random() * 100 < pDodge) {
+        // 隨機數小於 13.8%，代表【玩家】成功閃避怪物的反擊！
+        addTowerLog(`🛡️ 你身手敏捷！觸發了 <span style="color:#58a6ff;font-weight:bold;">${pDodge}%</span> 閃避，側身閃避了 ${m.name} 的猛烈反擊！`, "#58a6ff");
+    } else {
+        // 閃避失敗，怪獸真正打中你
+        let isMCrit = (Math.random() * 100 < m.crit);
+        let dmgToP = Math.max(1, m.atk - pDef); 
+        if (isMCrit) dmgToP = Math.floor(dmgToP * 1.8);
+
+        // 同步扣除基礎血量與最終戰鬥血量
+        game.player.hp -= dmgToP;
+        if (game.stats && game.stats.hp !== undefined) {
+            game.stats.hp -= dmgToP;
+        }
+
+        // 限制負數血量
+        if (game.player.hp < 0) game.player.hp = 0;
+        if (game.stats && game.stats.hp < 0) game.stats.hp = 0;
+
+        // 🔥 【怪物打中玩家】血量被扣減，立刻命令總大腦在畫面上扣血！
+        if (typeof window.renderAllPlayerUI === 'function') window.renderAllPlayerUI();
+        if (typeof updatePlayerMainHPUI === 'function') updatePlayerMainHPUI();
+
+        addTowerLog(`${m.name} 對你發動 ${isMCrit ? '💥致命打擊! ' : ''}造成 <span style="color:#ff7b72;font-weight:bold;">${dmgToP}</span> 點傷害。`, "#ff8585");
+    }
+
+    // 🚨 【第二道鐵閘】怪物打完，在 Tick 結束前再徹底檢查一次血量，防止變殭屍！
+    currentHp = (game.stats && game.stats.hp !== undefined) ? game.stats.hp : game.player.hp;
+    if (currentHp <= 0) {
+        if (game.stats) game.stats.hp = 0;
+        game.player.hp = 0;
+        
+        // 🔥 臨死前強制刷新最後一滴血
+        if (typeof window.renderAllPlayerUI === 'function') window.renderAllPlayerUI();
+        if (typeof updatePlayerMainHPUI === 'function') updatePlayerMainHPUI();
+
+        addTowerLog(`❌ 你在第 ${game.tower.currentLayer} 層不幸陣亡！天梯已重置！`, "#da3637");
+        window.retreatFromTower();
+        return;
+    }
+
+    updateTowerMonsterUI();
+}
+
+// 🏆 天梯通關：大發經驗值、爆級、發放受幸運加成嘅工廠材料
+function handleTowerVictory(luckValue) {
+    clearInterval(towerTimer);
+    const layer = game.tower.currentLayer;
+    const isBoss = (layer % 10 === 0);
+
+    // 1. 🎚️ 爬塔經驗值機制：層數越高、經驗越多
+    let expGain = Math.floor(15 * layer * (isBoss ? 2.5 : 1));
+    game.player.exp += expGain;
+    addTowerLog(`✨ 斬殺強敵，獲得 <span style="color:#58a6ff;">+${expGain}</span> 經驗值！`, "#58a6ff");
+    
+    // 檢查升級大腦
+    checkPlayerLevelUp();
+
+    // 2. 💰 基礎金幣與鐵錠獎勵
+    let ironReward = Math.floor(2 * layer + (isBoss ? 20 : 0));
+    let goldReward = Math.floor(60 * layer * Math.pow(1.08, layer - 1) + (isBoss ? 800 : 0));
+    
+    game.inv.ironbar = (game.inv.ironbar || 0) + ironReward;
+    game.money += goldReward;
+
+    // 3. 🧪 幸運爆寶系統
+    let dropReport = "";
+    let luckBonus = luckValue / 100; 
+
+    // 史萊姆黏液 掉落判定
+    let slimeChance = 0.40 + luckBonus; // 基礎 40%
+    if (Math.random() < slimeChance) {
+        let amt = Math.floor(1 + Math.random() * 2 + (layer * 0.1));
+        game.inv.slimeGlow = (game.inv.slimeGlow || 0) + amt;
+        dropReport += `🧪 史萊姆黏液 x${amt} | `;
+    }
+
+    // 哥布林耳朵 掉落判定
+    if (layer >= 5) {
+        let goblinChance = 0.25 + luckBonus;
+        if (Math.random() < goblinChance) {
+            let amt = 1 + (Math.random() < 0.3 ? 1 : 0);
+            game.inv.goblinEar = (game.inv.goblinEar || 0) + amt;
+            dropReport += `👂 哥布林耳朵 x${amt} | `;
+        }
+    }
+
+    // 獸人之血 掉落判定
+    if (layer >= 10 || isBoss) {
+        let orcChance = 0.12 + luckBonus;
+        if (Math.random() < orcChance) {
+            game.inv.orcBlood = (game.inv.orcBlood || 0) + 1;
+            dropReport += `🩸 獸人之血 x1 | `;
+        }
+    }
+
+    // 列印獲取材料戰報
+    addTowerLog(`🎁 天梯賞賜：🧱 鐵錠 +${ironReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
+    if (dropReport !== "") {
+        addTowerLog(`🍀 幸運爆寶：${dropReport.slice(0, -3)}`, "#52c41a");
+    }
+
+    // 實時刷新主畫面材料及金幣顯示
+    syncAllUIElements();
+
+    // 晉升下一層
+    game.tower.currentLayer++;
+    if (game.tower.currentLayer > game.tower.highestLayer) {
+        game.tower.highestLayer = game.tower.currentLayer;
+    }
+
+    if (typeof saveGame === 'function') saveGame();
+
+    // 延遲 1 秒自動推進
+    setTimeout(() => {
+        if (towerData.isFighting) {
+            generateTowerMonster();
+            towerTimer = setInterval(executeTowerTick, 800);
+        }
+    }, 1000);
+}
+
+// 🆙 角色升級檢測器：升級時全基礎屬性永久狂飆！
+function checkPlayerLevelUp() {
+    let p = game.player;
+    while (p.exp >= p.maxExp) {
+        p.exp -= p.maxExp;
+        p.lv += 1;
+        p.maxExp = Math.floor(p.maxExp * 1.25) + 50; 
+        
+        // 基礎數值升級大增幅
+        p.maxHp += 25;
+        p.hp = p.maxHp; // 升級全血復活！
+        p.atk += 6;
+        p.def += 4;
+        p.speed += 2;
+        p.crit += 1;    
+        p.dodge += 1;   
+        p.luck += 2;    
+        
+        if (typeof addLog === 'function') {
+            addLog(`🎊 恭喜！你升級到了 Lv.${p.lv}！身體充滿了皇家聖光，屬性永久大幅提升！`, "#f2cc60");
+        }
+        addTowerLog(`🎊 【升級】你晉升至 Lv.${p.lv}！全血復活！`, "#f2cc60");
+    }
+    updatePlayerMainHPUI();
+}
+
+// 🔄 同步更新主畫面上的玩家生命條與各材料顯示
+// 🔄 同步更新主畫面上的玩家生命條（精準對接 v12 網頁 ID 版）
+function updatePlayerMainHPUI() {
+    let currentHp = game.player.hp;
+    let maxHp = game.player.maxHp;
+    
+    // 刷文字 (例如：100 / 100) -> 對接你 HTML 的 player-hp
+    if (document.getElementById("player-hp")) {
+        document.getElementById("player-hp").innerText = `${currentHp} / ${maxHp}`;
+    }
+    
+    // 刷血條長度 -> 對接你 HTML 的 player-hp-fill
+    if (document.getElementById("player-hp-fill")) {
+        let pct = (currentHp / maxHp) * 100;
+        document.getElementById("player-hp-fill").style.width = `${pct}%`;
+    }
+}
+
+// 🔄 同步更新主畫面的金幣、材料、等級與【經驗值進度條】
+function syncAllUIElements() {
+    // 刷新材料及金幣
+    if (document.getElementById('res-ironbar')) document.getElementById('res-ironbar').innerText = game.inv.ironbar;
+    if (document.getElementById('txt-money')) document.getElementById('txt-money').innerText = game.money;
+    if (document.getElementById('player-money')) document.getElementById('player-money').innerText = game.money;
+    
+    // 刷新三大野外素材庫存
+    if (document.getElementById('res-slimeGlow')) document.getElementById('res-slimeGlow').innerText = game.inv.slimeGlow;
+    if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar;
+    if (document.getElementById('res-orcBlood')) document.getElementById('res-orcBlood').innerText = game.inv.orcBlood;
+    
+    // 刷新主畫面的等級
+    if (document.getElementById('txt-player-lv')) document.getElementById('txt-player-lv').innerText = "Lv." + game.player.lv;
+    if (document.getElementById('player-lv')) document.getElementById('player-lv').innerText = "Lv." + game.player.lv;
+
+    // 🎯 【新增】即時刷新經驗值文字與進度條！
+    let p = game.player;
+    if (document.getElementById("player-exp")) {
+        document.getElementById("player-exp").innerText = `${p.exp} / ${p.maxExp}`;
+    }
+    if (document.getElementById("player-exp-fill")) {
+        let expPct = (p.exp / p.maxExp) * 100;
+        document.getElementById("player-exp-fill").style.width = `${expPct}%`;
+    }
+}
+
+// ====================================================================
+// 🕒 【天梯網頁開機 / 重新整理自動同步鎖】
+// ====================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        if (game && game.tower && game.tower.currentLayer) {
+            const savedLayer = game.tower.currentLayer;
+            const badge = document.getElementById("tower-layer-badge");
+            if (badge) {
+                badge.innerText = `float: 第 ${savedLayer} 層`;
+                badge.innerText = `目前: 第 ${savedLayer} 層`;
+            }
+            if (typeof generateTowerMonster === 'function') {
+                generateTowerMonster();
+            }
+            console.log(`🗼 天梯開機校正成功：已自動回復至第 ${savedLayer} 層！`);
+        }
+    }, 500); 
+});
+// ====================================================================
+// 🗼 【無限爬塔（Infinite Tower）全自動對刀引擎】 完結
+// ====================================================================
+
 // ==========================================
 // [系統啟動層] window.onload 全域初始化
 // ==========================================
@@ -3238,7 +4393,54 @@ window.onload = function() {
 };
 // ==========================================
 // [系統啟動層] 初始化結束
-// ==========================================										 
+// ==========================================	
+
+// ==========================================
+// 🕹️ [UI 總控制] 萬能視窗拉窗簾摺疊函數 (適用於野外、煉金、鐵匠、日誌)
+// ==========================================
+(function() {
+    window.toggleGameWindow = function(wrapperId, headerElement) {
+        const container = document.getElementById(wrapperId);
+        if (!container) return;
+
+        let indicator = headerElement.querySelector('.fold-indicator');
+        
+        // 檢查當前真正的摺疊狀態 (利用屬性判定最精準)
+        const isFolded = container.getAttribute('data-folded') === 'true' || container.style.height === '0px';
+
+        if (isFolded) {
+            // 執行展開
+            container.style.height = 'auto';
+            const fullHeight = container.scrollHeight + 'px';
+            container.style.height = '0px';
+            container.offsetHeight; // 強制瀏覽器重繪
+            
+            container.style.height = fullHeight;
+            container.style.overflow = '';
+            container.setAttribute('data-folded', 'false');
+            if (indicator) indicator.innerText = '[— 收起]';
+            
+            // 動態結束後釋放高度，讓內置日誌能自然撐大
+            setTimeout(() => {
+                if (container.getAttribute('data-folded') === 'false') {
+                    container.style.height = '';
+                }
+            }, 220);
+        } else {
+            // 執行收起
+            container.style.height = container.scrollHeight + 'px';
+            container.offsetHeight; // 強制瀏覽器重繪
+            
+            container.style.height = '0px';
+            container.style.overflow = 'hidden';
+            container.setAttribute('data-folded', 'true');
+            if (indicator) indicator.innerText = '[💡 展開]';
+        }
+    };
+})();					
+// ==========================================
+// 🕹️ [UI 總控制] 萬能視窗拉窗簾摺疊函數 (適用於野外、煉金、鐵匠、日誌) - 完結
+// ==========================================				 
 </script>
 </body>
 </html>
