@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.8</title>
+    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.9</title>
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
@@ -169,6 +169,103 @@
     color: #ffffff !important;
     white-space: nowrap; /* 禁止數字換行 */
 }									 
+/* 🌈 Lv.50 終極天道：全知全能·橫向流動七彩虹光 */
+/* 🌈 50級封頂：橫向流動七彩虹光（強化版） */
+.eq-rainbow-50 {
+    background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    text-fill-color: transparent !important;
+    animation: forgeRainbowMove 2s linear infinite !important;
+    display: inline-block !important;
+    font-weight: bold !important;
+}
+
+/* ✨ 45~49級：極速發光閃爍（強化版） */
+.eq-blink-high {
+    animation: forgeBlinkFast 0.2s ease-in-out infinite alternate !important;
+    display: inline-block !important;
+    font-weight: bold !important;
+}
+
+@keyframes forgeRainbowMove {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes forgeBlinkFast {
+    0% { opacity: 0.4; text-shadow: 0 0 2px cubic-bezier(0.4, 0, 0.2, 1); }
+    100% { opacity: 1; text-shadow: 0 0 12px currentColor, 0 0 20px currentColor; }
+}        
+
+/* ==================================================================== */
+/* 💎 100級至尊封頂：日系幻彩寶石流光（自帶銀白高光與日系外發光）				 */
+/* ==================================================================== */
+.eq-rainbow-100 {
+    background: linear-gradient(
+        135deg, 
+        #ff9aa2 0%, 
+        #ffb7b2 12%, 
+        #ffee93 25%, 
+        #e2f0cb 38%, 
+        #b5ead7 50%, 
+        #c7ceea 63%, 
+        #ffffff 75%, /* 💎 純銀白高光：當滾動時呈現亮晶晶折射感 */
+        #ffccf9 88%,
+        #ff9aa2 100%
+    ) !important;
+    
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    text-fill-color: transparent !important;
+    
+    /* 🎯 🛠️ 雙重核心動畫：霓虹流動 + 日系高頻呼吸發光（jpGlint 已修正為跟 45 級一樣的 0.2s 極速爆閃） */
+    animation: jpRainbowFlow 2s linear infinite, jpGlint 0.2s ease-in-out infinite alternate !important;
+    
+    display: inline-block !important;
+    font-weight: bold !important;
+    
+    /* 🔮 日系靈魂：多重外發光濾鏡，讓文字具有實體寶石感 */
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 6px rgba(199, 206, 234, 0.6)) !important;
+}
+
+/* ✨ 45~99級：保持原本的極速閃爍效果 */
+.eq-blink-high {
+    animation: forgeBlinkFast 0.2s ease-in-out infinite alternate !important;
+    display: inline-block !important;
+    font-weight: bold !important;
+}
+
+/* 🔄 100級專屬：日系平滑高光流動 */
+@keyframes jpRainbowFlow {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* 🌟 🎯【終極修正】100級專屬：日系寶石高頻閃爍（完美同步 45 級的爆閃頻率與透明度） */
+@keyframes jpGlint {
+    0% {
+        opacity: 0.4; /* ⚡ 帶入 45 級的暗度，形成強烈閃爍對比 */
+        filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 4px rgba(199, 206, 234, 0.4)) !important;
+    }
+    100% {
+        opacity: 1; /* ⚡ 回復滿亮度 */
+        /* 💎 使用多層重疊的 drop-shadow 來補償 transparent 文字失去的 text-shadow 發光威力 */
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9)) 
+                drop-shadow(0 0 12px rgba(255, 154, 162, 0.8)) 
+                drop-shadow(0 0 20px rgba(199, 206, 234, 0.7)) !important;
+    }
+}
+
+/* 原本的 45級+ 閃爍動畫 */
+@keyframes forgeBlinkFast {
+    0% { opacity: 0.4; }
+    100% { opacity: 1; text-shadow: 0 0 8px currentColor; }
+}	
     </style>
 </head>
 <body>
@@ -449,12 +546,13 @@
 		</div>
 		</div>
 
-        <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; display: flex; flex-direction: column;">
-            <div style="color: #58a6ff; font-size: 12px; font-weight: bold; margin-bottom: 10px;">📦 裝備儲存背包 (<span id="eq-inv-count">0</span>)</div>
-            <div id="eq-inv-container" style="max-height: 180px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
-                <div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>
-            </div>
-        </div>
+		<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; display: flex; flex-direction: column;">
+			<div style="color: #58a6ff; font-size: 12px; font-weight: bold; margin-bottom: 10px;">📦 裝備儲存背包 (<span id="eq-inv-count">0</span>)</div>
+			
+			<div id="eq-inv-container" style="max-height: 180px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
+				<div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>
+			</div>
+		</div>
     </div>
 </div>
 <!-- 角色介面 完結 -->
@@ -586,7 +684,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-weapon" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-weapon" min="1" max="10" value="1" oninput="window.onForgeSliderChange('weapon')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-weapon" min="1" max="100" value="1" oninput="window.onForgeSliderChange('weapon')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-weapon" style="color:#56d364; font-weight:bold;">5</span> 錠 | 💰 <span id="cost-gold-weapon" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -600,7 +698,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-helmet" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-helmet" min="1" max="10" value="1" oninput="window.onForgeSliderChange('helmet')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-helmet" min="1" max="100" value="1" oninput="window.onForgeSliderChange('helmet')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-helmet" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-helmet" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -614,7 +712,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-armor" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-armor" min="1" max="10" value="1" oninput="window.onForgeSliderChange('armor')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-armor" min="1" max="100" value="1" oninput="window.onForgeSliderChange('armor')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-armor" style="color:#56d364; font-weight:bold;">8</span> 錠 | 💰 <span id="cost-gold-armor" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -628,7 +726,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-gloves" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-gloves" min="1" max="10" value="1" oninput="window.onForgeSliderChange('gloves')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-gloves" min="1" max="100" value="1" oninput="window.onForgeSliderChange('gloves')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-gloves" style="color:#56d364; font-weight:bold;">3</span> 錠 | 💰 <span id="cost-gold-gloves" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -642,7 +740,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-leggings" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-leggings" min="1" max="10" value="1" oninput="window.onForgeSliderChange('leggings')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-leggings" min="1" max="100" value="1" oninput="window.onForgeSliderChange('leggings')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-leggings" style="color:#56d364; font-weight:bold;">5</span> 錠 | 💰 <span id="cost-gold-leggings" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -656,7 +754,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-boots" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-boots" min="1" max="10" value="1" oninput="window.onForgeSliderChange('boots')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-boots" min="1" max="100" value="1" oninput="window.onForgeSliderChange('boots')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-boots" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-boots" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -670,7 +768,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-cloak" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-cloak" min="1" max="10" value="1" oninput="window.onForgeSliderChange('cloak')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-cloak" min="1" max="100" value="1" oninput="window.onForgeSliderChange('cloak')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-cloak" style="color:#56d364; font-weight:bold;">6</span> 錠 | 💰 <span id="cost-gold-cloak" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -684,7 +782,7 @@
                     </div>
                     <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
                         目標等級: <span id="forge-lv-val-ring" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-ring" min="1" max="10" value="1" oninput="window.onForgeSliderChange('ring')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+                        <input type="range" id="forge-range-ring" min="1" max="100" value="1" oninput="window.onForgeSliderChange('ring')" style="width: 100%; margin-top: 4px; cursor: pointer;">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
                         <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-ring" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-ring" style="color:#f2cc60; font-weight:bold;">$650</span></div>
@@ -768,6 +866,11 @@
             <div style="font-size:12px; color:#8b949e; margin:5px 0;">訂單將有機率出現 3 種複合材料，利潤更高</div>
             <button id="tech-order-btn" class="action-btn" style="width:100%; color:#000000;" onclick="buyTech('highOrder', 300)">解鎖 (300 RP)</button>
         </div>
+        <div class="shop-item" style="flex:1; min-width:200px;">
+            <div style="font-weight:bold; color:#a371f7;">🧬 基因改造・追加屬性</div>
+            <div style="font-size:12px; color:#8b949e; margin:5px 0;">鍛造裝備時，有機率額外鍛造追加屬性</div>
+            <button id="tech-extrastat-btn" class="action-btn" style="width:100%; color:#000000;" onclick="buyTech('extraStats', 200)">解鎖 (200 RP)</button>
+        </div>  
     </div>
 </div>
 
@@ -989,12 +1092,18 @@ let cfg = {
             lifesteal: 0,       // 攻吸血 (%) [將由裝備加成拉高至60.8%!]
             luck: 10            // 幸運值 (影響天梯材料掉落率)
         },
-		equipment: {
-            weapon: "無",      // 當前武器名稱
-            armor: "無",       // 當前防具名稱
-            atkBonus: 0,       // 裝備加成的攻擊力
-            hpBonus: 0         // 裝備加成的生命值上限
-        },
+		eqInv: [],
+			equippedSlots: {
+			weapon: null,
+			helmet: null,
+			armor: null,
+			gloves: null,
+			leggings: null,
+			boots: null,
+			cloak: null,
+			ring: null 
+			},
+			
 		// 🗼 天梯專用存檔欄位 (新增)
         tower: {
             currentLayer: 1,    // 玩家歷史最高/當前挑戰層數
@@ -1004,6 +1113,14 @@ let cfg = {
         battle: {
             isFighting: false,  // 是否正在戰鬥
             cooldownMax: 4      // 基礎戰鬥時間（4秒）
+        },
+		
+		// 🆕 完美嵌入的位置：新增科技研發數據庫（與上述欄位同級）
+        tech: {
+            autoRepair: false,  // 自動維修科技
+            overtime: false,    // 強制加班科技
+            highOrder: false,   // 高級訂單科技
+            extraStats: false   // 🧬 用研發點數學習的「追加屬性」科技開關
         },
         // ==========================================
 		
@@ -1027,26 +1144,202 @@ if (!game.equippedSlots) {
     game.equippedSlots = { weapon: null, helmet: null, armor: null, gloves: null, leggings: null, boots: null, cloak: null, ring: null };
 }
 
-// 🪐 2. 數據庫：已為【武器、手套、披風、飾品】增加副屬性吸血（lifesteal）加成！
+// ====================================================================
+// 🪐 數據庫：已完美擴充 11~20 級裝備名稱與階級顏色（解鎖屬性與外觀限制）
+// ====================================================================
+
+// ====================================================================
+// 🌌 數據庫：已極限擴充至 11 ~ 50 級（解鎖概念與法則級神裝）
+// ====================================================================
 const EQ_DB = {
-    weapon:   { name: "武器", icon: "⚔️", mainStat: "atk",   subStat: "lifesteal", base: 5,   scale: 18,  colorTier: ["木製短劍", "青銅長劍", "精鋼大劍", "附魔斬魔劍", "破空刃", "龍牙巨劍", "碎星太刀", "熾天使之翼", "滅世星芒神劍", "☄️ 終焉裁決聖劍"] },
-    helmet:   { name: "頭盔", icon: "🪖", mainStat: "def",   subStat: "maxHp",     base: 2,   scale: 7,   colorTier: ["布質便帽", "皮質頭盔", "青銅戰盔", "精鐵重盔", "夜行面罩", "聖殿騎士盔", "龍鱗頭盔", "幻影法帽", "全知天眼魔冠", "👑 眾神主宰神冕"] },
-    armor:    { name: "胸甲", icon: "👕", mainStat: "def",   subStat: "maxHp",     base: 4,   scale: 12,  colorTier: ["破舊粗布衣", "旅行皮革甲", "青銅鎖子甲", "精鋼全身鎧", "暗影夜行衣", "聖殿守衛甲", "龍鱗庇護鎧", "不滅泰坦重甲", "冥王神界鎧", "🛡️ 宇宙始源聖衣"] },
-    gloves:   { name: "手套", icon: "🧤", mainStat: "hit",   subStat: "lifesteal", base: 2,   scale: 2.5, colorTier: ["粗麻手套", "工作皮手套", "加厚護手", "精鐵護腕", "刺客皮套", "附魔重型護手", "龍爪護腕", "神匠御用聖手", "因果律之手", "💥 創世湮滅神手"] },
-    leggings: { name: "護腿", icon: "👖", mainStat: "def",   subStat: "dodge",     base: 1,   scale: 5,   colorTier: ["亞麻長褲", "硬皮護腿", "青銅護脛", "精鋼腿甲", "疾風下裝", "聖殿騎士腿", "龍鱗護腿", "虛空幻影護腿", "時空秩序護褲", "🌀 萬象輪迴神褲"] },
-    boots:    { name: "鞋子", icon: "🥾", mainStat: "agi",   subStat: "dodge",     base: 2,   scale: 6,   colorTier: ["破爛草鞋", "耐磨皮靴", "鐵行戰靴", "附魔輕盈靴", "遊俠短靴", "影流之靴", "巨龍踩踏靴", "赫爾墨斯飛鞋", "光速星塵靴", "🚀 因果逆轉神靴"] },
-    cloak:    { name: "披風", icon: "🧥", mainStat: "maxHp", subStat: "lifesteal", base: 10,  scale: 38,  colorTier: ["擋風碎布", "行者披風", "守衛披肩", "精靈斗篷", "吸血鬼夜披", "聖靈禦篷", "星河主宰披", "命運編織斗篷", "秩序守護神氅", "🌌 九幽吞天神篷"] },
-    ring:     { name: "飾品", icon: "💍", mainStat: "luk",   subStat: "lifesteal", base: 1,   scale: 3,   colorTier: ["銅製指環", "銀製戒指", "白金徽章", "紅寶石之戒", "黑曜石眼眸", "幸運四葉草", "聚寶盆之環", "永恆主宰神戒", "維度崩裂之戒", "🔮 萬物起源神璽"] }
+    weapon: { 
+        name: "武器", icon: "⚔️", mainStat: "atk", subStat: "lifesteal", base: 5, scale: 18, 
+        colorTier: [
+            // 1-10 級
+            "木製短劍", "青銅長劍", "精鋼大劍", "附魔斬魔劍", "破空刃", "龍牙巨劍", "碎星太刀", "熾天使之翼", "滅世星芒神劍", "☄️ 終焉裁決聖劍",
+            // 11-20 級
+            "虚空湮滅利刃", "裂界極光魔慟", "九幽煞血古劍", "太古混沌誅仙", "因果逆轉時空改", "真·修羅地獄極光", "創世神光天啟", "極境星宇崩裂刃", "萬物寂滅吞噬者", "✨ 寰宇至尊·無上乾坤劫",
+            // 21-30 級
+            "九天神雷戮仙劍", "太皇黃金逆鱗戟", "大羅天誅神戮魔劍", "天道法則·秩序之刃", "冥河忘川引魂鐮", "六道輪迴碎星雙刃", "鴻蒙量天尺", "荒古弒神至尊槍", "諸天萬界無上劍胎", "🔱 掌天控地·玄黃不滅劍",
+            // 31-40 級
+            "高維度弦音震盪刃", "量子糾纏湮滅光流", "平行宇宙崩裂太刀", "莫比烏斯無限光刃", "超弦理論·降維打擊", "逆轉熵增星雲神劍", "星系核心黑洞引力刃", "多元宇宙意志之光", "不確定性原理斬刀", "🌀 萬宇歸一·無限終結刃",
+            // 41-50 級
+            "虛無本源真理之刃", "絕對零度時間凍結劍", "數學規律抹殺神筆", "邏輯悖論存在否定刃", "【概念定義】生死之剪", "【因果律】必中之槍", "【造物主】開天闢地斧", "【全知】矩陣觀測聖劍", "【全能】降維敘事神筆", "👁️ 終極超越·全知全能因果聖劍",
+            // 🆕 51-60 級：常數、维数與弦網根源
+            "普朗克常數撕裂刃", "十一次元幾何崩裂劍", "超對稱宇宙弦切斷器", "虛時間軸偽因果斬刀", "狄拉克海負能量射線", "拓撲缺陷時空斷層刃", "量子隧穿概率湮滅鋒", "萬物至理·大統一法則", "非歐幾何崩塌太刀", "🌌 根源解體·無象太虛重光",
+            // 🆕 61-70 級：超敘事、劇本篡改與高階概念
+            "【文本篡改】劇情塗改液", "【設定重寫】上帝視角修正筆", "【第四面牆】降維打擊鐵錘", "【旁白剝奪】邏輯失語利刃", "【不可直視】克蘇魯舊日觸鬚", "【作者權限】全知敘事權杖", "【邏輯死循環】悖論斬擊刃", "【封印概念】無字神話史詩", "【虛構層躍遷】降維敘事針", "🎬 劇本終結·終焉無光默示錄",
+            // 🆕 71-80 級：最高法庭、審判與神聖意志
+            "全知法庭秩序審判錘", "因果清算律法天秤劍", "至高意志·終焉赦免權杖", "神聖裁決·璀璨天堂之門", "永恆放逐·深淵禁釋放", "命運編織·三女神斷線剪", "七大罪業·深淵業火重刃", "神格昇華·不朽豐碑巨劍", "神聖意志·真理福音聖槍", "⚖️ 諸神黃昏·至高秩序裁決劍",
+            // 🆕 81-90 級：無上神話與天道真名
+            "卡巴拉生命之樹禁刃", "奧林匹斯雷霆毀滅神矛", "阿薩神族·岡格尼爾永恆", "蓋亞意志·地脈萬象崩裂", "太初極光·阿胡拉大帝刃", "終焉寂滅·濕婆毀滅之舞", "阿修羅王·不滅修羅天斬", "提亞馬特·混沌萬物母體", "諸神黃昏·始源黃昏終焉", "👑 至高天神·九界無上真名主",
+            // 🆕 91-100 級：絕對真理與終極幻想頂點
+            "【概念天花板】絕對唯我", "【幻想具現】永恆神話奇蹟", "【真理公式】萬物終極解", "【全知全能】因果律終點", "【不可言說】無名神聖不朽", "【超越一切】無限可能奇點", "【世界意志】蓋亞極光至尊", "【終極解構】太初無上神兵", "【神話史詩】永恆不滅輝煌", "🌌 幻想終點·永恆奇蹟之光"
+        ] 
+    },
+    helmet: { 
+        name: "頭盔", icon: "🪖", mainStat: "def", subStat: "maxHp", base: 2, scale: 7, 
+        colorTier: [
+            "布質便帽", "皮質頭盔", "青銅戰盔", "精鐵重盔", "夜行面罩", "聖殿騎士盔", "龍鱗頭盔", "幻影法帽", "全知天眼魔冠", "👑 眾神主宰神冕",
+            "不朽不滅英靈面具", "冥王幽冥魂界盔", "太皇紫微帝皇星冠", "萬法歸宗太極重盔", "法理因果天穹假面", "不垢不淨自在法相冠", "大羅天星河御神冕", "極道混元永恆戰盔", "虛無本源真理法眼", "✨ 寰宇至尊·大羅天尊神冕",
+            "天道慧眼通明神冠", "神魔大戰主宰戰盔", "三花聚頂紫金魔冠", "玄黃護體琉璃面具", "太乙真人造化法帽", "九幽煞氣羅刹戰盔", "無極太初混元法冠", "荒古不滅霸王重盔", "天外天紫霄宮道冠", "🔱 眾神退避·天道不滅法冕",
+            "四維空間全方位觀測眼", "量子概率雲疊加面罩", "克萊因瓶無限防禦盔", "星流匯聚黑洞視界重盔", "反物質湮滅防護面具", "超弦震盪維度頭盔", "星系霸主星能王冠", "多元宇宙意志法冕", "高維投影思維假面", "🌀 維度超脫·星域至尊主宰冕",
+            "【客觀存在】不滅意志盔", "【時間線】觀測者神眼", "【真理屏障】全知魔冠", "【邏輯鎖定】思維防禦冕", "【概念抹除】防護假面", "【因果盾】萬法不沾重盔", "【天道意志】大羅天尊冕", "【超矩陣】無限觀測神眼", "【超越敘事】本源防護盔", "👁️ 終極超越·全知全能天道聖冕",
+            // 🆕 51-60 級
+            "普朗克觀測全知神盔", "十一維幾何拓撲法冕", "弦網震盪波動防禦面罩", "虛時間防護因果假面", "狄拉克海負能折射盔", "時空斷層抗性防護冠", "概率雲疊加態觀測眼", "大統一理論全知魔冠", "非歐空間曲率防禦盔", "🌌 根源解體·無垢太虛法冕",
+            // 🆕 61-70 級
+            "【文本免檢】劇情防禦盔", "【旁白免疫】思維靜默罩", "【打破次元】視界觀測眼", "【邏輯閉環】因果免疫冕", "【舊日凝視】不可名狀面具", "【作者守護】敘事抗性冠", "【矛盾不沾】悖論屏蔽盔", "【史詩記載】不朽神話冕", "【維度跳躍】思維投影面罩", "🎬 劇本終結·永夜無光法冕",
+            // 🆕 71-80 級
+            "全知法庭大審判長冕", "因果公正律法大天冠", "至高赦免聖光防護盔", "天堂之門璀璨救贖冠", "深淵放逐抗性重戰盔", "命運編織星轨防護冕", "罪業洗滌業火洗禮盔", "神格凝聚不朽豐碑冕", "福音傳播神聖防護冠", "⚖️ 諸神黃昏·至高秩序神冕",
+            // 🆕 81-90 級
+            "卡巴拉頂點神聖王冠", "奧林匹斯眾神主宰冕", "英靈殿不朽戰魂面具", "蓋亞意志大地守護重盔", "阿胡拉光明至善法冠", "濕婆毀滅三目神眼", "修羅王不滅戰意鐵盔", "混沌母體原生防護冠", "諸神黃昏終焉防禦盔", "👑 至高天神·萬神主宰王冠",
+            // 🆕 91-100 級
+            "【概念天花板】唯我法冕", "【幻想具現】奇蹟不滅冠", "【真理公式】終極全知盔", "【全知全能】因果至尊冕", "【不可言說】不朽真名面具", "【超越一切】無限防禦眼", "【世界意志】極光至尊冕", "【終極解構】太初法之冠", "【神話史詩】永恆輝煌冕", "🌌 幻想終點·奇蹟星河聖冕"
+        ] 
+    },
+    armor: { 
+        name: "胸甲", icon: "👕", mainStat: "def", subStat: "maxHp", base: 4, scale: 12, 
+        colorTier: [
+            "破舊粗布衣", "旅行皮革甲", "青銅鎖子甲", "精鋼全身鎧", "暗影夜行衣", "聖殿守衛甲", "龍鱗庇護鎧", "不滅泰坦重甲", "冥王神界鎧", "🛡️ 宇宙始源聖衣",
+            "絕對防禦反物質力場", "不朽神明金剛不壞軀", "九天玄黃玲瓏寶鎧", "諸天萬界因果防禦壁", "時空維度摺疊守護羽織", "太初混沌鴻蒙聖裝", "真·九界龍皇霸者鎧", "寰宇極境極光神甲", "寂滅虛無太虛神衣", "✨ 寰宇至尊·永恆不滅祖神袍",
+            "五行大陣造化仙袍", "天地玄黃玲瓏寶塔鎧", "三十三天外混元道袍", "誅仙陣圖護體神甲", "真·九幽修羅不死魔鎧", "荒古聖體金剛不壞甲", "天道秩序不滅法衣", "鴻蒙紫氣造化聖裝", "諸天星斗御神重鎧", "🛡️ 萬劫不磨·太極玄黃聖體",
+            "十一維弦空間摺疊防壁", "量子概率不確定性防護衣", "強相互作用力材料戰甲", "事象地平線引力折射袍", "反物質護體屏障衣", "暗物質星系防禦神甲", "多元宇宙壁障防護服", "高維概念不可視法袍", "因果切斷絕對防禦圈", "🌀 維度超脫·無上太虛神裝",
+            "【定義：不可受傷】法則衣", "【時間回溯】不滅守護鎧", "【真理不滅】本源神裝", "【邏輯閉環】因果重鎧", "【概念免疫】絕對虛無衣", "【因果崩壞】諸天不沾袍", "【敘事防禦】作者級護甲", "【設定無敵】全能至尊鎧", "【超越一切】終極本源袍", "🛡️ 終極超越·全知全能因果聖衣",
+            // 🆕 51-60 級
+            "普朗克能量常數防護衣", "十一維超對稱空間重鎧", "弦網拓撲結構絕對防壁", "虛時間軸因果隔離聖衣", "狄拉克海負能吞噬法袍", "時空斷層相位轉移甲", "概率波絕對塌陷守護衣", "大統一理論終極防護外骨骼", "非歐幾何曲率折射聖衣", "🌌 根源解體·無極混沌神裘",
+            // 🆕 61-70 級
+            "【劇情殺免疫】設定聖衣", "【設定修復】旁白加護法袍", "【維度防壁】跨次元重甲", "【因果否定】邏輯防護衣", "【星之彩】不可直視幻彩衣", "【敘事法規】作者親臨聖袍", "【悖論消解】無限閉環重鎧", "【不朽史詩】神話永恆法衣", "【虛構層阻隔】降維抗性裝", "🎬 劇本終結·無盡虛無神裘",
+            // 🆕 71-80 級
+            "全知法庭秩序執法鎧", "因果清算天秤守護法袍", "至高赦免璀璨聖光重甲", "天堂之門十二翼神聖衣", "深淵放逐不死不滅黑鎧", "命運編織星轨守護紗衣", "罪業免除業火熔岩重甲", "神格不朽信仰不滅聖衣", "福音降臨神聖真理法袍", "⚖️ 諸神黃昏·至高秩序聖衣",
+            // 🆕 81-90 級
+            "卡巴拉守護玲瓏聖衣", "奧林匹斯神光不滅雷霆鎧", "英靈殿金剛不壞女武神甲", "蓋亞意志地核重力守護鎧", "阿胡拉光明神威至善袍", "濕婆毀滅滅世灰燼法衣", "修羅王殺戮戰神不滅鎧", "原生母體混沌始源聖裳", "諸神黃昏世界終焉鐵甲", "👑 至高天神·九界至尊聖衣",
+            // 🆕 91-100 級
+            "【概念天花板】唯我法袍", "【幻想具現】奇蹟守護鎧", "【真理公式】絕對無敵裝", "【全知全能】因果至尊衣", "【不可言說】不朽真名衣", "【超越一切】無限概念鎧", "【世界意志】極光始源衣", "【終極解構】太初無極鎧", "【神話史詩】永恆不滅袍", "🛡️ 幻想終點·奇蹟永恆聖衣"
+        ] 
+    },
+    gloves: { 
+        name: "手套", icon: "🧤", mainStat: "hit", subStat: "lifesteal", base: 2, scale: 2.5, 
+        colorTier: [
+            "粗麻手套", "工作皮手套", "加厚護手", "精鐵護腕", "刺客皮套", "附魔重型護手", "龍爪護腕", "神匠御用聖手", "因果律之手", "💥 創世湮滅神手",
+            "粉碎虛空降魔手套", "黑洞吞噬重力護腕", "摘星奪月乾坤神手", "執掌因果律之帝手", "寂滅萬物破滅法指", "真·弒神者黃昏之握", "鴻蒙初開太初法套", "萬象森羅星辰玄指", "逆轉未來造化神手", "✨ 寰宇至尊·手握諸天星河掌",
+            "大天造化遮天神掌", "五指山法則禁護手", "九天玄火控火法套", "三千雷動碎空護腕", "掌心雷霆滅世手套", "大羅天控星摘星手", "天地合一玄黃法指", "荒古弒神碎魂法套", "天道裁決代天行罰手", "💥 隻手遮天·太初鴻蒙神掌",
+            "高維度空間撕裂手套", "量子糾纏微觀操控指", "引力透鏡光流折射套", "微觀粒子排列修改器", "熵增逆轉造化手套", "黑洞視界重力粉碎腕", "多元宇宙湮滅巨手", "超弦理論維度剪裁指", "概率抹除因果護手", "🌀 維度超脫·執掌因果神手",
+            "【抹殺概念】法則護手", "【時間重寫】時空手套", "【篡改真理】本源指環", "【邏輯悖論】思維護腕", "【抹除存在】虛無手套", "【因果裁決】代天行罰手", "【敘事抹除】降維手套", "【設定修改】全能法套", "【超越邏輯】本源巨手", "💥 終極超越·全知全能湮滅神手",
+            // 🆕 51-60 級
+            "普朗克常數微觀捏合指", "十一維扭曲撕裂爪", "弦網波動結構編織手套", "虛時間軸抹煞修正腕", "狄拉克海負能引導指", "時空斷層相位粉碎手", "概率雲強行凝聚法套", "大統一理論分解指環", "非歐空間曲率撕裂手", "🌌 根源解體·無極湮滅神爪",
+            // 🆕 61-70 級
+            "【劇情刪除】文字抹消套", "【旁白修改】劇本干涉指", "【破壁重拳】跨維度拳套", "【因果切斷】邏輯粉碎腕", "【不可名狀】瘋狂異化爪", "【作者筆觸】敘事書寫手套", "【矛盾觸發】悖論撕裂手", "【史詩重寫】神話編織腕", "【降維打擊】虛構解構指", "🎬 劇本終結·無光滅世神掌",
+            // 🆕 71-80 級
+            "全知法庭秩序執行手套", "因果公正律法大判官腕", "至高赦免璀璨洗禮護腕", "天堂之門神聖引導法套", "深淵放逐永恆沉淪鐵手", "命運編織因果死線剪套", "罪業焚燒業火審判掌", "神格凝聚信仰不朽護手", "福音宣告真理傳遞法套", "⚖️ 諸神黃昏·至高秩序神掌",
+            // 🆕 81-90 級
+            "卡巴拉生命源泉觸控環", "奧林匹斯至尊雷霆掌控腕", "英靈殿戰神不滅金屬手套", "蓋亞意志地脈引力粉碎手", "阿胡拉至善光明淨化套", "濕婆滅世終焉劫火手套", "修羅王不滅殺戮碎骨爪", "原生母體混沌造化法套", "諸神黃昏萬物終焉鐵腕", "👑 至高天神·九界主宰神掌",
+            // 🆕 91-100 級
+            "【概念天花板】唯我神掌", "【幻想具現】奇蹟不滅手", "【真理公式】絕對湮滅指", "【全知全能】因果至尊手", "•【不可言說】不朽真名指", "【超越一切】無限概念爪", "【世界意志】極光至尊手", "【終極解構】太初無極指", "【神話史詩】永恆輝煌套", "💥 幻想終點·奇蹟滅世神掌"
+        ] 
+    },
+    leggings: { 
+        name: "護腿", icon: "👖", mainStat: "def", subStat: "dodge", base: 1, scale: 5, 
+        colorTier: [
+            "亞麻長褲", "硬皮護腿", "青銅護脛", "精鋼腿甲", "疾風下裝", "聖殿騎士腿", "龍鱗護腿", "虛空幻影護腿", "時空秩序護褲", "🌀 萬象輪迴神褲",
+            "碎步裂空追風戰足", "不動明王不壞脛甲", "諸天星斗移行下裝", "天道因果御神下裳", "九幽深淵極道重腿", "真·八荒龍吟震地腿", "時空維度跨越戰褲", "乾坤造化混元神褲", "不滅太初玄黃腿甲", "✨ 寰宇至尊·橫跨紀元混沌長褲",
+            "五行大陣造化仙袍", "天地玄黃玲瓏寶塔鎧", "三十三天外混元道袍", "誅仙陣圖護體神甲", "真·九幽修羅不死魔鎧", "荒古聖體金剛不壞甲", "天道秩序不滅法衣", "鴻蒙紫氣造化聖裝", "諸天星斗御神重鎧", "🛡️ 萬劫不磨·太極玄黃聖體",
+            "十一維弦空間摺疊防壁", "量子概率不確定性防護衣", "強相互作用力材料戰甲", "事象地平線引力折射袍", "反物質力場防護屏障衣", "暗物質星系防禦神甲", "多元宇宙壁障防護服", "高維概念不可視法袍", "因果切斷絕對防禦圈", "🌀 維度超脫·無上太虛神裝",
+            "【拒絕位移】不磨法褲", "【時間靜止】守護脛甲", "【絕對不敗】真理長褲", "【邏輯防禦】因果腿甲", "【存在鎖定】虛無長褲", "【因果不沾】諸天神足", "【超越維度】敘事下裝", "【無敵定義】全能戰褲", "【邏輯之上】本源長褲", "🌀 終極超越·全知全能輪迴神褲",
+            // 🆕 51-60 級
+            "普朗克尺度穩固戰褲", "十一維曲率拓撲護腿", "弦網格點絕對定錨脛甲", "虛時間軸因果禁錮長褲", "狄拉克海負能屏障腿", "時空斷層相位定格甲", "概率波塌陷絕對封鎖褲", "大統一理論萬引力定心甲", "非歐空間幾何重組護腿", "🌌 根源解體·無極乾坤護脛",
+            // 🆕 61-70 級
+            "【劇情不可逆】命運長褲", "【背景板設定】旁白加固腿", "【次元跨越】虛空抗性脛甲", "【邏輯死鎖】因果抗性褲", "【不可名狀】深淵瘋狂重脛", "【敘事定力】作者欽定長褲", "【悖論免疫】時空閉環脛甲", "【史詩銘刻】不朽傳奇長褲", "【降維免疫】二次元隔絕褲", "🎬 劇本終結·寂滅無量神褲",
+            // 🆕 71-80 級
+            "全知法庭秩序執法下裝", "因果公正律法神聖脛甲", "至高赦免聖光重裝長褲", "天堂之門六翼守護脛甲", "深淵放逐永恆沉淪重足", "命運編織星轨軌跡護腿", "罪業免除業火熔岩下裝", "神格凝聚信仰不朽脛甲", "福音降臨真理宣告法褲", "⚖️ 諸神黃昏·至高秩序神褲",
+            // 🆕 81-90 級
+            "卡巴拉生命根基守護褲", "奧林匹斯神山引力重脛甲", "英靈殿不滅戰魂格鬥長褲", "蓋亞意志地脈重力穩固腿", "阿胡拉光明神威至善下裝", "濕婆滅世劫火灰燼脛甲", "修羅王不磨殺戮修羅戰褲", "原生母體混沌造化神裳", "諸神黃昏萬物終焉腿甲", "👑 至高天神·九界不磨神褲",
+            // 🆕 91-100 級
+            "【概念天花板】唯我神褲", "【幻想具現】奇蹟不滅腿", "•【真理公式】絕對穩固褲", "【全知全能】因果至尊腿", "【不可言說】不朽真名褲", "【超越一切】無限概念脛", "【世界意志】極光至尊腿", "【終極解構】太初無極褲", "【神話史詩】永恆輝煌褲", "🌀 幻想終點·奇蹟輪迴神褲"
+        ] 
+    },
+    boots: { 
+        name: "鞋子", icon: "🥾", mainStat: "agi", subStat: "dodge", base: 2, scale: 6, 
+        colorTier: [
+            "破爛草鞋", "耐磨皮靴", "鐵行戰靴", "附魔輕盈靴", "遊俠短靴", "影流之靴", "巨龍踩踏靴", "赫爾墨斯飛鞋", "光速星塵靴", "🚀 因果逆轉神靴",
+            "踏碎虛空縮地成寸靴", "曲率驅動超光速足履", "逍遙遊鯤鵬展翅靴", "諸天萬界維度跳躍履", "真·九天雷霆御風神鞋", "乾坤逆時逆流之足", "命運軌跡折返神履", "極境星夜幻影幽步", "太初鴻蒙破空神靴", "✨ 寰宇至尊·踏破生死彼岸靴",
+            "縱雲梯縱橫九霄靴", "大羅天移行換影履", "筋斗雲十萬八千里", "天道遁甲不滅神靴", "追風趕月玄黃戰靴", "荒古雷霆疾風步履", "鴻蒙跨界造化神靴", "諸天星斗御風踏履", "太極八卦乾坤飛鞋", "🚀 瞬息萬里·太初造化神靴",
+            "超光速曲率泡驅動靴", "量子不確定性瞬移履", "時空蟲洞跨星系戰靴", "多維度弦音跃迁足履", "反重力星核懸浮鞋", "星際躍遷空間跳躍靴", "多元宇宙泡跨越足履", "高維概念不可視幽履", "因果逆位命運折返靴", "🌀 維度超脫·縱橫星域神靴",
+            "【無視距離】瞬達法靴", "【時間跳躍】超時空履", "【超越因果】真理神靴", "【邏輯悖論】瞬移戰靴", "【不存在之足】虛無履", "【概念超越】諸天破空靴", "【敘事跳躍】跨次元鞋", "【無處不在】全能神靴", "【超越一切速度】本源靴", "🚀 終極超越·全知全能逆轉神靴",
+            // 🆕 51-60 級
+            "普朗克長數極速躍遷靴", "十一維度流形穿梭履", "弦網網格超時空震盪鞋", "虛時間軸因果折返戰靴", "狄拉克海負能超光速履", "時空斷層相位跳躍靴", "概率波絕對穿透折返鞋", "大統一理論超引力疾風靴", "非歐幾何曲率縮地靴", "🚀 根源解體·無極破空神靴",
+            // 🆕 61-70 級
+            "【劇情快進】加速履", "【旁白未提及】瞬移面紗靴", "【打破次元壁】跨界戰靴", "【因果超越】邏輯超脫靴", "【不可直視】極致瘋狂步履", "【作者筆鋒】敘事塗改戰靴", "【悖論躍遷】因果閉環靴", "【史詩傳記】神話不朽步履", "【虛構層躍遷】降維超脱履", "🎬 劇本終結·寂滅無蹤神靴",
+            // 🆕 71-80 級
+            "全知法庭秩序巡邏靴", "因果公正律法大審判履", "至高赦免聖光洗禮戰靴", "天堂之門大天使御風履", "深淵放逐永恆沉淪黑靴", "命運編織星轨疾行鞋", "罪業免除業火熔岩戰靴", "神格凝聚信仰不朽步履", "福音降臨真理傳播法靴", "⚖️ 諸神黃昏·至高秩序神靴",
+            // 🆕 81-90 級
+            "卡巴拉生命之樹躍升履", "奧林匹斯神山雷霆風暴靴", "英靈殿狂狼不滅格鬥靴", "蓋亞意志地脈曲率飛鞋", "阿胡拉光明神威至善履", "濕婆滅世終焉劫火戰靴", "修羅王殺戮血海縱橫靴", "原生母體混沌造化踏履", "諸神黃昏萬物終焉步履", "👑 至高天神·九界御風神靴",
+            // 🆕 91-100 級
+            "【概念天花板】唯我神靴", "【幻想具現】奇蹟不滅履", "【真理公式】絕對極速靴", "【全知全能】因果至尊履", "【不可言說】不朽真名靴", "【超越一切】無限速度爪", "【世界意志】極光至尊靴", "【終極解構】太初無極履", "【神話史詩】永恆輝煌靴", "🚀 幻想終點·奇蹟逆轉神靴"
+        ] 
+    },
+    cloak: { 
+        name: "披風", icon: "🧥", mainStat: "maxHp", subStat: "lifesteal", base: 10, scale: 38, 
+        colorTier: [
+            "擋風碎布", "行者披風", "守衛披肩", "精靈斗篷", "吸血鬼夜披", "聖靈禦篷", "星河主宰披", "命運編織斗篷", "秩序守護神氅", "🌌 九幽吞天神篷",
+            "星雲漩窩不確定性斗篷", "太極兩儀萬法不侵氅", "寂滅黑洞視界斗篷", "真·諸天星河垂天翼", "天道意志化身神氅", "因果萬象守護大氅", "太初混沌開天法篷", "維度弦音編織神披", "大羅天唯我獨尊氅", "✨ 寰宇至尊·垂暮諸天主宰大氅",
+            "諸天慶雲護身法氅", "五色神光遮天大氅", "太極圖金橋防禦篷", "盤古幡開天防護氅", "天地玄黃氣運神篷", "荒古不滅至尊戰氅", "天道秩序代天巡狩大氅", "鴻蒙紫氣不滅神篷", "大羅天星河守護氅", "🌌 氣吞寰宇·太初造化神氅",
+            "十一維空間弦編織披風", "量子概率雲不可視斗篷", "事象地平線光流折射大氅", "暗物質星雲隱匿披風", "反物質黑洞視界大氅", "星系核心超重力防護篷", "多元宇宙意志守護大氅", "高維投影概念不可知氅", "因果切斷絕對虛無斗篷", "🌀 維度超脫·主宰乾坤神氅",
+            "【定義：無法選中】法篷", "【時間線收束】因果大氅", "【真理唯一】本源神氅", "【邏輯崩潰】破滅斗篷", "【不存在之衣】虛無氅", "【概念抹殺】諸天守護大氅", "【超越敘事】次元編織氅", "【全能概念】至尊造化大氅", "【超越一切法則】本源氅", "🌌 終極超越·全知全能混沌神氅",
+            // 🆕 51-60 級
+            "普朗克能量常數隔離大氅", "十一維度幾何摺疊斗篷", "弦網波動超對稱隱匿篷", "虛時間軸因果屏蔽法氅", "狄拉克海負能吞噬黑篷", "時空斷層相位折射大氅", "概率雲強行塌陷守護篷", "大統一理論重力支配大氅", "非歐幾何空間曲率大氅", "🌌 根源解體·無極混元神氅",
+            // 🆕 61-70 級
+            "【劇情免疫】無常設定大氅", "【旁白未提及】存在抹消篷", "【第四面牆】維度阻隔大氅", "【因果切斷】邏輯防禦大氅", "【不可名狀】星之彩幻光斗篷", "【作者親臨】敘事抗性大氅", "【悖論防禦】時空閉環大氅", "【史詩銘刻】傳奇神話大氅", "【虛構層躍遷】降維屏障氅", "🎬 劇本終結·虛無永夜神氅",
+            // 🆕 71-80 級
+            "全知法庭最高審判官大氅", "因果公正律法神聖大氅", "至高赦免聖光洗禮大氅", "天堂之門熾天使守護羽翼", "深淵放逐永恆沉淪黑篷", "命運編織因果星軌大氅", "罪業免除業火熔岩法氅", "神格凝聚信仰不朽大氅", "福音降臨真理傳播聖氅", "⚖️ 諸神黃昏·至高秩序神氅",
+            // 🆕 81-90 級
+            "卡巴拉生命之樹垂天守護氅", "奧林匹斯眾神王座不滅雷霆氅", "英靈殿不滅戰魂金剛護體篷", "蓋亞意志地核重力折射大氅", "阿胡拉光明神威至善大氅", "濕婆滅世劫火萬物終焉大氅", "修羅王不滅殺戮血海修羅氅", "原生母體混沌造化始源大氅", "諸神黃昏萬物寂滅終焉大氅", "👑 至高天神·九界無上大氅",
+            // 🆕 91-100 級
+            "【概念天花板】唯我法氅", "【幻想具現】奇蹟不滅篷", "【真理公式】絕對虛無氅", "【全知全能】因果至尊氅", "【不可言說】不朽真名氅", "【超越一切】無限概念篷", "【世界意志】極光至尊氅", "【終極解構】太初無極氅", "【神話史詩】永恆輝煌氅", "🌌 幻想終點·奇蹟混沌神氅"
+        ] 
+    },
+    ring: { 
+        name: "飾品", icon: "💍", mainStat: "luk", subStat: "lifesteal", base: 1, scale: 3, 
+        colorTier: [
+            "銅製指環", "銀製戒指", "白金徽章", "紅寶石之戒", "黑曜石眼眸", "幸運四葉草", "聚寶盆之環", "永恆主宰神戒", "維度崩裂之戒", "🔮 萬物起源神璽",
+            "因果糾纏不滅玉髓", "真理本源核心核心", "主宰意志秩序神戒", "真·造化弄人混沌璽", "大千世界縮影神環", "太初極光莫比烏斯環", "時空悖論不朽神戒", "紀元更迭終焉之璽", "寰宇源頭太虛神冠", "✨ 寰宇至尊·不朽紀元主宰印璽",
+            "混沌青蓮伴生種子", "造化玉碟殘片指環", "東皇鐘縮小版神環", "太極兩儀生死玄戒", "天道氣運造化神印", "荒古至尊不滅玉佩", "鴻蒙紫氣證道聖璽", "大羅天星宿護體環", "五行造化辟邪神戒", "🔮 八荒六合·唯我獨尊法璽",
+            "高維度克萊因瓶指環", "量子疊加態概率戒指", "莫比烏斯無限循環徽章", "黑洞奇點重力壓縮指環", "反物質湮滅核心手環", "星際航道星圖觀測儀", "多元宇宙常數控制核心", "高維概念具現化徽章", "因果律倒轉命運戒指", "🌀 維度超脫·天道主宰印璽",
+            "【定義：絕對幸運】核心", "【時間線重置】因果徽章", "【真理具現】本源印璽", "【邏輯死循環】悖論戒指", "【存在抹除】虛無指環", "【因果反轉】諸天神璽", "【超越次元】敘事徽章", "【全知全能】至尊主宰印", "【超越一切概念】本源璽", "🔮 終極超越·全知全能主宰神璽",
+            // 🆕 51-60 級
+            "普朗克常數微觀支配指環", "十一維度流形克萊因玉髓", "弦網震盪超對稱調頻徽章", "虛時間軸宿命重置核心", "狄拉克海負能坍噬之戒", "時空斷層相位錨定戒指", "概率雲完全收束真理璽", "大統一理論四力支配印璽", "非歐幾何曲率折射指環", "🔮 根源解體·無極混元寶印",
+            // 🆕 61-70 級
+            "【劇情免疫】主角光環指環", "【旁白欽定】絕對幸運徽章", "【打破次元】不可視投影之戒", "【因果逆轉】命運莫比烏斯環", "【舊日支配】外神原核指環", "【作者特權】世界線修改印璽", "【悖論產生】死循環邏輯之戒", "【史詩永恆】不朽神話圖騰", "【降維崩裂】二次元解構核心", "🎬 劇本終結·無量寂滅神璽",
+            // 🆕 71-80 級
+            "全知法庭秩序最高裁決璽", "因果公正律法大天尊徽章", "至高赦免璀璨聖光指環", "天堂之門神聖大天使印璽", "深淵放逐永恆沉淪至暗戒", "命運編織三生因果星軌環", "罪業洗滌業火涅槃指環", "神格凝聚信仰不朽王璽", "福音宣告真理傳播神戒", "⚖️ 諸神黃昏·至高秩序神璽",
+            // 🆕 81-90 級
+            "卡巴拉生命之樹核心核心", "奧林匹斯萬神殿至尊主宰戒", "英靈殿金剛不滅狂戰士徽章", "蓋亞意志地核重力扭曲之戒", "阿胡拉光明神威至善印璽", "濕婆滅世終焉劫火寂滅戒", "修羅王不磨殺戮血海皇印", "原生母體混沌造化始源璽", "諸神黃昏萬物終焉宿命環", "👑 至高天神·九界主宰印璽",
+            // 🆕 91-100 級
+            "【概念天花板】唯我神印", "【幻想具現】奇蹟不滅戒", "【真理公式】絕對萬能璽", "•【全知全能】因果至尊戒", "【不可言說】不朽真名環", "【超越一切】無限概念徽", "【世界意志】極光至尊璽", "【終極解構】太初無極戒", "【神話史詩】永恆輝煌印", "🔮 幻想終點·奇蹟主宰神璽"
+        ] 
+    }
 };
 
-const TIER_COLORS = ["#ffffff", "#e2e2e2", "#3fb950", "#238636", "#58a6ff", "#1f6feb", "#bc8cff", "#8957e5", "#f2cc60", "#ff3333"];
+// 🎨 1~100 級超完整顏色品質階級庫
+const TIER_COLORS = [
+    "#ffffff", "#e2e2e2", "#3fb950", "#238636", "#58a6ff", "#1f6feb", "#bc8cff", "#8957e5", "#f2cc60", "#ff3333", // 1-10
+    "#ff66cc", "#ff00aa", "#00ffff", "#00ff99", "#ffaa00", "#ff6600", "#d4af37", "#e5c158", "#ffffff", "#ffeb3b", // 11-20
+    "#a47251", "#7bc6ff", "#5319af", "#ff9e79", "#da3633", "#ab7df8", "#f0e68c", "#b8860b", "#4ffedf", "#ffd700", // 21-30
+    "#00ffaa", "#ff00ff", "#39ff14", "#bc34fa", "#17b8ff", "#ff4500", "#7fff00", "#e0115f", "#00e5ff", "#ffffff", // 31-40
+    "#ff3366", "#33ffcc", "#cc33ff", "#ffff33", "#ff5500", "#00ffff", "#ff00ff", "#ffff00", "#ffffff", "#ff0055", // 41-50
+    // 🆕 新增 51~100 級高階天梯顏色
+    "#ff9999", "#99ffff", "#ff99ff", "#ffff99", "#99ff99", "#cc99ff", "#ffcc99", "#99ccff", "#ff99cc", "#ff5555", // 51-60
+    "#00ff88", "#ff0088", "#88ff00", "#8800ff", "#0088ff", "#ff8800", "#00ff99", "#ff0099", "#99ff00", "#ff33a3", // 61-70
+    "#e6b800", "#00e6b8", "#b800e6", "#b8e600", "#00b8e6", "#e600b8", "#e6e600", "#33ffaa", "#ff33aa", "#ff1a1a", // 71-80
+    "#ff7f50", "#1e90ff", "#ff1493", "#32cd32", "#ff8c00", "#4b0082", "#00ced1", "#ff4500", "#9400d3", "#ff007f", // 81-90
+    "#da1b60", "#00e5ff", "#bd10e0", "#9013fe", "#4a90e2", "#50e3c2", "#b8e986", "#f5a623", "#ff003c", "#ff0055"  // 91-100
+];
 
-// 🎲 3. 裝備隨機生成器（引入吸血百分比轉換）
+// 🎲 3. 裝備隨機生成器（引入吸血百分比轉換 + 🧬 新增研發點數追加屬性判定）
 window.generateEquipmentObject = function(slot, level) {
     const db = EQ_DB[slot];
     if (!db) return null;
 
-    const lv = Math.max(1, Math.min(10, level));
+    const lv = Math.max(1, Math.min(100, level));
     const id = "eq_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
     
     let mainVal = Math.floor(db.base + (lv - 1) * db.scale);
@@ -1056,14 +1349,70 @@ window.generateEquipmentObject = function(slot, level) {
     if (["crit", "dodge", "hit", "lifesteal"].includes(db.mainStat)) mainVal = parseFloat((db.base + (lv - 1) * (db.scale * 0.15)).toFixed(1));
     if (["crit", "dodge", "hit", "lifesteal"].includes(db.subStat)) subVal = parseFloat(((db.base * 0.3) + (lv - 1) * (db.scale * 0.1)).toFixed(1));
 
-    return {
-        id: id, slot: slot, name: db.colorTier[lv - 1], lv: lv, color: TIER_COLORS[lv - 1], icon: db.icon,
-        isEquipped: false, price: lv * lv * 450 + (lv * 200), stats: { [db.mainStat]: mainVal, [db.subStat]: subVal }
+    // 1. 先把基礎裝備物件建立起來
+    const eq = {
+        id: id, 
+        slot: slot, 
+        name: db.colorTier[lv - 1], 
+        lv: lv, 
+        color: TIER_COLORS[lv - 1], 
+        icon: db.icon,
+        isEquipped: false, 
+        price: lv * lv * 450 + (lv * 200), 
+        stats: { [db.mainStat]: mainVal, [db.subStat]: subVal },
+        extraStats: {} // 預設空的追加詞條物件
     };
+
+    // ====================================================================
+    // 🧬【基因改造核裂變】解鎖追加屬性核心抽獎大腦
+    // ====================================================================
+    // 🎯 檢查：只有當玩家「解鎖了科技樹」而且「科技樹裡面有額外屬性開關」時才觸發
+    if (window.game && game.tech && game.tech.extraStats) {
+        
+        // 🎲 隨機滾動庫：設定可以隨機追加的副詞條種類
+        const statPool = [
+            { key: "atk", n: "攻擊力", isPct: false },
+            { key: "def", n: "防禦力", isPct: false },
+            { key: "maxHp", n: "最大生命", isPct: false },
+            { key: "crit", n: "爆擊率", isPct: true },
+            { key: "lifesteal", n: "吸血率", isPct: true },
+            { key: "dodge", n: "閃避率", isPct: true }
+        ];
+
+        // 🎲 隨機抽取 1~2 個追加屬性（可根據需要調整）
+        // 滿級神裝必定會拿到更好的詞條！
+        let rolledStat = statPool[Math.floor(Math.random() * statPool.length)];
+        
+        let baseBonus = lv * 1.5; // 基礎數值隨裝備等級同步放大
+        
+        if (rolledStat.isPct) {
+            // 百分比屬性隨機生成（例如 100級 可以拿到 +5.0% ~ +15.0% 額外加成）
+            let pctVal = parseFloat((5 + Math.random() * 10) * (lv * 0.01 + 0.5)).toFixed(1);
+            eq.extraStats[rolledStat.key] = parseFloat(pctVal);
+        } else {
+            // 一般整數屬性隨機生成（例如 100級 可以拿到 +150 ~ +300 攻擊力）
+            let numVal = Math.floor((15 + Math.random() * 15) * (lv * 0.1 + 1));
+            eq.extraStats[rolledStat.key] = numVal;
+        }
+
+        // 🚀【雙重保險】如果抽到了追加屬性，我們順便把價格再提高 20%
+        eq.price = Math.floor(eq.price * 1.2);
+    }
+    // ====================================================================
+
+    // 🎯【全劇終最關鍵】必須要把捏好的裝備 return 回去！否則打造系統會拿到空氣！
+    return eq;
 };
 
 // 🧮 4. 全域屬性計算大腦
 window.recalculatePlayerStats = function() {
+    // 【🚀 核心安全網】
+    if (typeof game === 'undefined') window.game = {};
+    if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5, agi: 5, luk: 10 };
+    if (!game.eqInv) game.eqInv = [];
+    if (!game.equippedSlots) game.equippedSlots = { "武器": null, "頭盔": null, "胸甲": null, "手套": null, "護腿": null, "鞋子": null, "披風": null, "飾品": null };
+
+    // 1. 基礎屬性初始化
     let baseAtk = 10 + (game.player.lv - 1) * 3;
     let baseMaxHp = 100 + (game.player.lv - 1) * 25;
     let baseDef = 5 + (game.player.lv - 1) * 2;
@@ -1112,7 +1461,7 @@ window.recalculatePlayerStats = function() {
     window.renderAllPlayerUI();
 };
 
-// 🎨 5. 總渲染大腦（完美刷新全新對齊的屬性與吸血面板）
+// 🎨 5. 總渲染大腦（完美刷新全新對齊的屬性、吸血面板、以及動態幻彩發光）
 window.renderAllPlayerUI = function() {
     if (!document.getElementById('char-lv')) return;
 
@@ -1138,8 +1487,16 @@ window.renderAllPlayerUI = function() {
     if (document.getElementById('char-exp-bar')) document.getElementById('char-exp-bar').style.width = expPercent + "%";
     if (document.getElementById('char-exp-text')) document.getElementById('char-exp-text').innerText = `${game.player.exp} / ${game.player.maxExp}`;
 
-	// ====================================================================
-    // 🛡️【精準鎖定核心】刷 8 大穿戴槽（徹底根治 F5 閃爍變字問題）
+    // ⚡ 核心輔助工具：根據裝備等級自動分發你的 CSS 發光 Class
+    const getGlowClass = (lv) => {
+        if (lv === 100) return 'eq-rainbow-100'; // 100級至尊幻彩流光
+        if (lv === 50) return 'eq-rainbow-50';   // 50級終極天道虹光
+        if (lv >= 45) return 'eq-blink-high';     // 45~49 以及 51~99 級的高頻爆閃
+        return '';                                // 普通裝備不加特效
+    };
+
+    // ====================================================================
+    // 🛡️【精準鎖定核心】刷 8 大穿戴槽（套用特效 Class）
     // ====================================================================
     const slots = ['weapon', 'helmet', 'armor', 'gloves', 'leggings', 'boots', 'cloak', 'ring'];
     slots.forEach(slot => {
@@ -1152,21 +1509,28 @@ window.renderAllPlayerUI = function() {
         
         // 1. 如果有穿裝備
         if (eq) {
-            // 🛡️ 防閃爍更新：外框只改邊框顏色，不碰裡面的字
             el.style.borderColor = eq.color + "70";
             
-            // 🎯 精準只修改後面的文字內容與顏色，前綴（例如 ⚔️ 武器:）穩如泰山
             if (nameSpan) {
+                // 🎯 清除舊的特效 Class，並換上符合當前等級的發光衣服
+                nameSpan.className = getGlowClass(eq.lv); 
+                
                 nameSpan.innerHTML = `Lv.${eq.lv} ${eq.name}`;
-                nameSpan.style.color = eq.color; // 完美套用裝備品質顏色
+                // 如果是特效裝備，CSS 的 linear-gradient 會接管顏色，否則套用普通品質顏色
+                if (eq.lv !== 50 && eq.lv !== 100) {
+                    nameSpan.style.color = eq.color; 
+                } else {
+                    nameSpan.style.color = ''; // 讓給 CSS text-fill-color
+                }
             }
         } 
         // 2. 如果沒穿裝備
         else {
             el.style.borderColor = "#30363d";
             if (nameSpan) {
+                nameSpan.className = ''; // 清空特效
                 nameSpan.innerText = "無";
-                nameSpan.style.color = "#57606a"; // 質感暗灰色
+                nameSpan.style.color = "#57606a"; 
             }
         }
     });
@@ -1191,12 +1555,16 @@ window.renderAllPlayerUI = function() {
         if (eq.stats.crit) stats.push(`💥+${eq.stats.crit}%`);
         if (eq.stats.dodge) stats.push(`🌀+${eq.stats.dodge}%`);
         if (eq.stats.hit) stats.push(`🎯+${eq.stats.hit}%`);
-        if (eq.stats.lifesteal) stats.push(`🩸吸血+${eq.stats.lifesteal}%`); // 背包顯示
+        if (eq.stats.lifesteal) stats.push(`🩸吸血+${eq.stats.lifesteal}%`); 
+
+        // 🎯 決定背包裡這件裝備名字的特效類名
+        const glowClass = getGlowClass(eq.lv);
+        const colorStyle = (eq.lv === 50 || eq.lv === 100) ? '' : `color: ${eq.color};`;
 
         html += `
         <div style="background: #0d1117; border: 1px solid ${eq.isEquipped ? eq.color : '#30363d'}; border-radius: 4px; padding: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
             <div>
-                <div style="font-size: 11px; font-weight: bold; color: ${eq.color};">${eq.icon} Lv.${eq.lv} ${eq.name}</div>
+                <div class="${glowClass}" style="font-size: 11px; font-weight: bold; ${colorStyle}">${eq.icon} Lv.${eq.lv} ${eq.name}</div>
                 <div style="font-size: 9px; color: #8b949e; margin-top: 2px;">${stats.join(' | ')}</div>
             </div>
             <div style="display: flex; gap: 4px;">
@@ -1331,11 +1699,53 @@ game.unlocked[i] = (i === 1); // 權限初始化。只有第一條預設解鎖
 //    - 使用 prepend() 將新訊息插入到最上方，讓玩家第一時間看到最新資訊。
 //    - 自動清理：若訊息超過 50 條，則刪除最舊的一條，防止網頁因內容過多而卡頓。
 // ==========================================
-    function addLog(m, c='#3fb950') { 
-        const log = document.getElementById('log'); if(!log) return;
-        const d = document.createElement('div'); d.style.color = c; d.innerHTML = `[${new Date().toLocaleTimeString()}] > ${m}`; 
-        log.prepend(d); if(log.childNodes.length > 50) log.lastChild.remove();
+function addLog(m, c='#3fb950') {
+    const log = document.getElementById('log');
+    if(!log) return;
+    
+    const d = document.createElement('div');
+    
+    // 🎯 預設使用傳入的品質顏色
+    let finalColor = c;
+    
+    // 🌈【核心突破】檢查這條日誌是不是包含 100級 或 50級 的神裝文字
+    // 只要文字裡面含有 "Lv.100" 或者是你設定的終極裝備關鍵字
+    if (m.includes('Lv.100') || m.includes('100') || m.includes('幻想終點') || m.includes('終極超越')) {
+        // ⚡ 1. 穿上你寫好的 100 級日系幻彩寶石流光外衣
+        d.className = 'eq-rainbow-100';
+        
+        // ⚡ 2. 【最關鍵】將顏色強制設為 transparent (透明)！
+        // 唯有洗掉原本的綠色硬編碼，CSS 的漸層跟爆閃動畫才能穿透文字顯現出來！
+        finalColor = 'transparent';
+        
+        // ⚡ 3. 補上排版修正，確保漸層流光擁有正確的裁剪基材
+        d.style.cssText = "display: inline-block !important; -webkit-background-clip: text !important; background-clip: text !important; vertical-align: middle; font-weight: bold !important;";
+    } 
+    else if (m.includes('Lv.50') || m.includes('50')) {
+        // ⚡ 50 級封頂彩虹流光處理
+        d.className = 'eq-rainbow-50';
+        finalColor = 'transparent';
+        d.style.cssText = "display: inline-block !important; -webkit-background-clip: text !important; background-clip: text !important; vertical-align: middle; font-weight: bold !important;";
+    } 
+    else if (m.includes('Lv.45') || m.includes('Lv.46') || m.includes('Lv.47') || m.includes('Lv.48') || m.includes('Lv.49')) {
+        // ⚡ 45~49 級高頻爆閃處理 (保留原來的顏色，只加閃爍動畫)
+        d.className = 'eq-blink-high';
     }
+
+    // 🎯 將最終決定好的顏色塗在日誌 div 上 (普通裝備是綠/橘色，神裝則是透明)
+    if (finalColor !== 'transparent') {
+        d.style.color = finalColor;
+    }
+    
+    // 寫入時間和訊息內容
+    d.innerHTML = `[${new Date().toLocaleTimeString()}] > ${m}`;
+    
+    // 將新日誌插到最前面
+    log.prepend(d);
+    
+    // 超過 50 條自動刪除舊日誌
+    if(log.childNodes.length > 50) log.lastChild.remove();
+}
 
 // ==========================================
 // [Script] addLog 系統日誌輸出功能 - 完結
@@ -1919,22 +2329,29 @@ function updateUI() {
         }
     }
     
+	// ==========================================
+    // 🧪 科技按鈕狀態刷新（已修正：補上第四個新技能對照）
+    // ==========================================
     if(game.tech) {
         const techMap = { 
             autoRepair: 'tech-repair-btn', 
             overtime: 'tech-overtime-btn', 
-            highOrder: 'tech-order-btn' 
+            highOrder: 'tech-order-btn',
+            extraStats: 'tech-extrastat-btn' // 🎯 修正：就是這行！把它加進去，原系統就會自動處理它了！																	   
         };
         Object.keys(techMap).forEach(key => {
             const btn = document.getElementById(techMap[key]);
             if(btn && game.tech[key]) {
-                btn.innerText = "已解鎖";
-                btn.disabled = true;
-                btn.style.background = "#21262d";
-                btn.style.color = "#8b949e";
+                btn.innerText = "已解鎖";            // 1. 文字變「已解鎖」，100% 統一
+                btn.disabled = true;                // 2. 讓按鈕變成無法點擊
+                btn.style.background = "#21262d";    // 3. 變成 GitHub 風格深灰色
+                btn.style.color = "#8b949e";        // 4. 文字變成淡淡的灰白色
             }
         });
     }
+	// ==========================================
+    // 🧪 科技按鈕狀態刷新（已修正：補上第四個新技能對照）
+    // ==========================================
 
     // ==========================================
     // 🚀【單一數據源：六大冒險/煉金新材料精準點對點刷新】
@@ -1955,6 +2372,42 @@ function updateUI() {
     if (typeof updateCharacterUI === 'function') updateCharacterUI();
     if (typeof updateBattleUI === 'function') updateBattleUI();
     if (typeof updateForgeUI === 'function') updateForgeUI();
+
+// ====================================================================
+    // 🌈【終極實測爆發】強行奪回打造預覽控制權，逼迫 Lv.45+、50、100 級發光！
+    // ====================================================================
+    // 你的打造預覽名字標籤真正的 ID 叫做 'craft-eq-name'
+    const previewEl = document.getElementById('craft-eq-name'); 
+    if (previewEl) {
+        let currentLv = (game.player && game.player.lv) ? game.player.lv : 1;
+
+        // 🎯 1. 根據玩家當前等級計算該穿哪件發光衣服
+        let glowClass = "";
+        if (currentLv === 100) glowClass = 'eq-rainbow-100';
+        else if (currentLv === 50) glowClass = 'eq-rainbow-50';
+        else if (currentLv >= 45) glowClass = 'eq-blink-high';
+
+        if (glowClass !== "") {
+            // 🎯 2. 強行覆蓋 Class，並切斷原本 updateForgeUI 塗上去的硬編碼顏色
+            previewEl.className = glowClass;
+            previewEl.style.display = "inline-block !important";
+
+            // 50 級和 100 級必須將文字顏色變透明，否則 CSS 漸層流光穿透不出來
+            if (currentLv === 50 || currentLv === 100) {
+                previewEl.style.color = 'transparent';
+                previewEl.style.webkitTextFillColor = 'transparent';
+            } else {
+                // 45~49 級保留原色，只觸發極速爆閃動畫
+                previewEl.style.color = ''; 
+                previewEl.style.webkitTextFillColor = '';
+            }
+        } else {
+            // 低於 45 級，安全卸下發光服裝，還原普通外觀
+            previewEl.classList.remove('eq-rainbow-100', 'eq-rainbow-50', 'eq-blink-high');
+            previewEl.style.webkitTextFillColor = '';
+        }
+    }
+    // ====================================================================
 }
 // ==========================================
 // [Script] updateUI 全域數據同步刷新 (終極隔離防禦版) - 結尾
@@ -2441,7 +2894,7 @@ function toggleAdmin() {
                             style="width:50px;" value="${cfg[t].r || 0}" onchange="updatePrice('${t}')">
                     </div>
                     <button class="action-btn btn-blue" style="width: 50px; height:28px; font-size:12px;" 
-                        onclick="if(typeof inject==='function') inject('${t}', 100); if(typeof renderAllPlayerUI==='function') renderAllPlayerUI(); if(typeof updateUI==='function') updateUI();">+100</button>
+                        onclick="if(typeof inject==='function') inject('${t}', 10000); if(typeof renderAllPlayerUI==='function') renderAllPlayerUI(); if(typeof updateUI==='function') updateUI();">+10000</button>
                 `;
                 resContainer.appendChild(row);
             });
@@ -2640,6 +3093,7 @@ function loadGame() {
         updateUI(); 
         if (typeof updateBattleUI === 'function') updateBattleUI();
         if (typeof updateForgeUI === 'function') updateForgeUI();
+        if (typeof renderAllPlayerUI === 'function') renderAllPlayerUI(); // 🆕 讀檔後確保重新渲染一次角色冒險面板																																	 
     }
 
     function resetGame() { 
@@ -3468,107 +3922,123 @@ window.startMeltingIron = function() {
 // 🔨 [功能核心層] 鐵匠鍛造系統與裝備加成邏輯 (終極精簡單一真實源版)
 // ==========================================
 
-/**
- * 👁️ 選擇不同裝備時，即時更新下方所需的材料文字提示
- */
-function craftEquipment() {
-    const type = document.getElementById('craft-eq-select').value;
+// ==========================================
+// 🔨 配合 8部位大腦 的【全新鐵匠鋪打造系統】
+// ==========================================
+
+// 🛡️ 1. 補全裝備生成大腦（確保 generateEquipmentObject 有正確的 return 並且不會報錯）
+window.generateEquipmentObject = function(slot, level) {
+    const db = EQ_DB[slot];
+    if (!db) return null;
+
+    const lv = Math.max(1, Math.min(100, level));
+    const id = "eq_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
     
-    if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10 };
+    let mainVal = Math.floor(db.base + (lv - 1) * db.scale);
+    let subVal = Math.floor((db.base * 0.5) + (lv - 1) * (db.scale * 0.4));
     
-    // 🔥【核心安全鎖】確保你的核心背包陣列存在，防爆
+    // 百分比屬性（爆擊、閃避、命中、吸血）轉化為小數百分比
+    if (["crit", "dodge", "hit", "lifesteal"].includes(db.mainStat)) mainVal = parseFloat((db.base + (lv - 1) * (db.scale * 0.15)).toFixed(1));
+    if (["crit", "dodge", "hit", "lifesteal"].includes(db.subStat)) subVal = parseFloat(((db.base * 0.3) + (lv - 1) * (db.scale * 0.1)).toFixed(1));
+
+    const eq = {
+        id: id, 
+        slot: slot, 
+        name: db.colorTier[lv - 1], 
+        lv: lv, 
+        color: TIER_COLORS[lv - 1], 
+        icon: db.icon,
+        isEquipped: false, 
+        price: lv * lv * 450 + (lv * 200), 
+        stats: { [db.mainStat]: mainVal, [db.subStat]: subVal },
+        extraStats: {} 
+    };
+
+    return eq; // 🎯 關鍵補救：之前被切斷了，必須 return 否則背包永遠拿到 undefined
+};
+
+// ⚒️ 2. 全新打造控制函數
+window.craftEquipment = function() {
+    // 取得選單選中的部位
+    const slotSelect = document.getElementById('craft-eq-select');
+    if (!slotSelect) {
+        if (typeof addLog === 'function') addLog("🚫 找不到 ID 為 'craft-eq-select' 的部位選單！", "#ff4d4d");
+        return;
+    }
+    const slot = slotSelect.value;
+
+    // 🛡️ 安全初始化
+    if (!game.inv) game.inv = {};
     if (!game.eqInv) game.eqInv = [];
+    if (!game.player) game.player = { lv: 1 };
 
-    // 讀取材料數值
-    const ironAmt = game.inv.ironbar || 0;
-    const slimeAmt = game.inv.slimeGlow || 0;
-    const goblinAmt = game.inv.goblinEar || 0;
+    // 撈取真實的材料庫存
+    let ironAmt = game.inv.ironbar || 0;
+    let slimeAmt = game.inv.slimeGlow || 0;
+    let goblinAmt = game.inv.goblinEar || 0;
 
-    let craftedItem = null;
+    // 💰 檢查材料
+    if (ironAmt < 10 || slimeAmt < 3) {
+        if (typeof addLog === 'function') addLog(`🚫 材料不足！打造需要 鐵錠 x10 (當前:${ironAmt})、史萊姆黏液 x3 (當前:${slimeAmt})。`, "#ff4d4d");
+        return;
+    }
 
-    if (type === 'ironSword') {
-        if (ironAmt < 10 || slimeAmt < 3){
-            if (typeof addLog === 'function') addLog("🚫 材料不足！打造鐵礦大劍需要 鐵錠 x10、史萊姆黏液 x3。", "#ff4d4d");
-            return;
-        }
-        
-        // 🚀【純淨扣數】直接加減唯一核心變數
+    // 🎲 決定打造出來的裝備等級：完美對齊玩家當前等級
+    let targetLevel = game.player.lv || 1; 
+
+    // 📦 呼叫大腦隨機生成器
+    const newEquipment = window.generateEquipmentObject(slot, targetLevel);
+
+    if (newEquipment) {
+        // 扣除材料
         game.inv.ironbar -= 10;
         game.inv.slimeGlow -= 3;
 
-        // 📦 生成裝備資料包（配合你原本的裝備屬性結構）
-        craftedItem = {
-            id: "ironSword_" + Date.now(), // 唯一實例 ID 防重疊
-            templateId: "ironSword",
-            name: "鐵礦大劍",
-            type: "weapon",               // 裝備部位
-            icon: "⚔️",
-            stats: { atk: 15 },           // 自帶屬性
-            isEquipped: false             // 預設未穿戴
-        };
+        // 🎯 推進 8部位大腦真正盯著的背包變數
+        game.eqInv.push(newEquipment);
 
-        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x10、黏液 x3 打造了【⚔️ 鐵礦大劍】！已放入儲存背包。", "#ff9b30");
+        // ====================================================================
+        // 🌈【上回實測關鍵】計算發光類名，並利用空顏色阻斷父級顏色干擾
+        // ====================================================================
+        let glowClass = "";
+        if (newEquipment.lv === 100) glowClass = 'eq-rainbow-100'; // 100級幻彩
+        else if (newEquipment.lv === 50) glowClass = 'eq-rainbow-50';   // 50級虹光
+        else if (newEquipment.lv >= 45) glowClass = 'eq-blink-high';     // 45級爆閃
 
-    } else if (type === 'slimeArmor') {
-        if (ironAmt < 8 || goblinAmt < 4) {
-            if (typeof addLog === 'function') addLog("🚫 材料不足！打造史萊姆輕甲需要 鐵錠 x8、哥布林耳 x4。", "#ff4d4d");
-            return;
-        }
-        
-        // 🚀【純淨扣數】直接加減唯一核心變數
-        game.inv.ironbar -= 8;
-        game.inv.goblinEar -= 4;
-
-        // 📦 生成裝備資料包
-        craftedItem = {
-            id: "slimeArmor_" + Date.now(),
-            templateId: "slimeArmor",
-            name: "史萊姆輕甲",
-            type: "armor",
-            icon: "🛡️",
-            stats: { hp: 50 },            // 自帶屬性
-            isEquipped: false
-        };
-
-        if (typeof addLog === 'function') addLog("🔨 鏘鏘鏘！你成功消耗 鐵錠 x8、哥布林耳 x4 打造了【🛡️ 史萊姆輕甲】！已放入儲存背包。", "#ff9b30");
-    }
-
-    // 🚀【精準注入】將打造好的新裝備推進你真正用來刷背包的變數！
-    if (craftedItem) {
-        game.eqInv.push(craftedItem);
-    }
-
-    // ====================================================================
-    // ⚡【UI 同步鎖】直接更新材料顯示
-    // ====================================================================
-    if (typeof cfg !== 'undefined') {
-        Object.keys(cfg).forEach(key => {
-            const el = document.getElementById(`res-${key}`);
-            if (el && game.inv && game.inv[key] !== undefined) {
-                el.innerText = game.inv[key];
+        if (typeof addLog === 'function') {
+            if (glowClass !== "") {
+                // 🎯 核心殺手鐧：包上一層強力的內聯樣式確保佈局，並套用你的發光 Class
+                const logItemHtml = `<span class="${glowClass}" style="font-weight: bold; display: inline-block !important; -webkit-background-clip: text !important; background-clip: text !important;">【${newEquipment.icon} Lv.${newEquipment.lv} ${newEquipment.name}】</span>`;
+                
+                // ⚡ 注意：這裡第二個參數我們故意傳入 '' (空字串)，切斷 addLog 內部帶來的顏色污染！
+                addLog(`🔨 鏘鏘鏘！你消耗了材料，成功打造了 ${logItemHtml}！已放入儲存背包。`, '');
+            } else {
+                // 普通等級裝備，走正常的品質顏色（如普通綠色或金色）
+                addLog(`🔨 鏘鏘鏘！你消耗了材料，成功打造了 【${newEquipment.icon} Lv.${newEquipment.lv} ${newEquipment.name}】！已放入儲存背包。`, newEquipment.color);
             }
-        });
+        }
+        // ====================================================================
+
+        // 🔄 點對點更新材料 UI 顯示
+        if (document.getElementById('res-ironbar')) document.getElementById('res-ironbar').innerText = game.inv.ironbar;
+        if (document.getElementById('res-slimeGlow')) document.getElementById('res-slimeGlow').innerText = game.inv.slimeGlow;
+        if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar;
+        if (document.getElementById('txt-money')) document.getElementById('txt-money').innerText = game.money || 0;
+
+        // ⚡ 喚醒全域計算大腦，自動呼叫 window.renderAllPlayerUI() 刷新背包
+        if (typeof window.recalculatePlayerStats === 'function') {
+            window.recalculatePlayerStats();
+        } else if (typeof window.renderAllPlayerUI === 'function') {
+            window.renderAllPlayerUI();
+        }
+
+        // 💾 基礎更新與自動存檔
+        if (typeof updateUI === 'function') updateUI();
+        if (typeof saveGame === 'function') saveGame();
+    } else {
+        if (typeof addLog === 'function') addLog("🚫 裝備生成失敗，請檢查部位數據庫是否正確。", "#ff4d4d");
     }
-    
-    // 同步刷新角色狀態欄數據
-    if (document.getElementById('char-atk')) document.getElementById('char-atk').innerText = game.player.atk;
-    
-    const hpPercent = Math.min(100, Math.max(0, (game.player.hp / game.player.maxHp) * 100));
-    if (document.getElementById('char-hp-bar'))  document.getElementById('char-hp-bar').style.width = `${hpPercent}%`;
-    if (document.getElementById('char-hp-text')) document.getElementById('char-hp-text').innerText = `${Math.floor(game.player.hp)} / ${game.player.maxHp}`;
-
-    // 🔄 呼叫刷新背包與渲染函數，讓右下角背包立刻出現新裝備
-    // （請看看包含你貼的那段「// 刷背包」的整個完整函數叫甚麼名字，下面這幾行會自動嘗試呼叫它）
-    if (typeof renderInventory === 'function') renderInventory();
-    if (typeof renderAllPlayerUI === 'function') renderAllPlayerUI();
-    if (typeof updateForgeUI === 'function') updateForgeUI();
-
-    // 💾【全域同步並安全存檔】
-    if (typeof updateUI === 'function') updateUI();
-    if (typeof updateBattleUI === 'function') updateBattleUI();
-    if (typeof updateForgePreview === 'function') updateForgePreview(); // 刷新材料剩餘
-    if (typeof saveGame === 'function') saveGame();
-}
+};
 // ==========================================
 // 🔨 [功能核心層] 鐵匠鍛造系統邏輯結尾
 // ==========================================
@@ -3801,6 +4271,27 @@ function calculateOfflineProgress() {
 // 🔨 【0依賴、純乾淨防爆版】鍛造鋪核心控制器
 // ====================================================================
 
+// 🎨 內部特效輔助工具：自動根據等級塞入彩虹/閃爍或普通顏色
+function applyForgeStyleInternal(element, lv, baseColor) {
+    if (!element) return;
+    
+    // 🧹 先徹底還原所有特效 Class 同 CSS 屬性，避免拉滑桿或重新渲染時殘留
+    element.className = ""; 
+    element.style.color = baseColor; 
+    element.style.webkitBackgroundClip = "unset";
+    element.style.webkitTextFillColor = "initial";
+    element.style.backgroundClip = "unset";
+    element.style.textFillColor = "initial";
+
+    // 🎯 根據當前等級（lv）啟動對應嘅網頁特效 Class
+    if (lv === 50) {
+        // 🌈 50級封頂：真·天道全知全能，橫向流動七彩虹光
+        element.classList.add("eq-rainbow-50");
+    } else if (lv >= 45 && lv <= 49) {
+        // ✨ 45~49級：至高法則，極速發光閃爍
+        element.classList.add("eq-blink-high");
+    }
+}
 // 📏 1. 鐵錠消耗公式
 function getIronCostInternal(slot, lv) {
     const baseWeight = { weapon: 5, helmet: 4, armor: 8, gloves: 3, leggings: 5, boots: 4, cloak: 6, ring: 4 };
@@ -3836,7 +4327,8 @@ window.onForgeSliderChange = function(slot) {
         const nameEl = document.getElementById(`forge-name-${slot}`);
         if (nameEl) {
             nameEl.innerText = nameStr;
-            nameEl.style.color = colorStr;
+            // 🎯 調用全域特效工具 (拉 slider 時立刻變彩虹/閃爍)
+            applyForgeStyleInternal(nameEl, lv, colorStr);
         }
         if (document.getElementById(`cost-iron-${slot}`)) {
             document.getElementById(`cost-iron-${slot}`).innerText = ironCost;
@@ -3911,9 +4403,35 @@ window.executeForgeCraft = function(slot) {
                 newEq.isEquipped = true;
                 targetGame.eqInv.push(newEq);
                 
-                if (typeof addLog === 'function') {
-                    addLog(`🛠️ 皇家鐵匠一聲巨響！成功打造【${newEq.icon || ''}${newEq.name}】並已穿戴！`, "#52c41a");
-                }
+				// 📝 處理日誌特效同步 (精準修正版)
+				if (typeof addLog === 'function') {
+					let finalColor = (typeof TIER_COLORS !== 'undefined') ? TIER_COLORS[lv - 1] : "#52c41a";
+					let logName = "";
+					let logBgColor = "#52c41a"; // 預設整行動誌的底色
+					
+					// 🌈 打造日誌同步彩虹/發光效果 (精準對齊你的滿級條件)
+					if (lv === 10 || lv === 100) { 
+						// 🎯 滿級神裝：穿上 100 級日系幻彩外衣，並且強制文字透明讓流光穿透出來
+					logName = `<span class="eq-rainbow-100" style="display: inline !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent !important; font-weight: bold !important; vertical-align: middle;">${newEq.name}</span>`;						logBgColor = 'transparent'; // 關鍵：外層 div 變透明，阻斷綠色硬編碼污染
+					} else if (lv === 5) { 
+						// 🎯 如果你有 50 級或其他分檔，穿上橫向七彩虹光
+					logName = `<span class="eq-rainbow-50" style="display: inline !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent !important; font-weight: bold !important; vertical-align: middle;">${newEq.name}</span>`;
+						logBgColor = 'transparent';
+					} else if (lv >= 8 && lv <= 9) {
+						// 🎯 高階神裝：觸發極速爆閃
+					logName = `<span class="eq-blink-high" style="color: ${finalColor}; font-weight: bold !important; display: inline !important;">${newEq.name}</span>`;
+						logBgColor = finalColor;
+					} else {
+						// 普通級別
+					logName = `<span style="color: ${finalColor}; display: inline !important;">${newEq.name}</span>`;
+						logBgColor = finalColor;
+					}
+    
+    // 🎯【最核心修正點】
+    // 1. 將 ${newEq.name} 換成你上面辛辛苦苦封裝好特效 Class 的 ${logName}
+    // 2. 將結尾的 "#52c41a" 硬編碼換成動態的 logBgColor，遇到神裝自動變透明，絕不污染！
+    addLog(`🛠️ 皇家鐵匠一聲巨響！成功打造【${newEq.icon || ''}${logName}】並已穿戴！`, logBgColor);
+}
             }
         } else {
             if (typeof addLog === 'function') addLog(`⚠️ 打造成功，但未偵測到 generateEquipmentObject 函數，請確認裝備生成器名稱。`, "#ffaa00");
@@ -4440,7 +4958,78 @@ window.onload = function() {
 })();					
 // ==========================================
 // 🕹️ [UI 總控制] 萬能視窗拉窗簾摺疊函數 (適用於野外、煉金、鐵匠、日誌) - 完結
-// ==========================================				 
+// ==========================================		
+
+// ====================================================================
+// 🎯 打造介面發光 - 終極自動攔截修復大腦
+// ====================================================================
+(function() {
+    // 建立一個自動掃描器，每當 UI 更新或選單切換時，強行修正打造預覽的名字
+    function forceCraftPreviewGlow() {
+        const slotSelect = document.getElementById('craft-eq-select');
+        if (!slotSelect) return;
+
+        // 1. 抓取你畫面上，打造選單「下方」或「旁邊」用來顯示名字的那個區塊
+        // 根據你貼的 HTML 結構，通常在選單附近會有名稱顯示
+        const parentContainer = slotSelect.parentElement;
+        if (!parentContainer) return;
+
+        // 自動在這個區塊裡尋找用來顯示裝備名稱的標籤
+        // 它可能是單純的文字，也可能包在 div 或 span 裡
+        const currentLv = (window.game && game.player) ? (game.player.lv || 1) : 1;
+
+        // 2. 決定發光 Class
+        let glowClass = "";
+        if (currentLv === 100) glowClass = 'eq-rainbow-100';
+        else if (currentLv === 50) glowClass = 'eq-rainbow-50';
+        else if (currentLv >= 45) glowClass = 'eq-blink-high';
+
+        if (glowClass === "") return; // 低於 45 級不需要處理
+
+        // 3. 攔截並強行注入特效
+        // 我們尋找包含 "Lv." 或者裝備名稱的標籤（排除下拉選單本身）
+        const allElements = parentContainer.getElementsByTagName('*');
+        for (let el of allElements) {
+            if (el === slotSelect) continue;
+            
+            // 只要這個標籤裡面有顯示當前等級的字眼（例如 "Lv.50" 或 "Lv.100"）
+            if (el.innerText && el.innerText.includes(`Lv.${currentLv}`)) {
+                // 穿上發光外衣
+                if (!el.classList.contains(glowClass)) {
+                    el.className = glowClass;
+                    el.style.display = "inline-block";
+                    
+                    if (currentLv === 50 || currentLv === 100) {
+                        el.style.color = 'transparent';
+                        el.style.webkitTextFillColor = 'transparent';
+                    }
+                }
+                break; 
+            }
+        }
+    }
+
+    // 🎯 監聽選單切換事件
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.id === 'craft-eq-select') {
+            setTimeout(forceCraftPreviewGlow, 10);
+        }
+    });
+
+    // 🎯 勾住全域 UI 刷新，確保每次更新畫面時都自動亮起
+    const originalUpdateUI = window.updateUI;
+    window.updateUI = function() {
+        if (typeof originalUpdateUI === 'function') originalUpdateUI();
+        setTimeout(forceCraftPreviewGlow, 10);
+    };
+
+    const originalRenderAll = window.renderAllPlayerUI;
+    window.renderAllPlayerUI = function() {
+        if (typeof originalRenderAll === 'function') originalRenderAll();
+        setTimeout(forceCraftPreviewGlow, 10);
+    };
+})();
+		 
 </script>
 </body>
 </html>
