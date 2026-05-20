@@ -12,7 +12,7 @@
         body { background: #0d1117; color: #c9d1d9; font-family: 'Noto Sans TC', sans-serif; user-select: none; margin: 0; padding: 20px; }
         
         /* 頂部儀表板：固定在頂部，用於顯示金錢、資源等核心數據 */
-		.dashboard { display: flex; justify-content: space-around; max-width: 1040px; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
+		.dashboard { display: flex; justify-content: space-around; max-width: 900px; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
 		.stat-value { font-family: 'Share Tech Mono'; font-size: 20px; color: #58a6ff; } /* 數值文字樣式 */
 		.stat-label { font-size: 11px; color: #8b949e; } /* 標籤文字樣式 */
 
@@ -51,7 +51,7 @@
 	.modal-content { 
     background: #161b22; 
     width: 90%;          /* 加入這個：確保在小螢幕不會爆出去 */
-    max-width: 1040px;    /* 將原本的 width 改為 max-width */
+    max-width: 900px;    /* 將原本的 width 改為 max-width */
     padding: 25px; 
     border-radius: 16px; 
     border: 1px solid #30363d; 
@@ -67,15 +67,15 @@
 
 /* 統一容器寬度與置中 */
 .dashboard, .factory-floor {
-    width: 1040px;
-    max-width: 1040px; /* 設定一個統一的像素上限 */
+    width: 900px;
+    max-width: 900px; /* 設定一個統一的像素上限 */
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box; /* 確保 padding 不會撐大寬度 */
 }
 
         /* 工廠區域：遊戲核心操作畫面 */
-        .factory-floor { position: relative; max-width: 1040px; height: 50vh; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
+        .factory-floor { position: relative; max-width: 900px; height: 50vh; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
        .line-group { position: relative; height: 210px; border-bottom: 1px solid #21262d; } /* 單條生產線容器 */
         .line-label { position: absolute; left: 12px; top: 12px; font-size: 11px; color: #8b949e; font-weight: bold; opacity: 0.6; }
         /* 鎖定遮罩：未開啟產線時的顯示狀態 */
@@ -117,7 +117,7 @@
 		.part-gold { background: #4a90e2; } /* 鐵材零件顏色 */
 
         /* 底部 UI 佈局：分成日誌欄、升級欄、控制欄 */
-        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 1040px; margin: 20px auto; }
+        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 900px; margin: 20px auto; }
         .panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
         
         /* 遊戲日誌：顯示系統訊息的終端機樣式 */
@@ -511,7 +511,7 @@
 		<div id="rp-val" class="stat-value" style="color: #a371f7;">0</div>
 	</div>
 </div>
-<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
+<div style="width: 900px; max-width: 900px; margin: 20px auto; box-sizing: border-box;">
 
 <!-- 介面1.頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 完 -->
 
@@ -597,7 +597,7 @@
 
 	<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; box-sizing: border-box;">
     <div style="color: #f2cc60; font-size: 12px; font-weight: bold; margin-bottom: 10px;">🛡️ 當前全身穿戴裝備</div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+    <div style="display: grid; grid-template-columns: 1fr ; gap: 8px;">
         
         <div id="slot-weapon" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
             ⚔️ 武器: <span id="curr-eq-weapon" style="color:#57606a; font-weight: bold;">無</span>
@@ -646,7 +646,7 @@
 <!-- 介面2.角色 完 -->
 
 <!-- 介面3.無限爬塔 -->
-<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 1040px; box-sizing: border-box;">
+<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 900px; box-sizing: border-box;">
     
     <div onclick="window.toggleTowerWindow(this)" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; user-select: none;">
         <h3 style="color: #f2cc60; margin: 0; font-size: 16px; display: flex; align-items: center; gap: 6px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
@@ -694,7 +694,7 @@
 <!-- 介面3.無限爬塔 完結 -->
 
 <!-- 介面4.工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
-<div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 1040px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
+<div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 900px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
     <h2 style="color: #58a6ff; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
         ⚙️ 工廠生產線控制台
     </h2>
@@ -704,11 +704,11 @@
 border-top: none; border-bottom-left-radius: 12px; 
 border-bottom-right-radius: 12px; background: #0d1117; 
 transition: height 0.2s ease-out; position: relative; 
-max-width: 1040px; margin: 0 auto; box-sizing: border-box;"></div>
+max-width: 900px; margin: 0 auto; box-sizing: border-box;"></div>
 <!-- 介面4.工廠生產地板 -->
 
 <!-- 介面5.生成野外區域（採集）& 煉金術工坊（合成） -->
-<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
+<div style="width: 900px; max-width: 900px; margin: 20px auto; box-sizing: border-box;">
 
 
 
@@ -948,7 +948,7 @@ max-width: 1040px; margin: 0 auto; box-sizing: border-box;"></div>
     </div>
 
     <!-- 👨‍🔧 研發實驗室面板面板 -->
-<div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 1040px; margin-left: auto; margin-right: auto;">
+<div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 900px; margin-left: auto; margin-right: auto;">
     <h2 style="color: #a371f7; margin-top:0;">👨‍🔧 研發實驗室 (Tech Tree)</h2>
     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
         <div class="shop-item" style="flex:1; min-width:200px;">
@@ -1003,7 +1003,7 @@ max-width: 1040px; margin: 0 auto; box-sizing: border-box;"></div>
 <!-- 旅行商人介面 -->
 <div id="title-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; justify-content: center; align-items: center;">
     
-    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 440px; max-width: 1040px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; max-height: 80vh;">
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 440px; max-width: 900px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; max-height: 80vh;">
         
         <button onclick="closeTitleModal()" style="position: absolute; top: 12px; right: 15px; background: none; border: none; color: #8b949e; font-size: 18px; cursor: pointer;">✕</button>
         
@@ -1668,14 +1668,14 @@ window.renderAllPlayerUI = function() {
     let html = "";
     game.eqInv.forEach(eq => {
         let stats = [];
-        if (eq.stats.atk) stats.push(`⚔️+${eq.stats.atk}`);
-        if (eq.stats.def) stats.push(`🛡️+${eq.stats.def}`);
-        if (eq.stats.maxHp) stats.push(`🩸+${eq.stats.maxHp}`);
-        if (eq.stats.agi) stats.push(`⚡+${eq.stats.agi}`);
-        if (eq.stats.luk) stats.push(`🍀+${eq.stats.luk}`);
-        if (eq.stats.crit) stats.push(`💥+${eq.stats.crit}%`);
-        if (eq.stats.dodge) stats.push(`🌀+${eq.stats.dodge}%`);
-        if (eq.stats.hit) stats.push(`🎯+${eq.stats.hit}%`);
+        if (eq.stats.atk) stats.push(`⚔️攻擊+${eq.stats.atk}`);
+        if (eq.stats.def) stats.push(`🛡️防禦+${eq.stats.def}`);
+        if (eq.stats.maxHp) stats.push(`🩸生命+${eq.stats.maxHp}`);
+        if (eq.stats.agi) stats.push(`⚡敏捷+${eq.stats.agi}`);
+        if (eq.stats.luk) stats.push(`🍀幸運+${eq.stats.luk}`);
+        if (eq.stats.crit) stats.push(`💥爆擊+${eq.stats.crit}%`);
+        if (eq.stats.dodge) stats.push(`🌀閃避+${eq.stats.dodge}%`);
+        if (eq.stats.hit) stats.push(`🎯命中+${eq.stats.hit}%`);
         if (eq.stats.lifesteal) stats.push(`🩸吸血+${eq.stats.lifesteal}%`); 
 
         // 🎯 決定背包裡這件裝備名字的特效類名
