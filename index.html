@@ -557,16 +557,60 @@
 </div>
 <!-- 角色介面 完結 -->
 
-<!-- 🏭 工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
+<!-- 介面3.無限爬塔 -->
+<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 1040px; box-sizing: border-box;">
+    
+    <div onclick="window.toggleTowerWindow(this)" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; user-select: none;">
+        <h3 style="color: #f2cc60; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+            🗼 皇家無盡天梯 <span id="tower-layer-badge" style="background: #ff9b30; color: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">目前: 更新中...</span>
+        </h3>
+        
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="tower-status" style="font-size: 11px; color: #ff9b30; font-weight: bold;">激戰中...</span>
+            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">💡 點擊收起 [➖]</span>
+        </div>
+    </div>
+
+    <div id="tower-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
+        
+        <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #c9d1d9;">
+                <span>👹 當前守層怪: <span id="tower-monster-name" style="color: #ff7b72; font-weight: bold;">更新中...</span></span>
+                <span>❤️ HP: <span id="tower-monster-hp" style="color: #ff7b72;">更新中...</span></span>
+            </div>
+            <div style="background: #21262d; width: 100%; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden;">
+                <div id="tower-monster-bar" style="background: #ff7b72; width: 93.3%; height: 100%; transition: width 0.1s;"></div>
+            </div>
+        </div>
+
+        <div id="tower-combat-log" style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 8px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #8b949e; line-height: 1.5; margin-bottom: 12px;">
+            </div>
+
+		<div style="display: flex; gap: 10px;">
+			<button id="btn-tower-start" onclick="window.toggleTowerMode()" style="flex: 1; height: 32px; font-size: 12px; background: #ff9b30; border: 1px solid #d29922; color: #0d1117; border-radius: 6px; cursor: pointer; font-weight: bold;">
+				⏸️ 暫停爬塔
+			</button>
+			<button id="btn-tower-retreat" onclick="window.retreatFromTower()" style="width: 70px; height: 32px; font-size: 12px; background: #da3637; border: 1px solid #f85149; color: white; border-radius: 6px; cursor: pointer;">
+				撤退
+			</button>
+		</div>
+        
+    </div>
+</div>
+<!-- 介面3.無限爬塔 完 -->
+
+<!-- 介面4.工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
 <div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 1040px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
     <h2 style="color: #58a6ff; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
         ⚙️ 工廠生產線控制台
     </h2>
-    <span class="fold-indicator" style="font-size: 12px; color: #8b949e; font-weight: normal; background: #21262d; padding: 3px 8px; border-radius: 6px; border: 1px solid #30363d;">[➖ 點擊收起]</span>
+    <span class="fold-indicator" style="font-size: 12px; color: #8b949e; font-weight: normal; background: #21262d; padding: 3px 8px; border-radius: 6px; border: 1px solid #30363d;">💡 點擊收起 [➖]</span>
 </div>
 
 <div id="lines-container" style="border: 1px solid #30363d; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; background: #0d1117; transition: height 0.2s ease-out; position: relative; max-width: 1040px; margin: 0 auto; box-sizing: border-box;"></div>
-<!-- 生成野外區域（採集）& 煉金術工坊（合成） -->
+<!-- 介面4.工廠生產地板 完 -->
+
+<!-- 介面5.生成野外區域（採集）& 煉金術工坊（合成） -->
 <div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
 
 
@@ -805,47 +849,7 @@
         </div>
     </div>
     </div>
-<!-- 無限爬塔 -->
-<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 1040px; box-sizing: border-box;">
-    
-    <div onclick="window.toggleTowerWindow(this)" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; user-select: none;">
-        <h3 style="color: #f2cc60; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
-            🗼 皇家無盡天梯 <span id="tower-layer-badge" style="background: #ff9b30; color: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">目前: 第 21 層</span>
-        </h3>
-        
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="tower-status" style="font-size: 11px; color: #ff9b30; font-weight: bold;">激戰中...</span>
-            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[➖ 點擊收起]</span>
-        </div>
-    </div>
-
-    <div id="tower-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
-        
-        <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #c9d1d9;">
-                <span>👹 當前守層怪: <span id="tower-monster-name" style="color: #ff7b72; font-weight: bold;">Lv.21 異變的地獄雙頭犬</span></span>
-                <span>❤️ HP: <span id="tower-monster-hp" style="color: #ff7b72;">8091 / 8673</span></span>
-            </div>
-            <div style="background: #21262d; width: 100%; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden;">
-                <div id="tower-monster-bar" style="background: #ff7b72; width: 93.3%; height: 100%; transition: width 0.1s;"></div>
-            </div>
-        </div>
-
-        <div id="tower-combat-log" style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 8px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #8b949e; line-height: 1.5; margin-bottom: 12px;">
-            </div>
-
-		<div style="display: flex; gap: 10px;">
-			<button id="btn-tower-start" onclick="window.toggleTowerMode()" style="flex: 1; height: 32px; font-size: 12px; background: #ff9b30; border: 1px solid #d29922; color: #0d1117; border-radius: 6px; cursor: pointer; font-weight: bold;">
-				⏸️ 暫停爬塔
-			</button>
-			<button id="btn-tower-retreat" onclick="window.retreatFromTower()" style="width: 70px; height: 32px; font-size: 12px; background: #da3637; border: 1px solid #f85149; color: white; border-radius: 6px; cursor: pointer;">
-				撤退
-			</button>
-		</div>
-        
-    </div>
-</div>
-<!-- 無限爬塔 完結 -->
+<!-- 介面5.生成野外區域（採集）& 煉金術工坊（合成）完 -->
 
     <!-- 👨‍🔧 研發實驗室面板面板 -->
 <div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 1040px; margin-left: auto; margin-right: auto;">
@@ -1019,9 +1023,50 @@ let cfg = {
     // ⚔️ [打怪素材] 完美對接原本與全新的怪物素材
     slimeGlow: { n: '史萊姆黏液', i: '🧪', c: 'part-slime', r: 0, buy: 500,   range: [0, 0] },
     goblinEar: { n: '哥布林耳',   i: '👺', c: 'part-goblin',r: 0, buy: 1000,   range: [0, 0] },
-    
-    // 🩸 🚀 【全新添加】獸人之血「身份證」，頂部 UI 從此全自動生成它！
-    orcBlood:  { n: '獸人之血',   i: '🩸', c: 'part-orc',   r: 0, buy: 2000,   range: [0, 0] }
+    orcBlood:  { n: '獸人之血',   i: '🩸', c: 'part-orc',   r: 0, buy: 2000,   range: [0, 0] },
+
+/*	// ==========================================
+    // 🪨 【全新加入】10大階級礦石材料 (Lv.1 - Lv.10)
+    // ==========================================
+    ore_lv1:  { n: '廢鐵渣',   i: '🪙', c: 'part-ore-l1',  r: 0, buy: 100,  range: [0, 0] }, // 灰暗、生鏽的碎鐵塊
+    ore_lv2:  { n: '銅礦石',   i: '🟫', c: 'part-ore-l2',  r: 0, buy: 200,  range: [0, 0] }, // 帶有紅橙色光澤的常見礦石
+    ore_lv3:  { n: '鐵礦石',   i: '🪨', c: 'part-ore-l3',  r: 0, buy: 400,  range: [0, 0] }, // 沉穩的深灰色，鍛造的主力材料
+    ore_lv4:  { n: '銀礦石',   i: '🪙', c: 'part-ore-l4',  r: 0, buy: 800,  range: [0, 0] }, // 閃爍著亮白光芒的貴金屬
+    ore_lv5:  { n: '金礦石',   i: '🟡', c: 'part-ore-l5',  r: 0, buy: 1500, range: [0, 0] }, // 耀眼的金色，代表富裕與高品質
+    ore_lv6:  { n: '白金礦',   i: '💎', c: 'part-ore-l6',  r: 0, buy: 3000, range: [0, 0] }, // 帶有淡淡銀藍色、質地極硬的純淨礦石
+    ore_lv7:  { n: '隕鐵石',   i: '☄️', c: 'part-ore-l7',  r: 0, buy: 6000, range: [0, 0] }, // 表面有灼燒痕跡、散發微弱紫光的太空隕石
+    ore_lv8:  { n: '秘銀礦',   i: '✨', c: 'part-ore-l8',  r: 0, buy: 12000, range: [0, 0] }, // 輕如羽毛、堅硬如鋼的夢幻銀白色魔導金屬
+    ore_lv9:  { n: '奧利哈鋼', i: '🔱', c: 'part-ore-l9',  r: 0, buy: 25000, range: [0, 0] }, // 散發著神聖金綠色光芒的神話金屬
+    ore_lv10: { n: '震金',     i: '🌌', c: 'part-ore-l10', r: 0, buy: 50000, range: [0, 0] }, // 吸入所有光線、表面流動著彩色能量的全能礦石
+
+    // ==========================================
+    // 🌿 【全新加入】10大階級草藥材料 (Lv.1 - Lv.10)
+    // ==========================================
+    herb_lv1:  { n: '雜草',     i: '🌱', c: 'part-herb-l1',  r: 0, buy: 100,  range: [0, 0] }, // 枯黃、毫無經濟價值的普通碎草
+    herb_lv2:  { n: '止血草',   i: '🌿', c: 'part-herb-l2',  r: 0, buy: 200,  range: [0, 0] }, // 最常見的鋸齒狀綠色小草
+    herb_lv3:  { n: '寧神花',   i: '🌸', c: 'part-herb-l3',  r: 0, buy: 400,  range: [0, 0] }, // 散發淡淡清香的藍色小花
+    herb_lv4:  { n: '銀葉草',   i: '🍃', c: 'part-herb-l4',  r: 0, buy: 800,  range: [0, 0] }, // 葉片邊緣閃爍著銀色光芒的植物
+    herb_lv5:  { n: '魔皇草',   i: '🔮', c: 'part-herb-l5',  r: 0, buy: 1500, range: [0, 0] }, // 紫色、帶有淡淡魔法能量波动的花朵
+    herb_lv6:  { n: '螢光菇',   i: '🍄', c: 'part-herb-l6',  r: 0, buy: 3000, range: [0, 0] }, // 在陰暗處會自主發出幽藍色光芒的蘑菇
+    herb_lv7:  { n: '岩心草',   i: '🌾', c: 'part-herb-l7',  r: 0, buy: 6000, range: [0, 0] }, // 生長在乾燥岩壁上、根部極深灰褐色的硬質草
+    herb_lv8:  { n: '雪蓮花',   i: '❄️', c: 'part-herb-l8',  r: 0, buy: 12000, range: [0, 0] }, // 穿透冰雪綻放、晶瑩剔透的純白色蓮花
+    herb_lv9:  { n: '火焰果',   i: '🔥', c: 'part-herb-l9',  r: 0, buy: 25000, range: [0, 0] }, // 表面如同有火焰在跳動、散發著熱量的紅色果實
+    herb_lv10: { n: '生命之花', i: '🌈', c: 'part-herb-l10', r: 0, buy: 50000, range: [0, 0] }, // 散發著七彩虹光、擁有無限生機的終極植物
+
+    // ==========================================
+    // 🪵 【全新加入】10大階級木材材料 (Lv.1 - Lv.10)
+    // ==========================================
+    wood_lv1:  { n: '朽木塊',   i: '🪵', c: 'part-wood-l1',  r: 0, buy: 100,  range: [0, 0] }, // 灰暗、潮濕且容易碎裂的爛木頭
+    wood_lv2:  { n: '原木',     i: '🪵', c: 'part-wood-l2',  r: 0, buy: 200,  range: [0, 0] }, // 最常見的棕色木材，用於製作初級火把、木棒
+    wood_lv3:  { n: '樺木',     i: '🪵', c: 'part-wood-l3',  r: 0, buy: 400,  range: [0, 0] }, // 帶有白色樹皮的輕便木材，適合做基礎弓箭
+    wood_lv4:  { n: '松木',     i: '🌲', c: 'part-wood-l4',  r: 0, buy: 800,  range: [0, 0] }, // 質地較為堅韌，常用於強化武器手柄或盾牌
+    wood_lv5:  { n: '楓木',     i: '🍁', c: 'part-wood-l5',  r: 0, buy: 1500, range: [0, 0] }, // 帶有暗紅色澤的美麗木材，適合製作中階法杖
+    wood_lv6:  { n: '鐵木',     i: '🪵', c: 'part-wood-l6',  r: 0, buy: 3000, range: [0, 0] }, // 硬度堪比金屬的黑褐色木材，極難砍伐
+    wood_lv7:  { n: '古樹核心', i: '💖', c: 'part-wood-l7',  r: 0, buy: 6000, range: [0, 0] }, // 從百年樹妖身上掉落，自帶淡淡植物治癒微光
+    wood_lv8:  { n: '精靈木',   i: '🌿', c: 'part-wood-l8',  r: 0, buy: 12000, range: [0, 0] }, // 質地極輕、帶有魔法能量紋路的翠綠色神聖木材
+    wood_lv9:  { n: '灰燼木',   i: '🌋', c: 'part-wood-l9',  r: 0, buy: 25000, range: [0, 0] }, // 在火山周邊不化為灰燼的焦黑木材，耐火性極高
+    wood_lv10: { n: '世界樹枝', i: '🔱', c: 'part-wood-l10', r: 0, buy: 50000, range: [0, 0] }  // 散發金色流光、蘊含整個世界生命力的終極神木
+*/
 };
 // ==========================================
 // [Script] cfg 資源屬性配置表 - 完結
@@ -1042,11 +1087,23 @@ let cfg = {
 			ore: 0,				// 原礦數量
 			potion: 0,			// 初級生命藥水數量
 			ironbar: 0,		// 鐵錠
-			// ⚔️ [冒險怪物素材] (徹底刪除舊的 monsterMaterials 重疊物件)
+			// ⚔️ [冒險怪物素材]
             slimeGlow: 0,		// 🧪 史萊姆黏液 數量
             goblinEar: 0,		// 👂 哥布林耳朵 數量
-			// 🩸 【全新添加的新怪物材料欄位】
-			orcBlood: 0          // 🩸 獸人之血 數量 (新怪物掉落物)
+			orcBlood: 0,          // 🩸 獸人之血 數量 (新怪物掉落物)
+			
+			// 🪨 [新增：10階級新礦石欄位]
+/*			ore_lv1: 0, ore_lv2: 0, ore_lv3: 0, ore_lv4: 0, ore_lv5: 0,
+			ore_lv6: 0, ore_lv7: 0, ore_lv8: 0, ore_lv9: 0, ore_lv10: 0,
+
+			// 🌿 [新增：10階級新草藥欄位]
+			herb_lv1: 0, herb_lv2: 0, herb_lv3: 0, herb_lv4: 0, herb_lv5: 0,
+			herb_lv6: 0, herb_lv7: 0, herb_lv8: 0, herb_lv9: 0, herb_lv10: 0,
+
+			// 🪵 [新增：10階級新木材欄位]
+			wood_lv1: 0, wood_lv2: 0, wood_lv3: 0, wood_lv4: 0, wood_lv5: 0,
+			wood_lv6: 0, wood_lv7: 0, wood_lv8: 0, wood_lv9: 0, wood_lv10: 0
+*/
 		},	
         unlocked: {},			// 4. unlocked: 紀錄哪些生產線已被玩家支付費用解鎖。
 		lines: {},				// 5. lines: 每條生產線的詳細運行狀態（如進度、當前項目、耐久度、自動化開關）。
@@ -2025,32 +2082,40 @@ function updatePrice(type) {
 // ==========================================
 // ⚙️ [UI 總控制] 點擊大標題：真正收起成個 生產線視窗 (下方野外區域完美頂上)
 // ==========================================
-window.toggleAllLines = function(headerElement) {
+window.toggleAllLines = function(headerElement, isInit = false) {
     const container = document.getElementById('lines-container');
     if (!container) return;
 
     let indicator = headerElement.querySelector('.fold-indicator');
     
-    // 🔍 自動測量流動高度：動態獲取你當前所有產線撐起來的總高度
-    // 這樣不論你開了 1 條、2 條還是 4 條產線，都能精準展開，不會卡死高度！
+    // 🔍 自動測量動態高度：獲取當前所有產線撐起來的真實總高度
     const originalHeight = container.scrollHeight + "px";
 
-    if (container.style.height === '0px') {
-        // 🔓 展開整個視窗
+    // 判斷當前是要執行「展開」還是「收起」
+    // 如果是網頁剛開（isInit === true），就讀取儲存的記憶；如果是一般點擊，就檢查當前高度是不是 0px
+    const shouldExpand = isInit 
+        ? (localStorage.getItem('factory_lines_collapsed') !== 'true')
+        : (container.style.height === '0px');
+
+    if (shouldExpand) {
+        // 📂 執行展開整個視窗
         container.style.height = originalHeight; 
-        container.style.borderBottom = '1px solid #30363d'; // 補返條底邊
-        headerElement.style.borderBottomLeftRadius = '0px';  // 標題左下角變直角
-        headerElement.style.borderBottomRightRadius = '0px'; // 標題右下角變直角
-        if (indicator) indicator.innerText = "[➖ 點擊收起]";
+        container.style.borderBottom = '1px solid #30363d';  // 補返條底邊
+        headerElement.style.borderBottomLeftRadius = '0px';   // 標題左下角變直角
+        headerElement.style.borderBottomRightRadius = '0px';  // 標題右下角變直角
+        if (indicator) indicator.innerText = "💡 點擊收起 [➖]";
         
+        // 💾 記憶狀態：寫入「未收起 (false)」
+        localStorage.setItem('factory_lines_collapsed', 'false');
+
         // 動態排版防卡死：等動畫播完 (0.2秒)，放開高度鎖定，確保未來買新產線時畫面會自動長高
         setTimeout(() => {
             if (container.style.height !== '0px') container.style.height = '';
         }, 200);
-        
-        console.log("📂 整個生產線已展開");
+
+        console.log("📂 整個生產線已展開" + (isInit ? "（載入記憶）" : ""));
     } else {
-        // 🔒 收起整個視窗
+        // 📁 執行收起整個視窗
         container.style.height = container.scrollHeight + "px"; // 先定死當前高度觸發過渡動畫
         container.offsetHeight; // 逼瀏覽器刷新渲染
         
@@ -2060,40 +2125,116 @@ window.toggleAllLines = function(headerElement) {
         headerElement.style.borderBottomLeftRadius = '12px';  // 整個視窗圓角收尾
         headerElement.style.borderBottomRightRadius = '12px';
         if (indicator) indicator.innerText = "💡 點擊展開 [➕]";
-        console.log("📁 整個生產線已完美收起");
+        
+        // 💾 記憶狀態：寫入「已收起 (true)」
+        localStorage.setItem('factory_lines_collapsed', 'true');
+        console.log("📁 整個生產線已完美收起" + (isInit ? "（載入記憶）" : ""));
     }
 };
+
+// ====================================================================
+// 🔄 網頁啟動核心鎖：全自動載入「工廠生產線」的折疊記憶
+// ====================================================================
+document.addEventListener("DOMContentLoaded", function() {
+    // 延遲 50 毫秒確保工廠地板的 HTML 與 header 元素都已經渲染好
+    setTimeout(() => {
+        // 精準抓取你的工廠生產線控制台 header 元素
+        const factoryHeader = document.querySelector('.main-window-header[onclick*="toggleAllLines"]');
+        if (factoryHeader) {
+            // 傳入 true 觸發初始化判定，它會默默幫你收起，完全不會有穿幫的閃爍動畫！
+            window.toggleAllLines(factoryHeader, true);
+        }
+    }, 50);
+});
 // ==========================================
 // ⚙️ [UI 總控制] 點擊大標題：真正收起成個 生產線視窗 (下方野外區域完美頂上)
 // ==========================================
 
 // ==========================================
-// 🗼 [UI 總控制] 點擊爬塔標題：絲滑收起爬塔視窗 (絕不閃爍、下方內容完美頂上)
+// 🗼 [UI 總控制] 點擊無限爬塔標題：絲滑收起爬塔視窗 (絕不閃爍、下方內容完美頂上)
 // ==========================================
-window.toggleTowerWindow = function(headerElement) {
-    const container = document.getElementById('tower-content-wrapper');
-    if (!container) return;
+(function() {
+    window.toggleTowerWindow = function(headerElement, isInit = false) {
+        // 1. 精準抓取你 HTML 裡面的內容包裹盒
+        const container = document.getElementById('tower-content-wrapper');
+        if (!container) return;
 
-    // 精準抓取獨立出來的 fold-indicator
-    let indicator = headerElement.querySelector('.fold-indicator');
-    const originalHeight = container.scrollHeight + "px";
-
-    if (container.style.height === '0px') {
-        container.style.height = originalHeight;
-        container.style.overflow = '';
-        if (indicator) indicator.innerText = "[➖ 點擊收起]";
+        // 2. 抓取摺疊文字標籤 [➖ 點擊收起]
+        let indicator = headerElement.querySelector('.fold-indicator');
         
+        // 💾 專屬於爬塔的記憶鑰匙
+        const storageKey = 'fold_saved_tower_panel';
+
+        // 3. 檢查摺疊狀態
+        // 如果是網頁剛開 (isInit === true)，讀取儲存的記憶
+        // 如果是玩家點擊，就檢查當前高度是不是 0px 或者屬性
+        const isFolded = isInit
+            ? (localStorage.getItem(storageKey) === 'true')
+            : (container.getAttribute('data-folded') === 'true' || container.style.height === '0px');
+
+        // ⚡ 網頁開機初始化邏輯（零閃爍直接強行收起）
+        if (isInit) {
+            if (isFolded) {
+                container.style.height = '0px';
+                container.style.overflow = 'hidden';
+                container.setAttribute('data-folded', 'true');
+                if (indicator) indicator.innerText = '💡 點擊展開 [➕]';
+            }
+            return; // 初始化完畢直接結束
+        }
+
+        // 🖱️ 以下為玩家正常手動點擊時的「展開 / 收起」動畫邏輯
+        if (isFolded) {
+            // 🔓 執行展開
+            container.style.height = 'auto';
+            const fullHeight = container.scrollHeight + 'px';
+            container.style.height = '0px';
+            container.offsetHeight; // 強制瀏覽器重繪
+            
+            container.style.height = fullHeight;
+            container.style.overflow = '';
+            container.setAttribute('data-folded', 'false');
+            if (indicator) indicator.innerText = '💡 點擊收起 [➖]';
+            
+            // 💾 儲存記憶：展開 (false)
+            localStorage.setItem(storageKey, 'false');
+            
+            // 動態結束後釋放高度，讓內置的戰報日誌可以自由增長撐大
+            setTimeout(() => {
+                if (container.getAttribute('data-folded') === 'false') {
+                    container.style.height = '';
+                }
+            }, 220);
+        } else {
+            // 🔒 執行收起
+            container.style.height = container.scrollHeight + 'px';
+            container.offsetHeight; // 強制瀏覽器重繪
+            
+            container.style.height = '0px';
+            container.style.overflow = 'hidden';
+            container.setAttribute('data-folded', 'true');
+            if (indicator) indicator.innerText = '💡 點擊展開 [➕]';
+
+            // 💾 儲存記憶：收起 (true)
+            localStorage.setItem(storageKey, 'true');
+        }
+    };
+
+    // ==========================================
+    // 🔄 天梯開機自動校正鎖 (網頁一開立刻檢查記憶)
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
-            if (container.style.height !== '0px') container.style.height = '';
-        }, 200);
-    } else {
-        container.style.height = container.scrollHeight + "px";
-        container.offsetHeight; // 逼瀏覽器刷新
-        container.style.height = '0px';
-        container.style.overflow = 'hidden';
-        if (indicator) indicator.innerText = "💡 點擊展開 [➕]";
-    }
-};
+            // 精準抓取你的天梯標題欄
+            const towerHeader = document.querySelector('[onclick*="toggleTowerWindow"]');
+            if (towerHeader) {
+                // 傳入 true 觸發初始化判定，如果是紀錄收起的，會一秒關閉不閃爍！
+                window.toggleTowerWindow(towerHeader, true);
+                console.log("🗼 皇家無盡天梯視窗記憶校正鎖啟動成功！");
+            }
+        }, 60); // 延遲 60ms 確保 HTML 完全渲染
+    });
+})();
 // ==========================================
 // 🗼 [UI 總控制] 點擊爬塔標題：絲滑收起爬塔視窗 (絕不閃爍、下方內容完美頂上)
 // ==========================================
@@ -5034,18 +5175,39 @@ window.onload = function() {
 // ==========================================	
 
 // ==========================================
-// 🕹️ [UI 總控制] 萬能視窗拉窗簾摺疊函數 (適用於野外、煉金、鐵匠、日誌)
+// 🕹️ [UI 總控制] 萬能視窗拉窗簾摺疊函數 (完美整合永久狀態記憶版)
 // ==========================================
 (function() {
-    window.toggleGameWindow = function(wrapperId, headerElement) {
+    window.toggleGameWindow = function(wrapperId, headerElement, isInit = false) {
         const container = document.getElementById(wrapperId);
         if (!container) return;
 
         let indicator = headerElement.querySelector('.fold-indicator');
         
-        // 檢查當前真正的摺疊狀態 (利用屬性判定最精準)
-        const isFolded = container.getAttribute('data-folded') === 'true' || container.style.height === '0px';
+        // 💾 產生專屬於這個視窗的記憶鑰匙 (例如: fold_saved_tech-section)
+        const storageKey = `fold_saved_${wrapperId}`;
 
+        // 檢查當前真正的摺疊狀態
+        // 如果是網頁剛開 (isInit === true)，直接讀取儲存的記憶（預設未儲存時為展開，即不等於 true）
+        // 如果是一般點擊，就檢查原本的屬性或高度
+        const isFolded = isInit
+            ? (localStorage.getItem(storageKey) === 'true')
+            : (container.getAttribute('data-folded') === 'true' || container.style.height === '0px');
+
+        // 如果是網頁初始化，且上次記憶是「需要收起」，或者是點擊時處於收起狀態（需要展開）
+        // 這裡做一個邏輯交叉判定
+        if (isInit) {
+            if (isFolded) {
+                // ⚡ 網頁剛開＆記憶為收起：一刀切死高度，防止任何畫面閃爍穿幫
+                container.style.height = '0px';
+                container.style.overflow = 'hidden';
+                container.setAttribute('data-folded', 'true');
+                if (indicator) indicator.innerText = '[💡 展開]';
+            }
+            return; // 初始化完畢直接結束
+        }
+
+        // 🖱️ 以下為玩家正常點擊時的「展開 / 收起」邏輯
         if (isFolded) {
             // 執行展開
             container.style.height = 'auto';
@@ -5057,6 +5219,9 @@ window.onload = function() {
             container.style.overflow = '';
             container.setAttribute('data-folded', 'false');
             if (indicator) indicator.innerText = '[— 收起]';
+            
+            // 💾 寫入記憶：未收起 (false)
+            localStorage.setItem(storageKey, 'false');
             
             // 動態結束後釋放高度，讓內置日誌能自然撐大
             setTimeout(() => {
@@ -5073,12 +5238,38 @@ window.onload = function() {
             container.style.overflow = 'hidden';
             container.setAttribute('data-folded', 'true');
             if (indicator) indicator.innerText = '[💡 展開]';
+
+            // 💾 寫入記憶：已收起 (true)
+            localStorage.setItem(storageKey, 'true');
         }
     };
-})();					
+
+    // ==========================================
+    // 🔄 網頁開機自動對齊：自動讀取野外所有視窗的記憶狀態
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            // 🔍 自動尋找所有使用了 toggleGameWindow 的視窗標題欄
+            const foldableHeaders = document.querySelectorAll('[onclick*="toggleGameWindow"]');
+            
+            foldableHeaders.forEach(header => {
+                // 從 onclick 屬性中抽取出傳入的 wrapperId 參數 (例如：'tech-section')
+                const clickAttr = header.getAttribute('onclick');
+                const match = clickAttr.match(/toggleGameWindow\s*\(\s*['"]([^'"]+)['"]/);
+                
+                if (match && match[1]) {
+                    const wrapperId = match[1];
+                    // 默默執行初始化判定，如果是紀錄收起的，會一秒關閉不閃爍！
+                    window.toggleGameWindow(wrapperId, header, true);
+                }
+            });
+            console.log("🗼 野區萬能視窗記憶校正鎖啟動成功！");
+        }, 100); // 延遲 100ms 確保 HTML 元件全部就緒
+    });
+})();
 // ==========================================
-// 🕹️ [UI 總控制] 萬能視窗拉窗簾摺疊函數 (適用於野外、煉金、鐵匠、日誌) - 完結
-// ==========================================		
+// 🕹️ [UI 總控制] 萬能視窗拉窗簾摺疊函數 - 完結
+// ==========================================	
 
 // ====================================================================
 // 🎯 打造介面發光 - 終極自動攔截修復大腦
