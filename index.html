@@ -2,14 +2,21 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.10</title>
-	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
+    <title>AI 工廠模擬器（冒險者完全體版 - v1.0.10</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AI工廠">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
         
         /* 基礎全域設定：背景深色、禁止文字選取、基礎間距 */
-        body { background: #0d1117; color: #c9d1d9; font-family: 'Noto Sans TC', sans-serif; user-select: none; margin: 0; padding: 20px; touch-action: manipulation; }
+        body { background: #0d1117; color: #c9d1d9; font-family: 'Noto Sans TC', sans-serif; user-select: none; margin: 0; padding: 20px; touch-action: manipulation;}
         
         /* 頂部儀表板：固定在頂部，用於顯示金錢、資源等核心數據 */
 		.dashboard { display: flex; justify-content: space-around; max-width: 900px; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
@@ -624,7 +631,7 @@
 		<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; display: flex; flex-direction: column;">
 			<div style="color: #58a6ff; font-size: 12px; font-weight: bold; margin-bottom: 10px;">📦 裝備儲存背包 (<span id="eq-inv-count">0</span>)</div>
 			
-			<div id="eq-inv-container" style="max-height: 180px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
+			<div id="eq-inv-container" style="max-height: 315px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
 				<div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>
 			</div>
 		</div>
@@ -5277,6 +5284,13 @@ window.onload = function() {
     };
 })();
 		 
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('工廠模擬器 PWA 註冊成功！'))
+                    .catch(err => console.log('PWA 失敗：', err));
+            });
+        }
 </script>
 </body>
 </html>
