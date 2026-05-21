@@ -16,10 +16,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
         
         /* 基礎全域設定：背景深色、禁止文字選取、基礎間距 */
-        body { background: #0d1117; color: #c9d1d9; font-family: 'Noto Sans TC', sans-serif; user-select: none; margin: 0; padding: 20px; touch-action: manipulation;}
-        
+		/* 1. 確保全螢幕背景與安全區域適應 */
+		body { 
+			background: #0d1117; 
+			color: #c9d1d9; 
+			font-family: 'Noto Sans TC', sans-serif; 
+			user-select: none; 
+			margin: 0; 
+			/* 適應 iOS 瀏海與底部安全區 */
+			padding: calc(env(safe-area-inset-top) + 10px) 10px calc(env(safe-area-inset-bottom) + 10px) 10px; 
+			touch-action: manipulation;
+			overflow-x: hidden; /* 防止手機端左右晃動 */
+		}
         /* 頂部儀表板：固定在頂部，用於顯示金錢、資源等核心數據 */
-		.dashboard { display: flex; justify-content: space-around; max-width: 900px; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
+		.dashboard { display: flex; justify-content: space-around; width: 100% !important; max-width: 100% !important; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
 		.stat-value { font-family: 'Share Tech Mono'; font-size: 20px; color: #58a6ff; } /* 數值文字樣式 */
 		.stat-label { font-size: 11px; color: #8b949e; } /* 標籤文字樣式 */
 
@@ -74,8 +84,8 @@
 
 /* 統一容器寬度與置中 */
 .dashboard, .factory-floor {
-    width: 900px;
-    max-width: 900px; /* 設定一個統一的像素上限 */
+	width: 100% !important;
+    max-width: 100% !important;
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box; /* 確保 padding 不會撐大寬度 */
@@ -124,7 +134,7 @@
 		.part-gold { background: #4a90e2; } /* 鐵材零件顏色 */
 
         /* 底部 UI 佈局：分成日誌欄、升級欄、控制欄 */
-        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 900px; margin: 20px auto; }
+        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; width: 100% !important; max-width: 100% !important; margin: 20px auto; box-sizing: border-box;}
         .panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
         
         /* 遊戲日誌：顯示系統訊息的終端機樣式 */
@@ -148,14 +158,14 @@
     flex-grow: 1;
     align-items: center;
     border-left: 1px solid #30363d;
-    padding-left: 20px;
+    padding-left: 10px;
 }
 /* 單個資源項目的排版 */
 .resource-item {
     display: flex;
     flex-direction: column; /* 文字在上，數字在下 */
-    align-items: flex-start;
-    min-width: 60px;
+    align-items: center;
+    min-width: 0;
 }
 
 /* 2. 稱號加成摘要：修正錯位，讓綠、紫、藍數值水平居中 */
@@ -172,7 +182,7 @@
 /* 數值樣式強化 */
 .stat-value {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 16px; /* 稍微縮小字體防止溢出 */
+    font-size: 14px; /* 稍微縮小字體防止溢出 */
     color: #ffffff !important;
     white-space: nowrap; /* 禁止數字換行 */
 }									 
@@ -277,8 +287,8 @@
 /* 🏃‍♂️ 跑道基本設定 */
 .tower-mini-stage {
     position: relative;
-    width: 400px;        
-    min-width: 400px;    
+	width: calc(100% - 30px); /* 讓跑道自適應手機寬度 */
+    min-width: 0;  
     height: 28px;        
     min-height: 28px;    
     background: #05070a !important; /* 極深藍黑色背景 */
@@ -287,7 +297,7 @@
     display: inline-block; 
     overflow: hidden;
     vertical-align: middle;
-    margin: 0 15px;      
+	margin: 10px auto;    
     z-index: 10;
 }
 
