@@ -1,8 +1,8 @@
 const CACHE_NAME = 'ai-factory-v1';
 const ASSETS = [
-  './',
-  './v12.0.16.10.html',
-  './manifest.json'
+  '/FS/',
+  '/FS/index.html',
+  '/FS/manifest.json'
 ];
 
 self.addEventListener('install', (e) => {
