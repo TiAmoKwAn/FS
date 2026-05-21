@@ -12,6 +12,48 @@
     <meta name="apple-mobile-web-app-title" content="AI工廠">
 	<link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
+		/* 1. 將底層畫面撐滿，並讓遊戲本體永遠居中 */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000; /* 手機外兩邊留黑邊 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 防止最外層出現滾動條 */
+}
+
+/* 2. 手機本體外殼：核心魔法 */
+#game-wrapper {
+    background: #0d1117; /* 回復你原本工廠模擬器的深灰色背景 */
+    color: #c9d1d9;
+    
+    /* 鎖定 9:16 黃金比例 */
+    aspect-ratio: 9 / 16;
+    
+    /* 智能縮放：邊個到頂就跟邊個 */
+    height: 100vh;      /* 優先填滿手機高度 */
+    max-width: 100vw;   /* 如果螢幕太窄，自動鎖定寬度 */
+    
+    /* 內部排版設定 */
+    box-sizing: border-box;
+    padding: 15px;      /* 留少少內邊距，等啲字唔會貼實邊緣 */
+    overflow-y: auto;   /* 如果工廠項目太多，由外殼內部自己滾動 */
+    position: relative;
+    
+    /* 可選：加一條淡淡的灰色邊框，喺電腦睇時更有手機 App 質感 */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+/* 3. 優化：確保原本固定在頂部的儀表板跟隨新的外殼 */
+.dashboard {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0d1117; /* 確保滾動時遮擋後方內容 */
+}
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
         
