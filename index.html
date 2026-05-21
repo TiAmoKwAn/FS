@@ -25,35 +25,42 @@ html, body {
     overflow: hidden; /* 防止最外層出現滾動條 */
 }
 
-/* 2. 手機本體外殼：核心魔法 */
-#game-wrapper {
-    background: #0d1117; /* 回復你原本工廠模擬器的深灰色背景 */
-    color: #c9d1d9;
-    
-    /* 鎖定 9:16 黃金比例 */
-    aspect-ratio: 9 / 16;
-    
-    /* 智能縮放：邊個到頂就跟邊個 */
-    height: 100vh;      /* 優先填滿手機高度 */
-    max-width: 100vw;   /* 如果螢幕太窄，自動鎖定寬度 */
-    
-    /* 內部排版設定 */
-    box-sizing: border-box;
-    padding: 15px;      /* 留少少內邊距，等啲字唔會貼實邊緣 */
-    overflow-y: auto;   /* 如果工廠項目太多，由外殼內部自己滾動 */
-    position: relative;
-    
-    /* 可選：加一條淡淡的灰色邊框，喺電腦睇時更有手機 App 質感 */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-}
+/* 2. 手機本體外殼：將遊戲鎖定在 9:16 直屏比例 */
+        #game-wrapper {
+            background: #0d1117; /* 回復工廠模擬器的深灰色背景 */
+            color: #c9d1d9;
+            
+            aspect-ratio: 9 / 16; /* 鎖定 9:16 黃金比例 */
+            height: 100vh;        /* 優先填滿手機高度 */
+            max-width: 100vw;     /* 如果螢幕太窄，自動鎖定寬度 */
+            
+            box-sizing: border-box;
+            padding: 15px;        /* 留少許內邊距，防止文字貼邊 */
+            overflow-y: auto;     /* 如果內容太多，在外殼內部自己滾動 */
+            position: relative;
+            
+            /* 在電腦版瀏覽器看時，會有一圈精美的手機立體陰影 */
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            touch-action: manipulation; /* 徹底制止雙擊放大的預設行為 */
+        }
 
-/* 3. 優化：確保原本固定在頂部的儀表板跟隨新的外殼 */
-.dashboard {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #0d1117; /* 確保滾動時遮擋後方內容 */
-}
+/* 3. 頂部儀表板：固定在手機殼的頂部 */
+        .dashboard { 
+            display: flex; 
+            justify-content: space-around; 
+            position: sticky; 
+            top: 0; 
+            margin: 0 auto 10px auto; 
+            background: #21262d; 
+            padding: 12px; 
+            border-radius: 12px; 
+            border: 1px solid #30363d; 
+            z-index: 1000; 
+            align-items: center; 
+            width: 100%; /* 跟隨手機外殼寬度 */
+            box-sizing: border-box;
+        }
+		
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
         
@@ -114,14 +121,19 @@ html, body {
         .prestige-item { display: grid; grid-template-columns: 1.2fr 0.8fr 0.6fr 0.6fr 0.6fr; padding: 10px; border-bottom: 1px solid #21262d; font-size: 11px; align-items: center; text-align: center; }
         .prestige-item.current-rank { background: rgba(88, 166, 255, 0.15) !important; border: 1px solid #58a6ff !important; box-shadow: inset 0 0 10px rgba(88, 166, 255, 0.3); }
 
-/* 統一容器寬度與置中 */
-.dashboard, .factory-floor {
-    width: 900px;
-    max-width: 900px; /* 設定一個統一的像素上限 */
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box; /* 確保 padding 不會撐大寬度 */
-}
+/* 4. 移除原本死死鎖定 900px 寬度的設定，改為 100% 適配手機殼 */
+        .factory-floor { 
+            position: relative; 
+            width: 100%; 
+            height: 45vh; /* 微調高度，留空間給底部的日誌和升級欄 */
+            margin: 15px auto; 
+            background: #161b22; 
+            border: 2px solid #30363d; 
+            border-radius: 16px; 
+            overflow-y: auto; 
+            padding: 0 10px; 
+            box-sizing: border-box;
+        }
 
         /* 工廠區域：遊戲核心操作畫面 */
         .factory-floor { position: relative; max-width: 900px; height: 50vh; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
@@ -165,10 +177,18 @@ html, body {
 		.part-water { background: #0077be; box-shadow: 0 0 10px #0077be; }																	
 		.part-gold { background: #4a90e2; } /* 鐵材零件顏色 */
 
-        /* 底部 UI 佈局：分成日誌欄、升級欄、控制欄 */
-        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 900px; margin: 20px auto; }
-        .panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
-        
+.panel-box { background: #161b22; padding: 12px; border-radius: 12px; border: 1px solid #30363d; }
+        .stat-value { font-family: 'Share Tech Mono'; font-size: 20px; color: #58a6ff; }
+        .stat-label { font-size: 11px; color: #8b949e; }
+/* 5. 底部 UI 區域自動適配直屏（改用 flex 垂直排列或單欄，更適合手機） */
+        .bottom-ui { 
+            display: flex;
+            flex-direction: column;
+            gap: 12px; 
+            width: 100%; 
+            margin: 15px auto; 
+        }
+		
         /* 遊戲日誌：顯示系統訊息的終端機樣式 */
         .log-container { background: #0d1117; height: 130px; overflow-y: auto; border: 1px solid #30363d; padding: 10px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #3fb950; border-radius: 8px; line-height: 1.5; }
         
@@ -5334,6 +5354,15 @@ window.onload = function() {
                     .catch(err => console.log('PWA 失敗：', err));
             });
         }
+	<div id="game-wrapper">
+        
+        ```
+
+### ⚠️ 以及在檔案最底部：
+拉到 `index.html` 的最底端，在 `</body>` 之前，把外殼閉合，並確保註冊咗 Service Worker：
+
+```html
+    </div>
 </script>
 </div>
 </body>
