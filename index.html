@@ -2,34 +2,17 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>AI 工廠模擬器（冒險者完全體版 - v1.0.10</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <link rel="manifest" href="manifest.json">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AI工廠">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
+    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.10</title>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
         
         /* 基礎全域設定：背景深色、禁止文字選取、基礎間距 */
-		/* 1. 確保全螢幕背景與安全區域適應 */
-		body { 
-			background: #0d1117; 
-			color: #c9d1d9; 
-			font-family: 'Noto Sans TC', sans-serif; 
-			user-select: none; 
-			margin: 0; 
-			/* 適應 iOS 瀏海與底部安全區 */
-			padding: calc(env(safe-area-inset-top) + 10px) 10px calc(env(safe-area-inset-bottom) + 10px) 10px; 
-			touch-action: manipulation;
-			overflow-x: hidden; /* 防止手機端左右晃動 */
-		}
+        body { background: #0d1117; color: #c9d1d9; font-family: 'Noto Sans TC', sans-serif; user-select: none; margin: 0; padding: 20px; }
+        
         /* 頂部儀表板：固定在頂部，用於顯示金錢、資源等核心數據 */
-		.dashboard { display: flex; justify-content: space-around; width: 100% !important; max-width: 100% !important; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
+		.dashboard { display: flex; justify-content: space-around; max-width: 1040px; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
 		.stat-value { font-family: 'Share Tech Mono'; font-size: 20px; color: #58a6ff; } /* 數值文字樣式 */
 		.stat-label { font-size: 11px; color: #8b949e; } /* 標籤文字樣式 */
 
@@ -68,7 +51,7 @@
 	.modal-content { 
     background: #161b22; 
     width: 90%;          /* 加入這個：確保在小螢幕不會爆出去 */
-    max-width: 900px;    /* 將原本的 width 改為 max-width */
+    max-width: 1040px;    /* 將原本的 width 改為 max-width */
     padding: 25px; 
     border-radius: 16px; 
     border: 1px solid #30363d; 
@@ -84,15 +67,15 @@
 
 /* 統一容器寬度與置中 */
 .dashboard, .factory-floor {
-	width: 100% !important;
-    max-width: 100% !important;
+    width: 1040px;
+    max-width: 1040px; /* 設定一個統一的像素上限 */
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box; /* 確保 padding 不會撐大寬度 */
 }
 
         /* 工廠區域：遊戲核心操作畫面 */
-        .factory-floor { position: relative; max-width: 900px; height: 50vh; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
+        .factory-floor { position: relative; max-width: 1040px; height: 50vh; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
        .line-group { position: relative; height: 210px; border-bottom: 1px solid #21262d; } /* 單條生產線容器 */
         .line-label { position: absolute; left: 12px; top: 12px; font-size: 11px; color: #8b949e; font-weight: bold; opacity: 0.6; }
         /* 鎖定遮罩：未開啟產線時的顯示狀態 */
@@ -134,7 +117,7 @@
 		.part-gold { background: #4a90e2; } /* 鐵材零件顏色 */
 
         /* 底部 UI 佈局：分成日誌欄、升級欄、控制欄 */
-        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; width: 100% !important; max-width: 100% !important; margin: 20px auto; box-sizing: border-box;}
+        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 1040px; margin: 20px auto; }
         .panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
         
         /* 遊戲日誌：顯示系統訊息的終端機樣式 */
@@ -158,14 +141,14 @@
     flex-grow: 1;
     align-items: center;
     border-left: 1px solid #30363d;
-    padding-left: 10px;
+    padding-left: 20px;
 }
 /* 單個資源項目的排版 */
 .resource-item {
     display: flex;
     flex-direction: column; /* 文字在上，數字在下 */
-    align-items: center;
-    min-width: 0;
+    align-items: flex-start;
+    min-width: 60px;
 }
 
 /* 2. 稱號加成摘要：修正錯位，讓綠、紫、藍數值水平居中 */
@@ -182,7 +165,7 @@
 /* 數值樣式強化 */
 .stat-value {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 14px; /* 稍微縮小字體防止溢出 */
+    font-size: 16px; /* 稍微縮小字體防止溢出 */
     color: #ffffff !important;
     white-space: nowrap; /* 禁止數字換行 */
 }									 
@@ -283,101 +266,7 @@
     0% { opacity: 0.4; }
     100% { opacity: 1; text-shadow: 0 0 8px currentColor; }
 }	
-
-/* 🏃‍♂️ 跑道基本設定 */
-.tower-mini-stage {
-    position: relative;
-	width: calc(100% - 30px); /* 讓跑道自適應手機寬度 */
-    min-width: 0;  
-    height: 28px;        
-    min-height: 28px;    
-    background: #05070a !important; /* 極深藍黑色背景 */
-    border: 1px solid #30363d;
-    border-radius: 6px;
-    display: inline-block; 
-    overflow: hidden;
-    vertical-align: middle;
-	margin: 10px auto;    
-    z-index: 10;
-}
-
-/* 8-bit 通用設定 - 單張獨立圖片專用 */
-.pixel-sprite-art {
-    width: 24px;                 
-    height: 24px;                
-    image-rendering: pixelated; /* 保持像素顆粒不模糊 */
-    background-repeat: no-repeat;
-    background-position: center; 
-    background-size: contain;    /* 確保你電腦的 24x24 圖片完美填滿 */
-    position: absolute;
-    bottom: 2px; 
-    z-index: 20;        
-}
-/* ⚔️ 勇者角色設定：重新綁定「橫移」與「跳動」動畫 */
-.stage-hero {
-    background-image: url('hero.png') !important; /* 讀取你電腦的 hero.png */
-    
-    /* 核心修正：將 walk-right（橫移）同 hero-bounce（踏步微跳）同時啟動 */
-    animation: 
-        walk-right 6s linear infinite,
-        hero-bounce 0.2s infinite alternate ease-in-out;
-}
-
-/* 🐉 惡龍/怪物設定 */
-.stage-monster {
-    right: 10px; 
-    background-image: url('dragon.png') !important; /* 讀取你電腦的 dragon.png */
-    
-    /* 惡龍原地微調呼吸/拍翼動態 */
-    animation: dragon-idle 0.4s infinite alternate ease-in-out; 
-}
-
-/* --- 🎬 動畫時序控制（確保單圖也能動得流暢） --- */
-
-/* 1. 勇者原地前進微跳（模擬跑步時的身體上下震動，這樣單圖就不會僵硬！） */
-@keyframes hero-bounce {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-3px); } /* 讓勇者跑路時上下彈跳 */
-}
-
-/* 2. 惡龍原地呼吸縮放 */
-@keyframes dragon-idle {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.08) translateY(-1px); }
-}
-
-/* 3. 🏃‍♂️ 勇者橫移 400px 跑道動畫 */
-@keyframes walk-right {
-    0% {
-        left: -24px;
-        opacity: 0;
-    }
-    5% {
-        left: 5px;
-        opacity: 1;
-    }
-    78% {
-        left: 350px;  /* 走到惡龍面前 */
-        opacity: 1;
-    }
-    82% {
-        left: 366px;  /* 往前衝！揮劍斬擊 */
-        opacity: 1;
-    }
-    86% {
-        left: 352px;  /* 被彈後 */
-        opacity: 1;
-    }
-    92% {
-        left: 352px;
-        opacity: 0;   /* 隱形進入下一層 */
-    }
-    100% {
-        left: -24px;  /* 瞬間返回最左邊重播 */
-        opacity: 0;
-    }
-}
-</style>
+    </style>
 </head>
 <body>
 
@@ -479,7 +368,7 @@
     </div>
 </div>
 
-<!-- 介面1.頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 -->
+<!-- 頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 -->
 <div class="dashboard" id="main-dashboard"> <!-- 稱號最重要加返id="main-dashboard"-->
     <!-- 🏆 稱號顯示區：點擊後會觸發 secretTrigger() 函數（可能是開啟詳細面板或特殊觸發） -->
 <div class="stat-box prestige-click-area" 
@@ -514,39 +403,58 @@
 		<div class="stat-label">🧪 研究點數</div>
 		<div id="rp-val" class="stat-value" style="color: #a371f7;">0</div>
 	</div>
+
+	<div id="resource-stats" style="display: contents;">
+		<!-- 新資源（草藥、原礦、藥水） -->
+		<div class="stat-box">
+    <span class="label">🌿 草藥</span>
+    <span class="value" id="res-herbs">0</span>
 </div>
-<div style="width: 900px; max-width: 900px; margin: 20px auto; box-sizing: border-box;">
+<div class="stat-box">
+    <span class="label">🪨 原礦</span>
+    <span class="value" id="res-ore">0</span>
+</div>
+<div class="stat-box">
+    <span class="label">🧪 生命藥水</span>
+    <span class="value" id="res-potion">0</span>
+</div>
+	
+        </div>
+		
+    <!-- ⚙️ 全局設定按鈕：點擊後觸發 toggleAdmin() 開啟管理員後台面板 -->
+    <button class="action-btn btn-green" style="width:100px; height:42px;" onclick="toggleAdmin()">⚙️ 全局設定</button>
+</div>
 
-<!-- 介面1.頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 完 -->
+<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
 
-<!-- 介面2.角色介面 開始 -->
+<!-- 角色介面 開始 -->
 <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-sizing: border-box; width: 100%;">
     
-    <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 10px; width: 100%; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 15px;">
+    <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 20px; width: 100%; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 15px;">
         
-        <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0; width: 350px; background: #0d1117; padding: 12px; border-radius: 8px; border: 1px solid #21262d; box-sizing: border-box;">
-            <div style="font-size: 40px; background: #161b22; padding: 10px 12px; border-radius: 10px; border: 1px solid #30363d; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">🤠</div>
+        <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0; width: 340px; background: #0d1117; padding: 12px; border-radius: 8px; border: 1px solid #21262d; box-sizing: border-box;">
+            <div style="font-size: 38px; background: #161b22; padding: 10px 12px; border-radius: 10px; border: 1px solid #30363d; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">🤠</div>
             
             <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
-                <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
                     <strong style="font-size: 16px; color: #c9d1d9; white-space: nowrap;">冒險者核心</strong>
                     <span id="char-lv" style="background: #f2cc60; color: #0d1117; font-weight: bold; font-size: 12px; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">Lv.1</span>
                 </div>
-
-                <div style="display: flex; align-items: center; gap: 5px; width: 95%;">
+                
+                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
                     <span style="font-size: 12px; color: #8b949e; font-weight: bold; width: 30px; flex-shrink: 0;">EXP</span>
                     <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
                         <div id="char-exp-bar" style="width: 0%; height: 100%; background: #3fb950; transition: width 0.3s;"></div>
                     </div>
-                    <span id="char-exp-text" style="font-size: 12px; color: #8b949e; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;"></span>
+                    <span id="char-exp-text" style="font-size: 12px; color: #8b949e; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">0 / 100</span>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 5px; width: 95%;">
+                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
                     <span style="font-size: 12px; color: #ff7b72; font-weight: bold; width: 30px; flex-shrink: 0;">HP</span>
                     <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
                         <div id="char-hp-bar" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ff7b72, #f2594b); transition: width 0.2s;"></div>
                     </div>
-                    <span id="char-hp-text" style="font-size: 12px; color: #ff7b72; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;"></span>
+                    <span id="char-hp-text" style="font-size: 12px; color: #ff7b72; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">100 / 100</span>
                 </div>
             </div>
         </div>
@@ -601,7 +509,7 @@
 
 	<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; box-sizing: border-box;">
     <div style="color: #f2cc60; font-size: 12px; font-weight: bold; margin-bottom: 10px;">🛡️ 當前全身穿戴裝備</div>
-    <div style="display: grid; grid-template-columns: 1fr ; gap: 8px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
         
         <div id="slot-weapon" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
             ⚔️ 武器: <span id="curr-eq-weapon" style="color:#57606a; font-weight: bold;">無</span>
@@ -641,78 +549,25 @@
 		<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; display: flex; flex-direction: column;">
 			<div style="color: #58a6ff; font-size: 12px; font-weight: bold; margin-bottom: 10px;">📦 裝備儲存背包 (<span id="eq-inv-count">0</span>)</div>
 			
-			<div id="eq-inv-container" style="max-height: 315px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
+			<div id="eq-inv-container" style="max-height: 180px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
 				<div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>
 			</div>
 		</div>
     </div>
 </div>
-<!-- 介面2.角色 完 -->
+<!-- 角色介面 完結 -->
 
-<!-- 介面3.無限爬塔 -->
-<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 900px; box-sizing: border-box;">
-    
-    <div onclick="window.toggleTowerWindow(this)" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; user-select: none;">
-        <h3 style="color: #f2cc60; margin: 0; font-size: 16px; display: flex; align-items: center; gap: 6px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
-		<span>🗼 皇家無盡天梯</span>
-			<div class="tower-mini-stage">
-				<div class="pixel-sprite-art stage-hero"></div>
-                <div class="pixel-sprite-art stage-monster"></div>
-					</div>
-					
-					<span id="tower-layer-badge" style="background: #ff9b30; color: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">目前: 更新中... </span>
-				</h3>
-				
-				<div style="display: flex; align-items: center; gap: 10px;">
-					<span id="tower-status" style="font-size: 11px; color: #ff9b30; font-weight: bold;">激戰中...</span>
-					<span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[➖ 點擊收起]</span>
-				</div>
-			</div>
-
-    <div id="tower-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
-        
-        <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #c9d1d9;">
-                <span>👹 當前守層怪: <span id="tower-monster-name" style="color: #ff7b72; font-weight: bold;"> 更新中...</span></span>
-                <span>❤️ HP: <span id="tower-monster-hp" style="color: #ff7b72;"> 更新中...</span></span>
-            </div>
-            <div style="background: #21262d; width: 100%; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden;">
-                <div id="tower-monster-bar" style="background: #ff7b72; width: 100%; height: 100%; transition: width 0.1s;"></div>
-            </div>
-        </div>
-
-        <div id="tower-combat-log" style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 8px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #8b949e; line-height: 1.5; margin-bottom: 12px;">
-            </div>
-
-		<div style="display: flex; gap: 10px;">
-			<button id="btn-tower-start" onclick="window.toggleTowerMode()" style="flex: 1; height: 32px; font-size: 12px; background: #ff9b30; border: 1px solid #d29922; color: #0d1117; border-radius: 6px; cursor: pointer; font-weight: bold;">
-				⏸️ 暫停爬塔
-			</button>
-			<button id="btn-tower-retreat" onclick="window.retreatFromTower()" style="width: 70px; height: 32px; font-size: 12px; background: #da3637; border: 1px solid #f85149; color: white; border-radius: 6px; cursor: pointer;">
-				撤退
-			</button>
-		</div>
-        
-    </div>
-</div>
-<!-- 介面3.無限爬塔 完結 -->
-
-<!-- 介面4.工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
-<div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 900px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
+<!-- 🏭 工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
+<div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 1040px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
     <h2 style="color: #58a6ff; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
         ⚙️ 工廠生產線控制台
     </h2>
     <span class="fold-indicator" style="font-size: 12px; color: #8b949e; font-weight: normal; background: #21262d; padding: 3px 8px; border-radius: 6px; border: 1px solid #30363d;">[➖ 點擊收起]</span>
 </div>
-<div id="lines-container" style="border: 1px solid #30363d; 
-border-top: none; border-bottom-left-radius: 12px; 
-border-bottom-right-radius: 12px; background: #0d1117; 
-transition: height 0.2s ease-out; position: relative; 
-max-width: 900px; margin: 0 auto; box-sizing: border-box;"></div>
-<!-- 介面4.工廠生產地板 -->
 
-<!-- 介面5.生成野外區域（採集）& 煉金術工坊（合成） -->
-<div style="width: 900px; max-width: 900px; margin: 20px auto; box-sizing: border-box;">
+<div id="lines-container" style="border: 1px solid #30363d; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; background: #0d1117; transition: height 0.2s ease-out; position: relative; max-width: 1040px; margin: 0 auto; box-sizing: border-box;"></div>
+<!-- 生成野外區域（採集）& 煉金術工坊（合成） -->
+<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
 
 
 
@@ -950,9 +805,50 @@ max-width: 900px; margin: 0 auto; box-sizing: border-box;"></div>
         </div>
     </div>
     </div>
+<!-- 無限爬塔 -->
+<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 1040px; box-sizing: border-box;">
+    
+    <div onclick="window.toggleTowerWindow(this)" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; user-select: none;">
+        <h3 style="color: #f2cc60; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+            🗼 皇家無盡天梯 <span id="tower-layer-badge" style="background: #ff9b30; color: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">目前: 第 21 層</span>
+        </h3>
+        
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="tower-status" style="font-size: 11px; color: #ff9b30; font-weight: bold;">激戰中...</span>
+            <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[➖ 點擊收起]</span>
+        </div>
+    </div>
+
+    <div id="tower-content-wrapper" style="transition: height 0.2s ease-out; position: relative;">
+        
+        <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #c9d1d9;">
+                <span>👹 當前守層怪: <span id="tower-monster-name" style="color: #ff7b72; font-weight: bold;">Lv.21 異變的地獄雙頭犬</span></span>
+                <span>❤️ HP: <span id="tower-monster-hp" style="color: #ff7b72;">8091 / 8673</span></span>
+            </div>
+            <div style="background: #21262d; width: 100%; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden;">
+                <div id="tower-monster-bar" style="background: #ff7b72; width: 93.3%; height: 100%; transition: width 0.1s;"></div>
+            </div>
+        </div>
+
+        <div id="tower-combat-log" style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 8px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #8b949e; line-height: 1.5; margin-bottom: 12px;">
+            </div>
+
+		<div style="display: flex; gap: 10px;">
+			<button id="btn-tower-start" onclick="window.toggleTowerMode()" style="flex: 1; height: 32px; font-size: 12px; background: #ff9b30; border: 1px solid #d29922; color: #0d1117; border-radius: 6px; cursor: pointer; font-weight: bold;">
+				⏸️ 暫停爬塔
+			</button>
+			<button id="btn-tower-retreat" onclick="window.retreatFromTower()" style="width: 70px; height: 32px; font-size: 12px; background: #da3637; border: 1px solid #f85149; color: white; border-radius: 6px; cursor: pointer;">
+				撤退
+			</button>
+		</div>
+        
+    </div>
+</div>
+<!-- 無限爬塔 完結 -->
 
     <!-- 👨‍🔧 研發實驗室面板面板 -->
-<div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 900px; margin-left: auto; margin-right: auto;">
+<div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 1040px; margin-left: auto; margin-right: auto;">
     <h2 style="color: #a371f7; margin-top:0;">👨‍🔧 研發實驗室 (Tech Tree)</h2>
     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
         <div class="shop-item" style="flex:1; min-width:200px;">
@@ -977,7 +873,6 @@ max-width: 900px; margin: 0 auto; box-sizing: border-box;"></div>
         </div>  
     </div>
 </div>
-    <!-- 👨‍🔧 研發實驗室面板面板 完結 -->
 
 <!-- 底部 UI 面板 不能刪,只能隱藏 -->
 <div class="bottom-ui" style="display: none !important;">
@@ -1004,10 +899,10 @@ max-width: 900px; margin: 0 auto; box-sizing: border-box;"></div>
 </div>
 <!-- 底部 UI 面板 不能刪,只能隱藏 -->
 
-<!-- 旅行商人介面 -->
+<!-- 旅行商人 -->
 <div id="title-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; justify-content: center; align-items: center;">
     
-    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 440px; max-width: 900px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; max-height: 80vh;">
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 440px; max-width: 1040px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; max-height: 80vh;">
         
         <button onclick="closeTitleModal()" style="position: absolute; top: 12px; right: 15px; background: none; border: none; color: #8b949e; font-size: 18px; cursor: pointer;">✕</button>
         
@@ -1029,7 +924,7 @@ max-width: 900px; margin: 0 auto; box-sizing: border-box;"></div>
         </button>
     </div>
 </div>
-<!-- 旅行商人介面 完 -->
+<!-- 旅行商人 -->
 
 <script>
     // 🏆 稱號與多重加成定義：控制遊戲不同階段的利潤、速度及檢測加成
@@ -1107,7 +1002,7 @@ let cfg = {
     // n:名稱, i:圖標, c:CSS類, r:售價, buy:買價, range:產線範圍
     wood:    { n: '木材', i: '🪵', c: 'part-wood',    r: 15,  buy: 5,   range: [1, 100] },
     stone:   { n: '石頭', i: '🪨', c: 'part-stone',   r: 30,  buy: 10,  range: [1, 100] }, 
-    iron:    { n: '鐵礦', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [3, 100] },
+    iron:    { n: '鐵礦', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [1, 100] },
     core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 50,  range: [3, 100] },
     diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 200, range: [8, 10] },
     water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [8, 10] },
@@ -1248,7 +1143,7 @@ if (!game.equippedSlots) {
 // ====================================================================
 
 // ====================================================================
-// 🌌 修改裝備數據庫：已極限擴充至 11 ~ 50 級（解鎖概念與法則級神裝）
+// 🌌 數據庫：已極限擴充至 11 ~ 50 級（解鎖概念與法則級神裝）
 // ====================================================================
 const EQ_DB = {
     weapon: { 
@@ -1535,7 +1430,7 @@ window.recalculatePlayerStats = function() {
     if (typeof game === 'undefined') window.game = {};
     if (!game.player) game.player = { lv: 1, exp: 0, maxExp: 100, hp: 100, maxHp: 100, atk: 10, def: 5, agi: 5, luk: 10 };
     if (!game.eqInv) game.eqInv = [];
-    if (!game.equippedSlots) game.equippedSlots = { weapon: null, helmet: null, armor: null, gloves: null, leggings: null, boots: null, cloak: null, ring: null };
+    if (!game.equippedSlots) game.equippedSlots = { "武器": null, "頭盔": null, "胸甲": null, "手套": null, "護腿": null, "鞋子": null, "披風": null, "飾品": null };
 
     // 1. 基礎屬性初始化
     let baseAtk = 10 + (game.player.lv - 1) * 3;
@@ -1672,14 +1567,14 @@ window.renderAllPlayerUI = function() {
     let html = "";
     game.eqInv.forEach(eq => {
         let stats = [];
-        if (eq.stats.atk) stats.push(`⚔️攻擊+${eq.stats.atk}`);
-        if (eq.stats.def) stats.push(`🛡️防禦+${eq.stats.def}`);
-        if (eq.stats.maxHp) stats.push(`🩸生命+${eq.stats.maxHp}`);
-        if (eq.stats.agi) stats.push(`⚡敏捷+${eq.stats.agi}`);
-        if (eq.stats.luk) stats.push(`🍀幸運+${eq.stats.luk}`);
-        if (eq.stats.crit) stats.push(`💥爆擊+${eq.stats.crit}%`);
-        if (eq.stats.dodge) stats.push(`🌀閃避+${eq.stats.dodge}%`);
-        if (eq.stats.hit) stats.push(`🎯命中+${eq.stats.hit}%`);
+        if (eq.stats.atk) stats.push(`⚔️+${eq.stats.atk}`);
+        if (eq.stats.def) stats.push(`🛡️+${eq.stats.def}`);
+        if (eq.stats.maxHp) stats.push(`🩸+${eq.stats.maxHp}`);
+        if (eq.stats.agi) stats.push(`⚡+${eq.stats.agi}`);
+        if (eq.stats.luk) stats.push(`🍀+${eq.stats.luk}`);
+        if (eq.stats.crit) stats.push(`💥+${eq.stats.crit}%`);
+        if (eq.stats.dodge) stats.push(`🌀+${eq.stats.dodge}%`);
+        if (eq.stats.hit) stats.push(`🎯+${eq.stats.hit}%`);
         if (eq.stats.lifesteal) stats.push(`🩸吸血+${eq.stats.lifesteal}%`); 
 
         // 🎯 決定背包裡這件裝備名字的特效類名
@@ -1732,15 +1627,7 @@ window.sellEquipment = function(eqId) {
     if (typeof addLog === 'function') addLog(`💰 賣出 ${eq.name}，獲得資金 +$${eq.price}！`, "#52c41a");
     game.eqInv.splice(idx, 1);
 
-	// =================================================================
-    // 🎯【核心修復】精準對接頂部儀表板 money-val，徹底解決顯示不同步
-    // =================================================================
-    const moneyDisplay = document.getElementById('money-val') || document.getElementById('txt-money');
-    if (moneyDisplay) {
-        // toLocaleString() 可以自動幫你加上千分位（例如 10,000），視覺效果更像商業遊戲！
-        moneyDisplay.innerText = "$" + game.money.toLocaleString(); 
-    }
-	
+    if (document.getElementById('txt-money')) document.getElementById('txt-money').innerText = game.money;
     window.recalculatePlayerStats();
     if (typeof saveGame === 'function') saveGame();
 };
@@ -2138,43 +2025,32 @@ function updatePrice(type) {
 // ==========================================
 // ⚙️ [UI 總控制] 點擊大標題：真正收起成個 生產線視窗 (下方野外區域完美頂上)
 // ==========================================
-// ==========================================
-// ⚙️ [UI 總控制] 點擊大標題：真正收起成個 生產線視窗 (具備永久狀態記憶功能)
-// ==========================================
-window.toggleAllLines = function(headerElement, isInit = false) {
+window.toggleAllLines = function(headerElement) {
     const container = document.getElementById('lines-container');
     if (!container) return;
 
     let indicator = headerElement.querySelector('.fold-indicator');
     
-    // 🔍 自動測量動態高度：獲取當前所有產線撐起來的真實總高度
+    // 🔍 自動測量流動高度：動態獲取你當前所有產線撐起來的總高度
+    // 這樣不論你開了 1 條、2 條還是 4 條產線，都能精準展開，不會卡死高度！
     const originalHeight = container.scrollHeight + "px";
 
-    // 判斷當前是要執行「展開」還是「收起」
-    // 如果是網頁剛開（isInit === true），就讀取儲存的記憶；如果是一般點擊，就檢查當前高度是不是 0px
-    const shouldExpand = isInit 
-        ? (localStorage.getItem('factory_lines_collapsed') !== 'true')
-        : (container.style.height === '0px');
-
-    if (shouldExpand) {
-        // 📂 執行展開整個視窗
+    if (container.style.height === '0px') {
+        // 🔓 展開整個視窗
         container.style.height = originalHeight; 
-        container.style.borderBottom = '1px solid #30363d';  // 補返條底邊
-        headerElement.style.borderBottomLeftRadius = '0px';   // 標題左下角變直角
-        headerElement.style.borderBottomRightRadius = '0px';  // 標題右下角變直角
+        container.style.borderBottom = '1px solid #30363d'; // 補返條底邊
+        headerElement.style.borderBottomLeftRadius = '0px';  // 標題左下角變直角
+        headerElement.style.borderBottomRightRadius = '0px'; // 標題右下角變直角
         if (indicator) indicator.innerText = "[➖ 點擊收起]";
         
-        // 記憶狀態：寫入「未收起 (false)」
-        localStorage.setItem('factory_lines_collapsed', 'false');
-
         // 動態排版防卡死：等動畫播完 (0.2秒)，放開高度鎖定，確保未來買新產線時畫面會自動長高
         setTimeout(() => {
             if (container.style.height !== '0px') container.style.height = '';
         }, 200);
-
-        console.log("📂 整個生產線已展開" + (isInit ? "（載入記憶）" : ""));
+        
+        console.log("📂 整個生產線已展開");
     } else {
-        // 📁 執行收起整個視窗
+        // 🔒 收起整個視窗
         container.style.height = container.scrollHeight + "px"; // 先定死當前高度觸發過渡動畫
         container.offsetHeight; // 逼瀏覽器刷新渲染
         
@@ -2184,27 +2060,9 @@ window.toggleAllLines = function(headerElement, isInit = false) {
         headerElement.style.borderBottomLeftRadius = '12px';  // 整個視窗圓角收尾
         headerElement.style.borderBottomRightRadius = '12px';
         if (indicator) indicator.innerText = "💡 點擊展開 [➕]";
-        
-        // 記憶狀態：寫入「已收起 (true)」
-        localStorage.setItem('factory_lines_collapsed', 'true');
-        console.log("📁 整個生產線已完美收起" + (isInit ? "（載入記憶）" : ""));
+        console.log("📁 整個生產線已完美收起");
     }
 };
-
-// ==========================================
-// 🔄 網頁啟動核心：全自動載入生產線的折疊記憶
-// ==========================================
-document.addEventListener("DOMContentLoaded", function() {
-    // 延遲 50 毫秒確保工廠地板的 HTML 與 header 元素都已經渲染好
-    setTimeout(() => {
-        // 抓取你的工廠生產線控制台 header 元素
-        const factoryHeader = document.querySelector('.main-window-header[onclick*="toggleAllLines"]');
-        if (factoryHeader) {
-            // 傳入 true 觸發初始化判定，它會默默幫你收起，完全不會有穿幫的閃爍動畫！
-            window.toggleAllLines(factoryHeader, true);
-        }
-    }, 50);
-});
 // ==========================================
 // ⚙️ [UI 總控制] 點擊大標題：真正收起成個 生產線視窗 (下方野外區域完美頂上)
 // ==========================================
@@ -3663,11 +3521,10 @@ function finishCraftingPotion(barContainer, status) {
         addLog(`✨ 煉金成功！【🧪 生命藥水 x1】提煉完畢，已安全放入背包！`, "#52c41a");
     }
 
-	// 6. 【修改後】動態抓取 ID，完美配合你的自動欄位系統
-	const potionTarget = document.getElementById('res-potion');
-	if (potionTarget) {
-		potionTarget.innerText = potionAmt;
-	}
+    // 6. ⚡ 0微秒硬寫死 HTML 藥水畫面，杜絕延遲閃爍
+    if (document.getElementById('res-potion')) {
+        document.getElementById('res-potion').innerText = potionAmt;
+    }
 
     // 7. ⭐ 呼叫全域重新整理與強制存檔，徹底鎖定數值
     if (typeof updateAdventureUI === 'function') updateAdventureUI();
@@ -3703,15 +3560,9 @@ function updateBattleUI() {
         const monster = MONSTERS_DATABASE[key];
         const amt = game.inv[monster.dropKey] || 0;
         const el = document.getElementById(monster.elementId);
-	// 🛡️ 【核心補救】加上這條安全防禦網，找不到標籤就跳過，絕不卡死！
-		if (el) {
-			el.innerText = amt;
-		} else {
-			// 可以在瀏覽器後台列印提示，方便你除錯看名字有沒有對對齊
-			console.warn(`[UI安全防禦] 找不到怪物 ${monster.name} 對應的 HTML 標籤 ID: ${monster.elementId}`);
-		}
-	}
-	
+        if (el) el.innerText = amt;
+    }
+
     // 2. 檢查如果正在戰鬥或血量歸 0，鎖定打怪按鈕
     const btnBattle = document.getElementById('btn-battle');
     if (btnBattle && (!game.battle || !game.battle.isFighting)) {
@@ -4781,7 +4632,7 @@ function generateTowerMonster() {
     // ==========================================
     // 🖥️ UI 渲染層：將最新的戰鬥數據實時刷到網頁畫面上
     // ==========================================
-    // 更新當前層數標記文字 (最終出現在介面)
+    // 更新當前層數標記文字
     document.getElementById("tower-layer-badge").innerText = `目前: 第 ${layer} 層`;
     // 更新怪物名稱文字
     document.getElementById("tower-monster-name").innerText = towerData.monster.name;
@@ -4990,11 +4841,10 @@ function handleTowerVictory(luckValue) {
     checkPlayerLevelUp();
 
     // 2. 💰 基礎金幣與鐵錠獎勵
-	// ⚙️ 新公式縮小 5 倍：每層只加 0.4 個，Math.max(1, ...) 確保低層數至少拿到 1 個
-    let oreReward = Math.max(1, Math.floor(0.4 * layer + (isBoss ? 4 : 0)));
+    let ironReward = Math.floor(2 * layer + (isBoss ? 20 : 0));
     let goldReward = Math.floor(60 * layer * Math.pow(1.08, layer - 1) + (isBoss ? 800 : 0));
     
-    game.inv.oreReward = (game.inv.oreReward || 0) + oreReward;
+    game.inv.ironbar = (game.inv.ironbar || 0) + ironReward;
     game.money += goldReward;
 
     // 3. 🧪 幸運爆寶系統
@@ -5029,7 +4879,7 @@ function handleTowerVictory(luckValue) {
     }
 
     // 列印獲取材料戰報
-    addTowerLog(`🎁 天梯賞賜：🪨 原礦 +${oreReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
+    addTowerLog(`🎁 天梯賞賜：🧱 鐵錠 +${ironReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
     if (dropReport !== "") {
         addTowerLog(`🍀 幸運爆寶：${dropReport.slice(0, -3)}`, "#52c41a");
     }
@@ -5295,13 +5145,6 @@ window.onload = function() {
     };
 })();
 		 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(reg => console.log('工廠模擬器 PWA 註冊成功！'))
-                    .catch(err => console.log('PWA 失敗：', err));
-            });
-        }
 </script>
 </body>
 </html>
