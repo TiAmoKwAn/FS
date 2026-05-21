@@ -4980,10 +4980,11 @@ function handleTowerVictory(luckValue) {
     checkPlayerLevelUp();
 
     // 2. 💰 基礎金幣與鐵錠獎勵
-    let ironReward = Math.floor(2 * layer + (isBoss ? 20 : 0));
+	// ⚙️ 新公式縮小 5 倍：每層只加 0.4 個，Math.max(1, ...) 確保低層數至少拿到 1 個
+    let oreReward = Math.max(1, Math.floor(0.4 * layer + (isBoss ? 4 : 0)));
     let goldReward = Math.floor(60 * layer * Math.pow(1.08, layer - 1) + (isBoss ? 800 : 0));
     
-    game.inv.ironbar = (game.inv.ironbar || 0) + ironReward;
+    game.inv.oreReward = (game.inv.oreReward || 0) + oreReward;
     game.money += goldReward;
 
     // 3. 🧪 幸運爆寶系統
@@ -5018,7 +5019,7 @@ function handleTowerVictory(luckValue) {
     }
 
     // 列印獲取材料戰報
-    addTowerLog(`🎁 天梯賞賜：🧱 鐵錠 +${ironReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
+    addTowerLog(`🎁 天梯賞賜：🪨 原礦 +${oreReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
     if (dropReport !== "") {
         addTowerLog(`🍀 幸運爆寶：${dropReport.slice(0, -3)}`, "#52c41a");
     }
