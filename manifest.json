@@ -2,7 +2,7 @@
   "name": "AI 工廠模擬器",
   "short_name": "AI工廠",
   "description": "AI 工廠模擬器（冒險者完全體版）",
-  "start_url": "./v12.0.16.10.html", 
+  "start_url": "/FS/index.html", 
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
