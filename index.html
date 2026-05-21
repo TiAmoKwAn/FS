@@ -284,92 +284,79 @@
     z-index: 10;
 }
 
-/* 通用精靈設定 */
+/* 8-bit 通用設定 - 單張獨立圖片專用 */
 .pixel-sprite-art {
+    width: 24px;                 
+    height: 24px;                
+    image-rendering: pixelated; /* 保持像素顆粒不模糊 */
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-size: contain;    /* 確保你電腦的 24x24 圖片完美填滿 */
     position: absolute;
-    bottom: 4px; 
+    bottom: 2px; 
     z-index: 20;        
 }
-
-/* ⚔️ 100% 純 CSS 畫出來的 8-bit 小勇者（戴頭盔、拎住劍） */
+/* ⚔️ 勇者角色設定：重新綁定「橫移」與「跳動」動畫 */
 .stage-hero {
-    width: 2px;
-    height: 2px;
-    background: transparent;
-    /* 用 CSS 陰影一格格畫出 8-bit 角色，完全不需圖片網址 */
-    box-shadow: 
-        4px -10px #50fa7b, 6px -10px #50fa7b,
-        4px -8px #ffb86c, 6px -8px #50fa7b, 8px -8px #f1fa8c,
-        2px -6px #50fa7b, 4px -6px #50fa7b, 6px -6px #50fa7b,
-        4px -4px #8be9fd, 6px -4px #8be9fd,
-        2px -2px #50fa7b, 6px -2px #50fa7b;
+    background-image: url('hero.png') !important; /* 讀取你電腦的 hero.png */
     
+    /* 核心修正：將 walk-right（橫移）同 hero-bounce（踏步微跳）同時啟動 */
     animation: 
-        hero-walk-bounce 0.3s infinite alternate,
-        walk-right 6s linear infinite;
+        walk-right 6s linear infinite,
+        hero-bounce 0.2s infinite alternate ease-in-out;
 }
 
-/* 🐉 100% 純 CSS 畫出來的 8-bit 小惡龍（紅色有翼小魔王） */
+/* 🐉 惡龍/怪物設定 */
 .stage-monster {
-    width: 2px;
-    height: 2px;
-    right: 25px; /* 稍微留開右邊邊界 */
-    background: transparent;
-    /* 用 CSS 陰影畫出紅色小恐龍/惡龍 */
-    box-shadow: 
-        -4px -12px #ff5555, -2px -12px #ff5555,
-        -6px -10px #ff5555, -4px -10px #ff5555, -2px -10px #ffffff,
-        -8px -8px #ff79c6, -6px -8px #ff5555, -4px -8px #ff5555, -2px -8px #ff5555,
-        -8px -6px #ff79c6, -6px -6px #ff5555, -4px -6px #ff5555,
-        -6px -4px #ff5555, -4px -4px #ff5555,
-        -8px -2px #ffb86c, -4px -2px #ff5555, -2px -2px #ffb86c;
-        
-    animation: dragon-wing-bounce 0.4s infinite alternate;
+    right: 10px; 
+    background-image: url('dragon.png') !important; /* 讀取你電腦的 dragon.png */
+    
+    /* 惡龍原地微調呼吸/拍翼動態 */
+    animation: dragon-idle 0.4s infinite alternate ease-in-out; 
 }
 
-/* --- 🎬 動畫時序控制 --- */
+/* --- 🎬 動畫時序控制（確保單圖也能動得流暢） --- */
 
-/* 勇者踏步微跳 */
-@keyframes hero-walk-bounce {
-    from { transform: translateY(0px) scaleY(1); }
-    to { transform: translateY(-2px) scaleY(0.95); }
+/* 1. 勇者原地前進微跳（模擬跑步時的身體上下震動，這樣單圖就不會僵硬！） */
+@keyframes hero-bounce {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-3px); } /* 讓勇者跑路時上下彈跳 */
 }
 
-/* 惡龍原地拍翼/呼吸 */
-@keyframes dragon-wing-bounce {
-    from { transform: scale(1); }
-    to { transform: scale(1.08) translateY(-1px); }
+/* 2. 惡龍原地呼吸縮放 */
+@keyframes dragon-idle {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08) translateY(-1px); }
 }
 
-/* 🏃‍♂️ 勇者橫移跑道動畫（完美碰撞） */
+/* 3. 🏃‍♂️ 勇者橫移 400px 跑道動畫 */
 @keyframes walk-right {
     0% {
-        left: -15px;
+        left: -24px;
         opacity: 0;
     }
     5% {
         left: 5px;
         opacity: 1;
     }
-    75% {
-        left: 345px;  /* 走到惡龍面前 */
-        opacity: 1;
-        transform: scaleX(1);
-    }
-    80% {
-        left: 360px;  /* 衝前斬擊！ */
+    78% {
+        left: 350px;  /* 走到惡龍面前 */
         opacity: 1;
     }
-    85% {
-        left: 348px;  /* 彈後 */
+    82% {
+        left: 366px;  /* 往前衝！揮劍斬擊 */
+        opacity: 1;
+    }
+    86% {
+        left: 352px;  /* 被彈後 */
         opacity: 1;
     }
     92% {
-        left: 348px;
-        opacity: 0;   /* 消失進入下一層 */
+        left: 352px;
+        opacity: 0;   /* 隱形進入下一層 */
     }
     100% {
-        left: -15px;
+        left: -24px;  /* 瞬間返回最左邊重播 */
         opacity: 0;
     }
 }
