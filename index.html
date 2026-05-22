@@ -5092,16 +5092,27 @@ function updatePlayerMainHPUI() {
 
 // 🔄 同步更新主畫面的金幣、材料、等級與【經驗值進度條】
 function syncAllUIElements() {
-    // 刷新材料及金幣
-    if (document.getElementById('res-ironbar')) document.getElementById('res-ironbar').innerText = game.inv.ironbar;
+	// 1. 💰 金幣即時更新
     if (document.getElementById('txt-money')) document.getElementById('txt-money').innerText = game.money;
     if (document.getElementById('player-money')) document.getElementById('player-money').innerText = game.money;
-    // 2. 🎯【核心補回】：實時刷新頂部介面的「原礦」數量！
-    if (document.getElementById('res-ore')) {
-        document.getElementById('res-ore').innerText = (game.inv.ore || 0);
+	
+	// 2. 🪨 【全自動暴力對刀鐵閘】：遍歷整個 game.inv，管你 HTML 的 ID 怎麼寫，通通強制刷新！
+    if (game && game.inv) {
+        Object.keys(game.inv).forEach(key => {
+            const val = game.inv[key] || 0;
+            
+            // 嘗試抓取各種可能被定義的網頁 ID (例如: res-ore, txt-ore, res-ore_lv1 等)
+            let el1 = document.getElementById(`res-${key}`);
+            let el2 = document.getElementById(`txt-${key}`);
+            let el3 = document.getElementById(`counter-${key}`);
+            
+            if (el1) el1.innerText = val;
+            if (el2) el2.innerText = val;
+            if (el3) el3.innerText = val;
+        });
     }
 		
-    // 刷新三大野外素材庫存
+	// 3. 🛡️ 額外確保：舊有獨立 ID 強制同步
     if (document.getElementById('res-slimeGlow')) document.getElementById('res-slimeGlow').innerText = game.inv.slimeGlow;
     if (document.getElementById('res-goblinEar')) document.getElementById('res-goblinEar').innerText = game.inv.goblinEar;
     if (document.getElementById('res-orcBlood')) document.getElementById('res-orcBlood').innerText = game.inv.orcBlood;
