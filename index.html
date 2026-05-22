@@ -5010,8 +5010,18 @@ function handleTowerVictory(luckValue) {
         addTowerLog(`🍀 幸運爆寶：${dropReport.slice(0, -3)}`, "#52c41a");
     }
 
-    // 實時刷新主畫面材料及金幣顯示
-    syncAllUIElements();
+	// ====================================================================
+    // ⚡【最高安全防禦：全同步連鎖鎖死】對齊 finishGathering 的最高規格 UI 刷新
+    // ====================================================================
+    // 呼叫你的自訂同步（更新可能缺少的獨立 ID）
+    syncAllUIElements(); 
+    
+    // 🔥 【核心破案關鍵】：逼動大腦與全遊戲通用 UI 面板，徹底防止主循環用舊數據覆蓋畫面！
+    if (typeof updateUI === 'function') updateUI(); 
+    if (typeof updateAdventureUI === 'function') updateAdventureUI(); 
+    if (typeof window.renderAllPlayerUI === 'function') window.renderAllPlayerUI();
+    if (typeof updatePlayerMainHPUI === 'function') updatePlayerMainHPUI();
+    // ====================================================================
 
     // 晉升下一層
     game.tower.currentLayer++;
