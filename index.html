@@ -2661,7 +2661,8 @@ function renderDashboard() {
 
     // 合併並寫入主面板
     dash.innerHTML = htmlLeft + htmlCombined;
-    updateUI(); // 渲染後同步數據  + htmlCombined + htmlRight
+	// 立即觸發一次全域數據同步，將數據填入剛做好的新標籤中
+    if (typeof updateUI === 'function') updateUI();// 渲染後同步數據  + htmlCombined + htmlRight
 }
 // ==========================================
 // [Script] renderDashboard 動態儀表板渲染 - 完結
