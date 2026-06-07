@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.10</title>
+    <title>《AI 工廠模擬器（冒險者完全體版）》 - v1.0.11</title>
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
     <style>
         /* 引入外部字體：中文字體 Noto Sans TC 與 科技感數字字體 Share Tech Mono */
@@ -12,7 +12,7 @@
         body { background: #0d1117; color: #c9d1d9; font-family: 'Noto Sans TC', sans-serif; user-select: none; margin: 0; padding: 20px; }
         
         /* 頂部儀表板：固定在頂部，用於顯示金錢、資源等核心數據 */
-		.dashboard { display: flex; justify-content: space-around; max-width: 1040px; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
+		.dashboard { display: flex; justify-content: space-around; max-width: 95%; position: sticky; top: 0; margin: 0 auto 10px auto; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; z-index: 1000; align-items: center; }
 		.stat-value { font-family: 'Share Tech Mono'; font-size: 20px; color: #58a6ff; } /* 數值文字樣式 */
 		.stat-label { font-size: 11px; color: #8b949e; } /* 標籤文字樣式 */
 
@@ -51,7 +51,7 @@
 	.modal-content { 
     background: #161b22; 
     width: 90%;          /* 加入這個：確保在小螢幕不會爆出去 */
-    max-width: 1040px;    /* 將原本的 width 改為 max-width */
+    max-width: 95%;    /* 將原本的 width 改為 max-width */
     padding: 25px; 
     border-radius: 16px; 
     border: 1px solid #30363d; 
@@ -67,15 +67,15 @@
 
 /* 統一容器寬度與置中 */
 .dashboard, .factory-floor {
-    width: 1040px;
-    max-width: 1040px; /* 設定一個統一的像素上限 */
+    width: 95%;
+    max-width: 95%; /* 設定一個統一的像素上限 */
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box; /* 確保 padding 不會撐大寬度 */
 }
 
         /* 工廠區域：遊戲核心操作畫面 */
-        .factory-floor { position: relative; max-width: 1040px; height: 50vh; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
+        .factory-floor { position: relative; max-width: 95%; height: 50vh; margin: 20px auto; background: #161b22; border: 2px solid #30363d; border-radius: 16px; overflow-y: auto; padding: 0 10px; }
        .line-group { position: relative; height: 210px; border-bottom: 1px solid #21262d; } /* 單條生產線容器 */
         .line-label { position: absolute; left: 12px; top: 12px; font-size: 11px; color: #8b949e; font-weight: bold; opacity: 0.6; }
         /* 鎖定遮罩：未開啟產線時的顯示狀態 */
@@ -117,7 +117,7 @@
 		.part-gold { background: #4a90e2; } /* 鐵材零件顏色 */
 
         /* 底部 UI 佈局：分成日誌欄、升級欄、控制欄 */
-        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 1040px; margin: 20px auto; }
+        .bottom-ui { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 15px; max-width: 95%; margin: 20px auto; }
         .panel-box { background: #161b22; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
         
         /* 遊戲日誌：顯示系統訊息的終端機樣式 */
@@ -297,7 +297,7 @@
     </div>
 </div>
 
-<!-- ⚙️ 系統管理面板：供開發測試使用的後台介面 -->
+<!-- ⚙️GM介面⚙️ -->
 <div id="admin-panel" class="modal-overlay">
     <div class="admin-content" style="background: #161b22; width: 500px; padding: 25px; border-radius: 16px; border: 1px solid #58a6ff; max-height: 85vh; overflow-y: auto;">
         <h3 style="color:#58a6ff; text-align:center; margin-top:0;">⚙️ 系統管理面板</h3>        
@@ -322,54 +322,14 @@
             <button class="action-btn btn-green" onclick="saveGame()">手動存檔</button>
             <button class="action-btn btn-red" onclick="resetGame()">⚠️ 重置數據</button>
             <button class="action-btn btn-blue" style="background:#30363d" onclick="toggleAdmin()">返回工廠</button>
-			<div style="background: #1c2128; border: 1px dashed #444c56; border-radius: 8px; padding: 12px; margin-top: 15px;">
-		<strong style="color: #f2cc60; font-size: 13px; display: block; margin-bottom: 8px;">🛠️ 開發者後台：全材料數量修改 (完美分流版)</strong>
-		<div style="display: flex; flex-wrap: wrap; gap: 8px;">
-        
-		<div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
-				<span style="font-size: 11px; color: #adbac7;">🌿 草藥:</span>
-				<button onclick="window.modifyMaterialDebug('herb', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-				<button onclick="window.modifyMaterialDebug('herb', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
 		</div>
-
-        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
-            <span style="font-size: 11px; color: #adbac7;">🪨 原礦:</span>
-            <button onclick="window.modifyMaterialDebug('ore', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-            <button onclick="window.modifyMaterialDebug('ore', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
-        </div>
-
-        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
-            <span style="font-size: 11px; color: #adbac7;">⚙️ 鐵錠:</span>
-            <button onclick="window.modifyMaterialDebug('ironbar', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-            <button onclick="window.modifyMaterialDebug('ironbar', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
-        </div>
-
-        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
-            <span style="font-size: 11px; color: #adbac7;">🧪 藥水:</span>
-            <button onclick="window.modifyMaterialDebug('potion', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-            <button onclick="window.modifyMaterialDebug('potion', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
-        </div>
-
-        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
-            <span style="font-size: 11px; color: #adbac7;">🟢 黏液:</span>
-            <button onclick="window.modifyMaterialDebug('slimeGlow', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-            <button onclick="window.modifyMaterialDebug('slimeGlow', -10)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-10</button>
-        </div>
-
-        <div style="background: #22272e; padding: 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
-            <span style="font-size: 11px; color: #adbac7;">👂 耳朵:</span>
-            <button onclick="window.modifyMaterialDebug('goblinEar', 100)" style="background: #347d39; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">+100</button>
-            <button onclick="window.modifyMaterialDebug('goblinEar', -5)" style="background: #ae7c14; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 11px;">-5</button>
-        </div>
-
-    </div>
-</div>
         </div>
     </div>
 </div>
+<!-- ⚙️GM介面 完⚙️ -->
 
-<!-- 頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 -->
-<div class="dashboard" id="main-dashboard"> <!-- 稱號最重要加返id="main-dashboard"-->
+<!-- 介面1.頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 -->
+<div class="dashboard" id="main-dashboard">
     <!-- 🏆 稱號顯示區：點擊後會觸發 secretTrigger() 函數（可能是開啟詳細面板或特殊觸發） -->
 <div class="stat-box prestige-click-area" 
      onclick="togglePrestigeModal()" 
@@ -408,40 +368,68 @@
     <!-- ⚙️ 全局設定按鈕：點擊後觸發 toggleAdmin() 開啟管理員後台面板 -->
     <button class="action-btn btn-green" style="width:100px; height:42px;" onclick="toggleAdmin()">⚙️ 全局設定</button>
 </div>
+<!-- 介面1.頂部數據儀表板容器：固定在頁面頂部，展示核心資源與稱號資訊 -->
 
-<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
-
-<!-- 角色介面 開始 -->
+<!-- 介面2.角色介面 開始 -->
+<div style="width: 95%; max-width: 95%; margin: 20px auto; box-sizing: border-box;">
 <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-sizing: border-box; width: 100%;">
     
     <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 20px; width: 100%; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 15px;">
         
-        <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0; width: 340px; background: #0d1117; padding: 12px; border-radius: 8px; border: 1px solid #21262d; box-sizing: border-box;">
-            <div style="font-size: 38px; background: #161b22; padding: 10px 12px; border-radius: 10px; border: 1px solid #30363d; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">🧛🏻</div>
-            
-            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <strong style="font-size: 16px; color: #c9d1d9; white-space: nowrap;">冒險者核心</strong>
-                    <span id="char-lv" style="background: #f2cc60; color: #0d1117; font-weight: bold; font-size: 12px; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">Lv.1</span>
+            <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0; width: 340px; background: #0d1117; padding: 12px; border-radius: 8px; border: 1px solid #21262d; box-sizing: border-box;">
+                
+                <div id="char-avatar-btn" onclick="window.openAvatarModal()" title="點擊更換頭像" style="font-size: 38px; background: #161b22; padding: 10px 12px; border-radius: 10px; border: 1px solid #30363d; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; user-select: none; transition: background 0.2s, transform 0.1s;" onmouseover="this.style.background='#21262d'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='#161b22'; this.style.transform='scale(1)'">
+
                 </div>
                 
-                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                    <span style="font-size: 12px; color: #8b949e; font-weight: bold; width: 30px; flex-shrink: 0;">EXP</span>
-                    <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
-                        <div id="char-exp-bar" style="width: 0%; height: 100%; background: #3fb950; transition: width 0.3s;"></div>
+                <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <strong style="font-size: 16px; color: #c9d1d9; white-space: nowrap;">TiAmoKwAn</strong>
+                        <span id="char-lv" style="background: #f2cc60; color: #0d1117; font-weight: bold; font-size: 12px; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">Lv.1</span>
                     </div>
-                    <span id="char-exp-text" style="font-size: 12px; color: #8b949e; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">0 / 100</span>
-                </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                        <span style="font-size: 12px; color: #8b949e; font-weight: bold; width: 30px; flex-shrink: 0;">EXP</span>
+                        <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
+                            <div id="char-exp-bar" style="width: 0%; height: 100%; background: #3fb950; transition: width 0.3s;"></div>
+                        </div>
+                        <span id="char-exp-text" style="font-size: 12px; color: #8b949e; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">0 / 100</span>
+                    </div>
 
-                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                    <span style="font-size: 12px; color: #ff7b72; font-weight: bold; width: 30px; flex-shrink: 0;">HP</span>
-                    <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
-                        <div id="char-hp-bar" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ff7b72, #f2594b); transition: width 0.2s;"></div>
+                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                        <span style="font-size: 12px; color: #ff7b72; font-weight: bold; width: 30px; flex-shrink: 0;">HP</span>
+                        <div style="flex-grow: 1; background: #161b22; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #30363d;">
+                            <div id="char-hp-bar" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ff7b72, #f2594b); transition: width 0.2s;"></div>
+                        </div>
+                        <span id="char-hp-text" style="font-size: 12px; color: #ff7b72; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">100 / 100</span>
                     </div>
-                    <span id="char-hp-text" style="font-size: 12px; color: #ff7b72; font-family: 'Share Tech Mono'; white-space: nowrap; width: 65px; text-align: right; flex-shrink: 0;">100 / 100</span>
                 </div>
             </div>
+			
+<!-- 選擇冒險者頭像 -->
+<div id="avatar-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center;">
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 400px; padding: 20px; box-sizing: border-box; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #30363d; padding-bottom: 10px;">
+            <h3 style="color: #f2cc60; margin: 0; font-size: 16px;">🖼️ 選擇冒險者頭像</h3>
+            <span onclick="window.closeAvatarModal()" style="color: #8b949e; cursor: pointer; font-size: 18px; font-weight: bold;" onmouseover="this.style.color='#ff7b72'" onmouseout="this.style.color='#8b949e'">✕</span>
         </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px;" id="avatar-selection-grid">
+            <div class="avatar-option" onclick="window.selectAvatar('🧛🏻')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">🧛🏻</div>
+            <div class="avatar-option" onclick="window.selectAvatar('🧙‍♂️')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">🧙‍♂️</div>
+            <div class="avatar-option" onclick="window.selectAvatar('🥷')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">🥷</div>
+            <div class="avatar-option" onclick="window.selectAvatar('🧑‍')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">🧑‍🚀</div>
+            <div class="avatar-option" onclick="window.selectAvatar('🤖')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">🤖</div>
+            <div class="avatar-option" onclick="window.selectAvatar('🦁')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">🦁</div>
+            <div class="avatar-option" onclick="window.selectAvatar('🦊')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">🦊</div>
+            <div class="avatar-option" onclick="window.selectAvatar('👑')" style="font-size:32px; background:#0d1117; border:1px solid #30363d; padding:10px; border-radius:8px; text-align:center; cursor:pointer; transition:all 0.2s;">👑</div>
+        </div>
+        
+        <div style="font-size: 11px; color: #8b949e; text-align: center;">選擇後將自動同步保存至本機記憶庫</div>
+    </div>
+</div>
+<!-- 選擇冒險者頭像 -->
 
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 12px; background: #0d1117; padding: 14px 18px; border-radius: 8px; border: 1px solid #21262d; flex-grow: 1; align-items: center; text-align: center; box-sizing: border-box;">
             
@@ -491,64 +479,83 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px; width: 100%;">
 
-	<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; box-sizing: border-box;">
-    <div style="color: #f2cc60; font-size: 12px; font-weight: bold; margin-bottom: 10px;">🛡️ 當前全身穿戴裝備</div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        
-        <div id="slot-weapon" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            ⚔️ 武器: <span id="curr-eq-weapon" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
-        
-        <div id="slot-helmet" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            🪖 頭盔: <span id="curr-eq-helmet" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
-        
-        <div id="slot-armor" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            👕 胸甲: <span id="curr-eq-armor" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
-        
-        <div id="slot-gloves" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            🧤 手套: <span id="curr-eq-gloves" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
-        
-        <div id="slot-leggings" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            👖 護腿: <span id="curr-eq-leggings" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
-        
-        <div id="slot-boots" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            🥾 鞋子: <span id="curr-eq-boots" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
-        
-        <div id="slot-cloak" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            🧥 披風: <span id="curr-eq-cloak" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
-        
-        <div id="slot-ring" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
-            💍 飾品: <span id="curr-eq-ring" style="color:#57606a; font-weight: bold;">無</span>
-        </div>
+			<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; box-sizing: border-box;">
+                <div onclick="window.toggleWearEquip()" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 10px;">
+                    <div style="color: #f2cc60; font-size: 12px; font-weight: bold;">🛡️ 當前全身穿戴裝備</div>
+                    <span id="wear-ind" style="font-size: 11px; color: #8b949e; font-family: monospace;">[➖]</span>
+                </div>
+                
+                <div id="wear-equip-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div id="slot-weapon" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        ⚔️ 武器: <span id="curr-eq-weapon" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                    <div id="slot-helmet" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        🪖 頭盔: <span id="curr-eq-helmet" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                    <div id="slot-armor" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        👕 胸甲: <span id="curr-eq-armor" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                    <div id="slot-gloves" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        🧤 手套: <span id="curr-eq-gloves" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                    <div id="slot-leggings" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        👖 護腿: <span id="curr-eq-leggings" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                    <div id="slot-boots" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        🥾 鞋子: <span id="curr-eq-boots" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                    <div id="slot-cloak" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        🧥 披風: <span id="curr-eq-cloak" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                    <div id="slot-ring" style="background:#161b22; padding:8px; border-radius:5px; border:1px solid #30363d; font-size:11px; color:#8b949e; white-space: nowrap;">
+                        💍 飾品: <span id="curr-eq-ring" style="color:#57606a; font-weight: bold;">無</span>
+                    </div>
+                </div>
+            </div>
 
+			<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; box-sizing: border-box;">
+                <div onclick="window.toggleBag()" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 10px;">
+                    <div style="color: #58a6ff; font-size: 12px; font-weight: bold;">📦 裝備儲存背包 (<span id="eq-inv-count">0</span>)</div>
+                    <span id="bag-ind" style="font-size: 11px; color: #8b949e; font-family: monospace;">[➖]</span>
+                </div>
+                
+                <div id="bag-content-wrapper" style="display: flex; flex-direction: column; width: 100%;">
+                    <div id="eq-inv-container" style="max-height: 180px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
+                        <div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>
+                    </div>
+                </div>
+            </div>
 		</div>
-		</div>
-
-		<div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 12px; display: flex; flex-direction: column;">
-			<div style="color: #58a6ff; font-size: 12px; font-weight: bold; margin-bottom: 10px;">📦 裝備儲存背包 (<span id="eq-inv-count">0</span>)</div>
-			
-			<div id="eq-inv-container" style="max-height: 180px; overflow-y: auto; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;">
-				<div style="color:#57606a; text-align:center; font-size:11px; padding:20px;">儲存背包目前沒有任何裝備</div>
-			</div>
-		</div>
-    </div>
 </div>
-<!-- 角色介面 完結 -->
+<!-- 介面2.角色介面 完 -->
 
 <!-- 介面3.無限爬塔 -->
-<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 1040px; box-sizing: border-box;">
+<div id="tower-panel" style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin: 15px auto 0 auto; max-width: 95%; box-sizing: border-box;">
     
     <div onclick="window.toggleTowerWindow(this)" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; user-select: none;">
         <h3 style="color: #f2cc60; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
             🗼 皇家無盡天梯 <span id="tower-layer-badge" style="background: #ff9b30; color: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">目前: 更新中...</span>
         </h3>
         
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+					<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🧪 史萊姆黏液</div>
+					<div class="stat-value res-slimeGlow" style="color: #a371f7; text-align: center;">0</div>
+				</div>        
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+					<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">👺 哥布林耳</div>
+					<div class="stat-value res-goblinEar" style="color: #a371f7; text-align: center;">0</div>
+				</div>        
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+					<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🩸 獸人之血</div>
+					<div class="stat-value res-orcBlood" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+
+		
         <div style="display: flex; align-items: center; gap: 10px;">
             <span id="tower-status" style="font-size: 11px; color: #ff9b30; font-weight: bold;">激戰中...</span>
             <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">💡 點擊收起 [➖]</span>
@@ -584,18 +591,70 @@
 <!-- 介面3.無限爬塔 完 -->
 
 <!-- 介面4.工廠生產地板：這是遊戲的核心區域，所有產線都會動態生成在 lines-container 內 -->
-<div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 1040px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
-    <h2 style="color: #58a6ff; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
-        ⚙️ 工廠生產線控制台
-    </h2>
+<div class="main-window-header" onclick="window.toggleAllLines(this)" style="background: #161b22; border: 1px solid #30363d; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 15px; margin: 15px auto 0 auto; max-width: 95%; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;">
+	<div style="display: flex; align-items: center; gap: 10px;">
+		<h2 style="color: #58a6ff; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
+			⚙️ 工廠生產線控制台
+		</h2>
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+			
+			<div id="inventory-grid" style="display: flex; align-items: center; gap: 10px;">
+			
+				<div class="stat-item">
+					<div class="stat-label" style="text-align: center; white-space: nowrap;">🪵 木材</div>
+					<div class="stat-value res-wood" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+					
+				<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🪨 石頭</div>
+					<div class="stat-value res-stone" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+			
+				<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">⛓️ 鐵礦</div>
+					<div class="stat-value res-iron" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+								<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🔋 核心</div>
+					<div class="stat-value res-core" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+								<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">💎 鑽石</div>
+					<div class="stat-value res-diamond" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+								<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">💧 水 </div>
+					<div class="stat-value res-water" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+								<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🟡 黃金</div>
+					<div class="stat-value res-gold" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+			
+			<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+
+			</div>
+	</div>
+	
     <span class="fold-indicator" style="font-size: 12px; color: #8b949e; font-weight: normal; background: #21262d; padding: 3px 8px; border-radius: 6px; border: 1px solid #30363d;">💡 點擊收起 [➖]</span>
 </div>
 
-<div id="lines-container" style="border: 1px solid #30363d; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; background: #0d1117; transition: height 0.2s ease-out; position: relative; max-width: 1040px; margin: 0 auto; box-sizing: border-box;"></div>
+<div id="lines-container" style="border: 1px solid #30363d; border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; background: #0d1117; transition: height 0.2s ease-out; position: relative; max-width: 95%; margin: 0 auto; box-sizing: border-box;"></div>
 <!-- 介面4.工廠生產地板 完 -->
 
-<!-- 介面5.生成野外區域（採集）& 煉金術工坊（合成） -->
-<div style="width: 1040px; max-width: 1040px; margin: 20px auto; box-sizing: border-box;">
+<!-- 介面5.野外區域（採集）& 煉金術工坊（合成）$ 鐵匠 & 日誌 -->
+<div style="width: 95%; max-width: 95%; margin: 20px auto; box-sizing: border-box;">
 
 
 
@@ -606,6 +665,16 @@
             <h3 style="color: #58a6ff; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
                 🌲 野外區域 (微風森林)
             </h3>
+
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+					<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🪨 原礦</div>
+					<div class="stat-value res-ore" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+
+
             <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[— 收起]</span>
         </div>
 
@@ -648,6 +717,22 @@
             <h3 style="color: #a371f7; margin: 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
                 ⚗️ 煉金術工坊
             </h3>
+			
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+					<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🧪 生命藥水</div>
+					<div class="stat-value res-potion" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+					<div class="stat-item">
+					<div class="stat-label" style="text-align: center;">🧱 鐵錠</div>
+					<div class="stat-value res-ironbar" style="color: #a371f7; text-align: center;">0</div>
+				</div>
+				
+				<div style="width: 1px; height: 25px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+
+			
             <span class="fold-indicator" style="font-size: 11px; color: #8b949e; background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d;">[— 收起]</span>
         </div>
 
@@ -833,10 +918,10 @@
         </div>
     </div>
     </div>
-<!-- 介面5.生成野外區域（採集）& 煉金術工坊（合成）完 -->
+<!-- 介面5.野外區域（採集）& 煉金術工坊（合成）$ 鐵匠 & 日誌 完 -->
 
     <!-- 👨‍🔧 研發實驗室面板面板 -->
-<div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 1040px; margin-left: auto; margin-right: auto;">
+<div class="shop-container" style="margin-top:20px; border-color: #a371f7; max-width: 95%; margin-left: auto; margin-right: auto;">
     <h2 style="color: #a371f7; margin-top:0;">👨‍🔧 研發實驗室 (Tech Tree)</h2>
     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
         <div class="shop-item" style="flex:1; min-width:200px;">
@@ -890,7 +975,7 @@
 <!-- 旅行商人 -->
 <div id="title-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; justify-content: center; align-items: center;">
     
-    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 440px; max-width: 1040px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; max-height: 80vh;">
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; width: 440px; max-width: 95%; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; max-height: 80vh;">
         
         <button onclick="closeTitleModal()" style="position: absolute; top: 12px; right: 15px; background: none; border: none; color: #8b949e; font-size: 18px; cursor: pointer;">✕</button>
         
@@ -1070,11 +1155,11 @@ let cfg = {
 			herbs: 0,			// 草藥數量
 			ore: 0,				// 原礦數量
 			potion: 0,			// 初級生命藥水數量
-			ironbar: 0,		    // 鐵錠
+			ironbar: 0,		// 鐵錠
 			// ⚔️ [冒險怪物素材]
             slimeGlow: 0,		// 🧪 史萊姆黏液 數量
             goblinEar: 0,		// 👂 哥布林耳朵 數量
-			orcBlood: 0,        // 🩸 獸人之血 數量 (新怪物掉落物)
+			orcBlood: 0,          // 🩸 獸人之血 數量 (新怪物掉落物)
 			
 			// 🪨 [新增：10階級新礦石欄位]
 /*			ore_lv1: 0, ore_lv2: 0, ore_lv3: 0, ore_lv4: 0, ore_lv5: 0,
@@ -2661,8 +2746,7 @@ function renderDashboard() {
 
     // 合併並寫入主面板
     dash.innerHTML = htmlLeft + htmlCombined;
-	// 立即觸發一次全域數據同步，將數據填入剛做好的新標籤中
-    if (typeof updateUI === 'function') updateUI();// 渲染後同步數據  + htmlCombined + htmlRight
+    updateUI(); // 渲染後同步數據  + htmlCombined + htmlRight
 }
 // ==========================================
 // [Script] renderDashboard 動態儀表板渲染 - 完結
@@ -5325,6 +5409,113 @@ window.onload = function() {
         setTimeout(forceCraftPreviewGlow, 10);
     };
 })();
+		 
+//======================================
+// 監控對照表
+//======================================	 
+(function() {
+    // 監控對照表：當頂部對應 ID 變化時，同步刷新下面這個 Class
+	const resKeys = [	'wood', 'stone', 'iron', 'core', 'diamond', 'water', 'gold', 
+						'herbs', 'ore', 'potion', 'ironbar',
+						'slimeGlow', 'goblinEar', 'orcBlood'];
+    
+    // 勾住原來的 updateUI，不破壞後台
+    const oldUpdateUI = window.updateUI;
+    window.updateUI = function() {
+        if (typeof oldUpdateUI === 'function') oldUpdateUI();
+        
+        // 執行完原版大腦更新後，直接把頂部 id 的數字抓過來複製到這裡的 class
+        resKeys.forEach(key => {
+            const topEl = document.getElementById(`res-${key}`);
+            const lineEls = document.querySelectorAll(`.res-${key}`);
+            if (topEl && lineEls.length > 0) {
+                lineEls.forEach(el => {
+                    el.innerText = topEl.innerText;
+                });
+            }
+        });
+    };
+})();
+//======================================
+// 監控對照表
+//======================================	 
+		
+//======================================
+//全身穿戴裝備 & 裝備儲存背包 的開關切換與記憶 &  頭像更換機制
+//======================================		
+(function() {
+    // ==========================================
+    // 🛡️ 舊功能保留：收合與記憶
+    // ==========================================
+    window.toggleWearEquip = function(isInit = false) {
+        const content = document.getElementById('wear-equip-content');
+        const ind = document.getElementById('wear-ind');
+        if (!content || !ind) return;
+        let targetState = isInit ? (localStorage.getItem('ui_wear_equip') || 'expanded') : (content.style.display === 'none' ? 'expanded' : 'collapsed');
+        if (targetState === 'expanded') { content.style.display = 'grid'; ind.innerText = '[➖]'; if(!isInit) localStorage.setItem('ui_wear_equip', 'expanded'); }
+        else { content.style.display = 'none'; ind.innerText = '[➕]'; if(!isInit) localStorage.setItem('ui_wear_equip', 'collapsed'); }
+    };
+
+    window.toggleBag = function(isInit = false) {
+        const content = document.getElementById('bag-content-wrapper');
+        const ind = document.getElementById('bag-ind');
+        if (!content || !ind) return;
+        let targetState = isInit ? (localStorage.getItem('ui_storage_bag') || 'expanded') : (content.style.display === 'none' ? 'expanded' : 'collapsed');
+        if (targetState === 'expanded') { content.style.display = 'flex'; ind.innerText = '[➖]'; if(!isInit) localStorage.setItem('ui_storage_bag', 'expanded'); }
+        else { content.style.display = 'none'; ind.innerText = '[➕]'; if(!isInit) localStorage.setItem('ui_storage_bag', 'collapsed'); }
+    };
+
+    // ==========================================
+    // 🖼️ 新功能核心：頭像更換機制
+    // ==========================================
+    // 開啟頭像視窗
+    window.openAvatarModal = function() {
+        const modal = document.getElementById('avatar-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // 為所有的選項加上懸停效果
+            document.querySelectorAll('.avatar-option').forEach(opt => {
+                opt.onmouseover = () => { opt.style.background = '#21262d'; opt.style.borderColor = '#f2cc60'; };
+                opt.onmouseout = () => { opt.style.background = '#0d1117'; opt.style.borderColor = '#30363d'; };
+            });
+        }
+    };
+
+    // 關閉頭像視窗
+    window.closeAvatarModal = function() {
+        const modal = document.getElementById('avatar-modal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    // 選擇並保存頭像
+    window.selectAvatar = function(emoji) {
+        const btn = document.getElementById('char-avatar-btn');
+        if (btn) {
+            btn.innerText = emoji;
+            localStorage.setItem('char_saved_avatar', emoji);
+        }
+        window.closeAvatarModal();
+    };
+
+    // 初始化讀取頭像記憶
+    window.initAvatar = function() {
+        const savedAvatar = localStorage.getItem('char_saved_avatar');
+        if (savedAvatar) {
+            const btn = document.getElementById('char-avatar-btn');
+            if (btn) btn.innerText = savedAvatar;
+        }
+    };
+
+    // 🚀 當 HTML 渲染完成時，自動執行初始化狀態
+    setTimeout(() => {
+        window.toggleWearEquip(true);
+        window.toggleBag(true);
+        window.initAvatar();
+    }, 50);
+})();
+//======================================
+//全身穿戴裝備 & 裝備儲存背包 的開關切換與記憶 &  頭像更換機制
+//======================================	
 		 
 </script>
 </body>
