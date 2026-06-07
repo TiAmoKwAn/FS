@@ -799,115 +799,147 @@
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">⚔️ 武器鍛造</span>
-                        <span id="forge-name-weapon" style="font-size: 11px; color: #58a6ff; font-weight: bold;">木製短劍</span>
-                    </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-weapon" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-weapon" min="1" max="100" value="1" oninput="window.onForgeSliderChange('weapon')" style="width: 100%; margin-top: 4px; cursor: pointer;">
+						 <div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級: 
+							<input type="number" id="forge-range-weapon" min="1" max="100" placeholder="1-100" value="1"
+								   oninput="window.onForgeSliderChange('weapon')" onchange="window.onForgeSliderChange('weapon')"
+								   style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>						
+                        <span id="forge-name-weapon" style="font-size: 11px; color: #58a6ff; font-weight: bold;">武器大師準備中...</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-weapon" style="color:#56d364; font-weight:bold;">5</span> 錠 | 💰 <span id="cost-gold-weapon" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-weapon" style="color:#56d364; font-weight:bold;">5</span> 鐵錠 | 💰 <span id="cost-gold-weapon" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('weapon')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🪖 頭盔鍛造</span>
+						<div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級: 
+							<input type="number" id="forge-range-helmet" min="1" max="100" value="1" 
+							oninput="window.onForgeSliderChange('helmet')" 
+							style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>
                         <span id="forge-name-helmet" style="font-size: 11px; color: #58a6ff; font-weight: bold;">布質便帽</span>
                     </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-helmet" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-helmet" min="1" max="100" value="1" oninput="window.onForgeSliderChange('helmet')" style="width: 100%; margin-top: 4px; cursor: pointer;">
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-helmet" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-helmet" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-helmet" style="color:#56d364; font-weight:bold;">4</span> 鐵錠 | 💰 <span id="cost-gold-helmet" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('helmet')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">👕 胸甲鍛造</span>
+						<div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級:
+							<input type="number" id="forge-range-armor" min="1" max="100" value="1" 
+							oninput="window.onForgeSliderChange('armor')" 
+							style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>
                         <span id="forge-name-armor" style="font-size: 11px; color: #58a6ff; font-weight: bold;">破舊粗布衣</span>
                     </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-armor" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-armor" min="1" max="100" value="1" oninput="window.onForgeSliderChange('armor')" style="width: 100%; margin-top: 4px; cursor: pointer;">
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-armor" style="color:#56d364; font-weight:bold;">8</span> 錠 | 💰 <span id="cost-gold-armor" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-armor" style="color:#56d364; font-weight:bold;">8</span> 鐵錠 | 💰 <span id="cost-gold-armor" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('armor')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🧤 手套鍛造</span>
+						<div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級: 
+							<input type="number" id="forge-range-gloves" min="1" max="100" value="1" 
+							oninput="window.onForgeSliderChange('gloves')" 
+							style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>
                         <span id="forge-name-gloves" style="font-size: 11px; color: #58a6ff; font-weight: bold;">粗麻手套</span>
                     </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-gloves" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-gloves" min="1" max="100" value="1" oninput="window.onForgeSliderChange('gloves')" style="width: 100%; margin-top: 4px; cursor: pointer;">
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-gloves" style="color:#56d364; font-weight:bold;">3</span> 錠 | 💰 <span id="cost-gold-gloves" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-gloves" style="color:#56d364; font-weight:bold;">3</span> 鐵錠 | 💰 <span id="cost-gold-gloves" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('gloves')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">👖 護腿鍛造</span>
+						<div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級: 
+							<input type="number" id="forge-range-leggings" min="1" max="100" value="1" 
+							oninput="window.onForgeSliderChange('leggings')" 
+							style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>
                         <span id="forge-name-leggings" style="font-size: 11px; color: #58a6ff; font-weight: bold;">亞麻長褲</span>
                     </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-leggings" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-leggings" min="1" max="100" value="1" oninput="window.onForgeSliderChange('leggings')" style="width: 100%; margin-top: 4px; cursor: pointer;">
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-leggings" style="color:#56d364; font-weight:bold;">5</span> 錠 | 💰 <span id="cost-gold-leggings" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-leggings" style="color:#56d364; font-weight:bold;">5</span> 鐵錠 | 💰 <span id="cost-gold-leggings" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('leggings')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🥾 鞋子鍛造</span>
+						<div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級:
+							<input type="number" id="forge-range-boots" min="1" max="100" value="1"
+							oninput="window.onForgeSliderChange('boots')" 
+							style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>
                         <span id="forge-name-boots" style="font-size: 11px; color: #58a6ff; font-weight: bold;">破爛草鞋</span>
                     </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-boots" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-boots" min="1" max="100" value="1" oninput="window.onForgeSliderChange('boots')" style="width: 100%; margin-top: 4px; cursor: pointer;">
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-boots" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-boots" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-boots" style="color:#56d364; font-weight:bold;">4</span> 鐵錠 | 💰 <span id="cost-gold-boots" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('boots')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">🧥 披風鍛造</span>
+						<div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級:
+							<input type="number" id="forge-range-cloak" min="1" max="100" value="1"
+							oninput="window.onForgeSliderChange('cloak')" 
+							style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>
                         <span id="forge-name-cloak" style="font-size: 11px; color: #58a6ff; font-weight: bold;">擋風碎布</span>
                     </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-cloak" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-cloak" min="1" max="100" value="1" oninput="window.onForgeSliderChange('cloak')" style="width: 100%; margin-top: 4px; cursor: pointer;">
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-cloak" style="color:#56d364; font-weight:bold;">6</span> 錠 | 💰 <span id="cost-gold-cloak" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-cloak" style="color:#56d364; font-weight:bold;">6</span> 鐵錠 | 💰 <span id="cost-gold-cloak" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('cloak')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
                 <div style="background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 11px; font-weight: bold; color: #c9d1d9;">💍 飾品鍛造</span>
+						<div style="margin: 6px 0; font-size: 11px; color: #8b949e; display: flex; align-items: center; gap: 8px;">
+							目標等級:
+							<input type="number" id="forge-range-ring" min="1" max="100" value="1" 
+							oninput="window.onForgeSliderChange('ring')" 
+							style="width: 45px; background: #0d1117; color: #ff9b30; border: 1px solid #30363d; border-radius: 4px; text-align: center; font-weight: bold;">
+							<span id="forge-lv-val-weapon" style="display: none;">Lv.1</span> 
+						</div>
                         <span id="forge-name-ring" style="font-size: 11px; color: #58a6ff; font-weight: bold;">銅製指環</span>
                     </div>
-                    <div style="margin: 6px 0; font-size: 11px; color: #8b949e;">
-                        目標等級: <span id="forge-lv-val-ring" style="color: #ff9b30; font-weight: bold;">Lv.1</span>
-                        <input type="range" id="forge-range-ring" min="1" max="100" value="1" oninput="window.onForgeSliderChange('ring')" style="width: 100%; margin-top: 4px; cursor: pointer;">
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #21262d; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #8b949e;">需求：⚙️ <span id="cost-iron-ring" style="color:#56d364; font-weight:bold;">4</span> 錠 | 💰 <span id="cost-gold-ring" style="color:#f2cc60; font-weight:bold;">$650</span></div>
+                        <div style="font-size: 12px; color: #8b949e;">需求：🧱 <span id="cost-iron-ring" style="color:#56d364; font-weight:bold;">4</span> 鐵錠 | 💰 <span id="cost-gold-ring" style="color:#f2cc60; font-weight:bold;">$650</span></div>
                         <button onclick="window.executeForgeCraft('ring')" style="width: 65px; height: 26px; font-size: 11px; background: #ff9b30; border: 1px solid #d29922; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">打造</button>
                     </div>
                 </div>
+				
             </div>
         </div>
     </div>
@@ -1049,14 +1081,14 @@ let PRESTIGE_LEVELS = [
 //    - 使用 padStart 確保編號顯示為兩位數（如 01, 02... 10）。
 // ==========================================
 
-const LINE_COUNT = 10; // 修改這裡：設定你想要的產線數量
+const LINE_COUNT = 5; // 修改這裡：設定你想要的產線數量
 
 // 🏗️ 產線配置：將 LINE_CONFIGS 改為動態生成或擴展
 const LINE_CONFIGS = {};
 for(let i=1; i<=LINE_COUNT; i++) {
     LINE_CONFIGS[i] = {
         u: (i === 1) ? 0 : Math.floor(500 * Math.pow(2.5, i - 2)), // 自動計算解鎖成本
-        m: 1.0 + (i - 1) * 0.5, // 自動計算效率倍率 (1.0, 1.5, 2.0...)
+        m: 1.0 + (i - 1) * 0.1,			// 自動計算效率倍率 (1.0, 1.5, 2.0...)
         n: i.toString().padStart(2, '0')
     };
 }
@@ -1081,11 +1113,11 @@ let cfg = {
     // n:名稱, i:圖標, c:CSS類, r:售價, buy:買價, range:產線範圍
     wood:    { n: '木材', i: '🪵', c: 'part-wood',    r: 15,  buy: 5,   range: [1, 100] },
     stone:   { n: '石頭', i: '🪨', c: 'part-stone',   r: 30,  buy: 10,  range: [1, 100] }, 
-    iron:    { n: '鐵礦', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [1, 100] },
-    core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 50,  range: [3, 100] },
-    diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 200, range: [8, 10] },
-    water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [8, 10] },
-    gold:    { n: '黃金', i: '🟡', c: 'part-gold',    r: 1000, buy: 300, range: [8, 10]},
+    iron:    { n: '鐵礦', i: '⛓️', c: 'part-iron',    r: 55,  buy: 15,  range: [2, 100] },
+    core:    { n: '核心', i: '🔋', c: 'part-core',    r: 150, buy: 50,  range: [2, 100] },
+    diamond: { n: '鑽石', i: '💎', c: 'part-diamond', r: 500, buy: 200, range: [3, 10] },
+    water:   { n: '水',   i: '💧', c: 'part-water',   r: 800, buy: 250, range: [4, 10] },
+    gold:    { n: '黃金', i: '🟡', c: 'part-gold',    r: 1000, buy: 300, range: [5, 10]},
 
     // 🌿 [冒險板塊] 補回野外採集與煉金資源，讓動態 UI 自動排版
     herbs:   { n: '草藥', i: '🌿', c: 'part-herbs',   r: 0,   buy: 300,   range: [0, 0] },
@@ -4586,7 +4618,14 @@ window.onForgeSliderChange = function(slot) {
     try {
         const slider = document.getElementById(`forge-range-${slot}`);
         if (!slider) return;
-        const lv = parseInt(slider.value);
+
+		
+		// 新增這段邏輯來強制修正輸入數值
+		let lv = parseInt(slider.value);
+		if (isNaN(lv) || lv < 1) lv = 1;
+		if (lv > 100) lv = 100;
+		// 如果輸入框的值非法，立刻修正顯示
+		if (slider.value != lv) slider.value = lv;
 
         // 安全讀取裝備庫與顏色，如果找不到就用預設值，絕對不崩潰
         let nameStr = "皇家裝備";
@@ -5110,11 +5149,15 @@ function handleTowerVictory(luckValue) {
 		}
 	}
 
-    // 列印獲取材料戰報
-    addTowerLog(`🎁 天梯賞賜：🪨 原礦 +${oreReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
-    if (dropReport !== "") {
-        addTowerLog(`🍀 幸運爆寶：${dropReport.slice(0, -3)}`, "#52c41a");
-    }
+	// 列印獲取材料戰報
+	addTowerLog(`🎁 天梯賞賜：🪨 原礦 +${oreReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
+
+	// 檢查是否有掉落報告
+	if (dropReport !== "") {
+		// 修正：現在只需要直接輸出，不需要再切除字串 (slice)
+		// 為了美觀，可以加上一層特殊的 UI 樣式提示
+		addTowerLog(`🍀 幸運爆寶：${dropReport}`, "#52c41a");
+	}
 
     // 實時刷新主畫面材料及金幣顯示
     syncAllUIElements();
