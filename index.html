@@ -4940,13 +4940,13 @@ function executeTowerTick() {
     }
 
     // ⚔️ 1. 玩家回合：精準提取你全身皇家神裝加成後的真實副屬性名字
-    let pAtk = game.player.atk;                     // 基礎 + 裝備攻擊力 (如 177)
-    let pDef = game.player.def;                     // 基礎 + 裝備防禦力
-    let pCrit = game.player.critRate || 5;          // 🎯 精準對接大腦爆擊率
-    let pDodge = game.player.dodgeRate || 3;         // 🎯 🔥 精準對接大腦 13.8% 閃避率！
-    let pHit = game.player.hitRate || 95;           // 🎯 精準對接大腦 100% 命中率
-    let pLifesteal = game.player.lifesteal || 0;    // 🎯 精準對接大腦 60.8% 吸血率！
-    let pLuck = game.player.luk || game.player.luck || 10; // 幸運值
+    let pAtk = game.player.atk;								// 基礎 + 裝備攻擊力 (如 177)
+    let pDef = game.player.def;								// 基礎 + 裝備防禦力
+    let pCrit = game.player.critRate || 5;					// 🎯 精準對接大腦爆擊率
+    let pDodge = game.player.dodgeRate || 3;				// 🎯 🔥 精準對接大腦 13.8% 閃避率！
+    let pHit = game.player.hitRate || 95;					// 🎯 精準對接大腦 100% 命中率
+    let pLifesteal = game.player.lifesteal || 0;			// 🎯 精準對接大腦 60.8% 吸血率！
+    let pLuck = game.player.luk || game.player.luck || 10;	// 幸運值
 
     let m = towerData.monster;
 
@@ -5056,7 +5056,7 @@ function handleTowerVictory(luckValue) {
     // 檢查升級大腦
     checkPlayerLevelUp();
 
-    // 2. 💰 基礎金幣與鐵錠獎勵
+    // 2. 💰 基礎金幣與原礦獎勵
 	// ⚙️ 新公式縮小 5 倍：每層只加 0.4 個，Math.max(1, ...) 確保低層數至少拿到 1 個
     let oreReward = Math.max(1, Math.floor(0.4 * layer + (isBoss ? 4 : 0)));
     let goldReward = Math.floor(60 * layer * Math.pow(1.08, layer - 1) + (isBoss ? 800 : 0));
@@ -5064,36 +5064,51 @@ function handleTowerVictory(luckValue) {
     game.inv.ore = (game.inv.ore || 0) + oreReward;
     game.money += goldReward;
 
-    // 3. 🧪 幸運爆寶系統
-    let dropReport = "";
-    let luckBonus = luckValue / 100; 
+	// 3. 🧪 幸運爆寶系統 (嚴格限制每 10 層觸發一次)
+	let dropReport = ""; // 初始化一個空字串，用來存儲這一次掉落的獎勵文字描述
+	let luckBonus = luckValue / 100; // 將玩家的幸運數值換算成掉落加成比例（例如幸運 50 換算為 0.5）
 
-    // 史萊姆黏液 掉落判定
-    let slimeChance = 0.40 + luckBonus; // 基礎 40%
-    if (Math.random() < slimeChance) {
-        let amt = Math.floor(1 + Math.random() * 2 + (layer * 0.1));
-        game.inv.slimeGlow = (game.inv.slimeGlow || 0) + amt;
-        dropReport += `🧪 史萊姆黏液 x${amt} | `;
-    }
+	// 【核心設定】：使用取餘數運算子 (%)，當層數是 10 的倍數（如 10, 20, 30...）或遇到 Boss 關時，才執行掉落計算
+	if (layer % 10 === 0 || isBoss) {
+		
+		// 1. 定義這層可能的掉落池 (預設放入 'slime'，因為任何層數都有機會掉落史萊姆黏液)
+		let possibleDrops = ['slime']; 
+		
+		// 如果當前層數大於或等於 5，將 'goblin' (哥布林耳朵) 加入可掉落清單中
+		if (layer >= 5) possibleDrops.push('goblin');
+		
+		// 如果當前層數大於或等於 10 或者遇到了 Boss 關卡，將 'orc' (獸人之血) 加入可掉落清單中
+		if (layer >= 10 || isBoss) possibleDrops.push('orc');
+		
+		// 2. 從掉落池中隨機抽選一個目標，Math.random() 產生 0-1 隨機數，乘以長度並向下取整來取得陣列索引
+		let target = possibleDrops[Math.floor(Math.random() * possibleDrops.length)];
 
-    // 哥布林耳朵 掉落判定
-    if (layer >= 5) {
-        let goblinChance = 0.25 + luckBonus;
-        if (Math.random() < goblinChance) {
-            let amt = 1 + (Math.random() < 0.3 ? 1 : 0);
-            game.inv.goblinEar = (game.inv.goblinEar || 0) + amt;
-            dropReport += `👂 哥布林耳朵 x${amt} | `;
-        }
-    }
-
-    // 獸人之血 掉落判定
-    if (layer >= 10 || isBoss) {
-        let orcChance = 0.12 + luckBonus;
-        if (Math.random() < orcChance) {
-            game.inv.orcBlood = (game.inv.orcBlood || 0) + 1;
-            dropReport += `🩸 獸人之血 x1 | `;
-        }
-    }
+		// 3. 執行選定目標的掉落邏輯與數量計算
+		if (target === 'slime') {
+			// 計算掉落數量：保底 1 個 + 隨機數(0-1.99) + 隨機層數加成(layer*0.1)，最後無條件捨去小數點
+			let amt = Math.floor(1 + Math.random() * 2 + (layer * 0.1));
+			// 更新遊戲庫存中的史萊姆黏液數量，使用 (|| 0) 確保如果初始為 undefined 也不會報錯
+			game.inv.slimeGlow = (game.inv.slimeGlow || 0) + amt;
+			// 將結果寫入報告文字
+			dropReport = `🧪 史萊姆黏液 x${amt}`;
+		} 
+		else if (target === 'goblin') {
+			// 計算掉落數量：基礎 1 個 + 30% 機率額外多掉 1 個
+			let amt = 1 + (Math.random() < 0.3 ? 1 : 0);
+			// 更新庫存數量
+			game.inv.goblinEar = (game.inv.goblinEar || 0) + amt;
+			// 將結果寫入報告文字
+			dropReport = `👂 哥布林耳朵 x${amt}`;
+		} 
+		else if (target === 'orc') {
+			// 計算掉落數量：基礎 1 個 + 30% 機率額外多掉 1 個
+			let amt = 1 + (Math.random() < 0.3 ? 1 : 0);
+			// 更新庫存數量
+			game.inv.orcBlood = (game.inv.orcBlood || 0) + amt;
+			// 將結果寫入報告文字
+			dropReport = `🩸 獸人之血 x${amt}`;
+		}
+	}
 
     // 列印獲取材料戰報
     addTowerLog(`🎁 天梯賞賜：🪨 原礦 +${oreReward} | 💰 金幣 +$${goldReward}`, "#f2cc60");
